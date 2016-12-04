@@ -32,7 +32,7 @@ public class NodeListener {
     	
     	Configurable nodeConfig = NodeFileConfig.getConfig();
     	
-    	//Inventory team checker
+    	//Inventory team checker (Team Checker)
 	    ItemStack RG = ItemStack.of(ItemTypes.STAINED_GLASS, 1);
 	    RG.offer(Keys.DYE_COLOR, DyeColors.RED);
 	    
@@ -40,18 +40,23 @@ public class NodeListener {
 	    BG.offer(Keys.DYE_COLOR, DyeColors.BLUE);
 	    
 	    //Node team colors
+	    
+	    //Blue
 	    BlockState stainedGlassB = BlockState.builder().blockType(BlockTypes.STAINED_GLASS).build();
 	    stainedGlassB = stainedGlassB.with(Keys.DYE_COLOR, DyeColors.BLUE).get();
 	    
+	    //Red
 	    BlockState stainedGlassR = BlockState.builder().blockType(BlockTypes.STAINED_GLASS).build();
 	    stainedGlassR = stainedGlassR.with(Keys.DYE_COLOR, DyeColors.RED).get();
-		
+	    
+		//Takes apart the event
     	for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
 			BlockSnapshot block = transaction.getFinal();
 			BlockType type = block.getState().getType();
 			
 			Set<Object> nodes = NodeConfigUtils.getNodes();
 
+			//Goes through all of the registered nodes in the nodes configuraton file
 			for(Object node: nodes){
 			
 				if(block.getLocation().get().equals(NodeConfigUtils.getNode(node.toString()))&&
