@@ -70,6 +70,7 @@ public class Main {
 		return dreadzone;
 	}
 	
+	//Checks for existence of the configuration files
 	@Listener
 	public void onPreInitialization(GamePreInitializationEvent event){
 		dreadzone = this;
@@ -113,7 +114,7 @@ public class Main {
 		NodeFileConfig.getConfig().setup();
 	}
 	
-	//Checks for configuration file
+	//Checks for the main configuration file
 	@Inject
 	@DefaultConfig(sharedRoot = false)
 	public File configuration = null;
