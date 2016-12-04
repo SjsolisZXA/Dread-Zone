@@ -50,7 +50,7 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 
 
-@Plugin(id = "DreadZone", name = "Dread Zone", version = "0.0.0")
+@Plugin(id = "DreadZone", name = "Dread Zone", version = "0.0.1")
 
 public class Main {
 	public static Main dreadzone;
