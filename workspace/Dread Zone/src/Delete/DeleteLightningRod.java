@@ -1,23 +1,23 @@
 package Delete;
 
-import javax.annotation.Nonnull;
-
+import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import ConfigUtils.LightningConfigUtils;
-import Utils.AsyncCommandExecutorBase;
 
-public class DeleteLightningRod extends AsyncCommandExecutorBase {
+public class DeleteLightningRod implements CommandExecutor {
 	
 	@Override
-	public void executeAsync(CommandSource src, CommandContext args){
+	public CommandResult execute(CommandSource src, CommandContext args){
 		if(!(src instanceof Player)){
 			src.sendMessage(Text.of(TextColors.RED, "Console already decides where lightning should not hit."));
-			return;
+			
+			return CommandResult.success();
 		}
 		
 		String targetName = args.<String> getOne("target name").get();
@@ -28,11 +28,6 @@ public class DeleteLightningRod extends AsyncCommandExecutorBase {
 			src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 					TextColors.WHITE,"Success, ", TextColors.DARK_RED, targetName, TextColors.WHITE, " DZ Rod removed!"));
 		}
-	}
-	@Nonnull
-	@Override
-	public String[] getAliases()
-	{
-		return new String[] { "deletehome", "delhome" };
+		return CommandResult.success();
 	}	
 }

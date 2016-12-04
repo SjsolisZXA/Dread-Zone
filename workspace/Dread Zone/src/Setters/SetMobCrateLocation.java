@@ -1,9 +1,9 @@
 package Setters;
 
-import javax.annotation.Nonnull;
-
+import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -11,17 +11,17 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import ConfigUtils.MobCreateConfigUtils;
-import Utils.AsyncCommandExecutorBase;
 
-
-public class SetMobCrateLocation extends AsyncCommandExecutorBase {
+public class SetMobCrateLocation implements CommandExecutor {
 	
 	@Override
-	public void executeAsync(CommandSource src, CommandContext args){
+	public CommandResult execute(CommandSource src, CommandContext args){
+		
 		if(!(src instanceof Player)){
 			src.sendMessage(Text.of(TextColors.RED, "Console already decides where mobs spawn."));
-			return;
+			return CommandResult.success();
 		}
+		
 		Player player = (Player)src;
 				
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
@@ -45,11 +45,7 @@ public class SetMobCrateLocation extends AsyncCommandExecutorBase {
 		//Confirmation message
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 				TextColors.WHITE,"Success, DZ Mob Create ",TextColors.DARK_RED,targetName,TextColors.WHITE, " added to group ", TextColors.DARK_RED, groupName,TextColors.WHITE," !"));
-	}
-	@Nonnull
-	@Override
-	public String[] getAliases()
-	{
-		return new String[] { "settarget" };
+		
+		return CommandResult.success();
 	}	
 }
