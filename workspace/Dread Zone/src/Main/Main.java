@@ -27,10 +27,13 @@ import org.spongepowered.api.text.Text;
 import com.google.inject.Inject;
 
 import ConfigFiles.LightningFileConfig;
+import ConfigFiles.LobbyFileConfig;
 import ConfigFiles.MobCrateFileConfig;
 import ConfigFiles.NodeFileConfig;
+import ConfigFiles.RightClickModeFileConfig;
 import ConfigUtils.MobCreateConfigUtils;
 import Delete.DeleteLightningRod;
+import Delete.DeleteLobby;
 import Delete.DeleteMobCrate;
 import Delete.DeleteNode;
 import Executors.JoinExecuter;
@@ -39,10 +42,12 @@ import Listeners.FreezePlayer;
 import Listeners.MobCreatePlayerDetector;
 import Listeners.MobCreateImpact;
 import Listeners.NodeListener;
+import Listeners.RightClickMode;
 import Reset.ResetMobCreate;
 import Reset.ResetNodes;
 import Setters.SetNode;
 import Setters.SetLightningRodLocation;
+import Setters.SetLobby;
 import Setters.SetMobCrateLocation;
 import Utils.AutomatedLightningTimer;
 import Utils.TeamDeathmatchTimerTask;
@@ -50,7 +55,7 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 
 
-@Plugin(id = "DreadZone", name = "Dread Zone", version = "0.0.1")
+@Plugin(id = "dreadZone", name = "Dread Zone", version = "0.0.1")
 
 public class Main {
 	public static Main dreadzone;
@@ -112,9 +117,23 @@ public class Main {
 		LightningFileConfig.getConfig().setup();
 		MobCrateFileConfig.getConfig().setup();
 		NodeFileConfig.getConfig().setup();
+		LobbyFileConfig.getConfig().setup();
+		
+		if (!Files.exists(configDir.resolve("Databases")))
+		{
+			try{
+				
+				Files.createDirectories(configDir.resolve("Databases"));
+			}
+			catch (IOException e){
+				
+				e.printStackTrace();
+			}
+		}
+		RightClickModeFileConfig.getConfig().setup();
 	}
 	
-	//Checks for the main configuration file
+	//Checks for the main configuration
 	@Inject
 	@DefaultConfig(sharedRoot = false)
 	public File configuration = null;
@@ -162,6 +181,11 @@ public class Main {
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("target name"))))
 				.executor(new DeleteLightningRod())
 				.build();
+		CommandSpec deleteLobbyCmd = CommandSpec.builder()
+				.description(Text.of("Delete a DZ arena lobby."))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("lobby name"))))
+				.executor(new DeleteLobby())
+				.build();
 		CommandSpec deleteNodeCmd = CommandSpec.builder()
 				.description(Text.of("Delete DZ Node."))
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("node name"))))
@@ -184,6 +208,11 @@ public class Main {
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("node name"))))
 				.executor(new SetNode())
 				.build();
+		CommandSpec cLobbyCmd = CommandSpec.builder()
+				.description(Text.of("Create a DZ arena lobby."))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("lobby name"))))
+				.executor(new SetLobby())
+				.build();
 		CommandSpec joinCmd = CommandSpec.builder()
 				.description(Text.of("Join a Dread Zone Arena."))
 				.arguments(GenericArguments.onlyOne(
@@ -201,6 +230,7 @@ public class Main {
 		
 		game.getCommandManager().register(this, testCmd, "test");
 		game.getCommandManager().register(this, nodeCmd, "dznode");
+		game.getCommandManager().register(this, cLobbyCmd, "dzclobby");
 		game.getCommandManager().register(this, lightiningRodCmd, "dzlrod");
 		game.getCommandManager().register(this, deleteLightiningRodCmd, "rdzlrod");
 		game.getCommandManager().register(this, deleteNodeCmd, "rdznode");
@@ -209,11 +239,13 @@ public class Main {
 		game.getCommandManager().register(this, deleteMobCreateCmd, "rdzms");
 		game.getCommandManager().register(this, mobSetterCmd, "dzms");
 		game.getCommandManager().register(this, joinCmd, "dzjoin");
+		game.getCommandManager().register(this, deleteLobbyCmd, "rdzlobby");
 		
 		game.getEventManager().registerListeners(this, new NodeListener());
 		game.getEventManager().registerListeners(this, new FreezePlayer());
 		game.getEventManager().registerListeners(this, new MobCreateImpact());
 		game.getEventManager().registerListeners(this, new MobCreatePlayerDetector());
+		game.getEventManager().registerListeners(this, new RightClickMode());
 		
         game.getCommandManager().register(this,CommandSpec.builder().executor((source, commandContext) -> {
         	game.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).delay(1, TimeUnit.SECONDS)

@@ -3,7 +3,6 @@ package ConfigUtils;
 import java.util.Set;
 
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -15,12 +14,12 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 public class MobCreateConfigUtils {
 	private static Configurable mobCreateConfig = MobCrateFileConfig.getConfig();
 	
-	public static void setTarget(Transform<World> transform, String worldName, String groupName, String targetName)
+	public static void setTarget(Location<World> blockLocation, String worldName, String groupName, String targetName)
 	{
 		UnversalConfigs.getConfig(mobCreateConfig).getNode("mobCreate", groupName, targetName, "World").setValue(worldName);
-		UnversalConfigs.getConfig(mobCreateConfig).getNode("mobCreate", groupName, targetName, "X").setValue(transform.getLocation().getBlockX());
-		UnversalConfigs.getConfig(mobCreateConfig).getNode("mobCreate", groupName, targetName, "Y").setValue(transform.getLocation().getBlockY());
-		UnversalConfigs.getConfig(mobCreateConfig).getNode("mobCreate", groupName, targetName, "Z").setValue(transform.getLocation().getBlockZ());
+		UnversalConfigs.getConfig(mobCreateConfig).getNode("mobCreate", groupName, targetName, "X").setValue(blockLocation.getBlockX());
+		UnversalConfigs.getConfig(mobCreateConfig).getNode("mobCreate", groupName, targetName, "Y").setValue(blockLocation.getBlockY());
+		UnversalConfigs.getConfig(mobCreateConfig).getNode("mobCreate", groupName, targetName, "Z").setValue(blockLocation.getBlockZ());
 		UnversalConfigs.getConfig(mobCreateConfig).getNode("mobCreate", groupName, targetName, "Status").setValue(true);
 
 		UnversalConfigs.saveConfig(mobCreateConfig);
@@ -49,6 +48,7 @@ public class MobCreateConfigUtils {
 	{
 		UnversalConfigs.removeChild(mobCreateConfig, new Object[] {"mobCreate",groupName}, getMobCrateConfigName(groupName, targetName));
 	}
+	
 	public static Location<World> getTarget(String groupName, String targetName)
 	{
 		CommentedConfigurationNode targetNode = UnversalConfigs.getConfig(mobCreateConfig).getNode("mobCreate", groupName, getMobCrateConfigName(groupName, targetName));

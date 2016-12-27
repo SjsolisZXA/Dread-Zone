@@ -3,7 +3,6 @@ package ConfigUtils;
 import java.util.Set;
 
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -15,12 +14,12 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 public class NodeConfigUtils {
 	private static Configurable nodeConfig = NodeFileConfig.getConfig();
 	
-	public static void setNode(Transform<World> transform, String worldName, String nodeName)
-	{
+	public static void setNode(Location<World> blockLocation, String worldName, String nodeName)
+	{		
 		UnversalConfigs.getConfig(nodeConfig).getNode("Nodes", nodeName, "World").setValue(worldName);
-		UnversalConfigs.getConfig(nodeConfig).getNode("Nodes", nodeName, "X").setValue(transform.getLocation().getBlockX());
-		UnversalConfigs.getConfig(nodeConfig).getNode("Nodes", nodeName, "Y").setValue(transform.getLocation().getBlockY());
-		UnversalConfigs.getConfig(nodeConfig).getNode("Nodes", nodeName, "Z").setValue(transform.getLocation().getBlockZ());
+		UnversalConfigs.getConfig(nodeConfig).getNode("Nodes", nodeName, "X").setValue(blockLocation.getBlockX());
+		UnversalConfigs.getConfig(nodeConfig).getNode("Nodes", nodeName, "Y").setValue(blockLocation.getBlockY());
+		UnversalConfigs.getConfig(nodeConfig).getNode("Nodes", nodeName, "Z").setValue(blockLocation.getBlockZ());
 		UnversalConfigs.getConfig(nodeConfig).getNode("Nodes", nodeName, "Team").setValue(null);
 
 		UnversalConfigs.saveConfig(nodeConfig);
