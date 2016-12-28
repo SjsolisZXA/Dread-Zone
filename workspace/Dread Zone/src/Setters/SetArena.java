@@ -8,11 +8,11 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import ConfigUtils.LobbyConfigUtils;
+import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.RightClickModeConfigUtils;
 import Listeners.RightClickMode;
 
-public class SetLobby implements CommandExecutor{
+public class SetArena implements CommandExecutor{
 	
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args){
@@ -23,18 +23,18 @@ public class SetLobby implements CommandExecutor{
 		Player player = (Player)src;
 				
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-				TextColors.WHITE,"Right click on a block to be a floor corner of the lobby."));
+				TextColors.WHITE,"Right click on a block to be a floor corner of the arena."));
 		
-		RightClickModeConfigUtils.addToList(player.getName(),"CL");
+		RightClickModeConfigUtils.addToList(player.getName(),"CA");
 		
-		String lobbyName = args.<String> getOne("lobby name").get();
+		String arenaName = args.<String> getOne("arena name").get();
 		
-		if(LobbyConfigUtils.isLobbyInConfig(lobbyName)){
+		if(ArenaConfigUtils.isArenaInConfig(arenaName)){
 			
-			LobbyConfigUtils.deleteLobby(lobbyName);
+			ArenaConfigUtils.deleteArena(arenaName);;
 		}
 		
-		RightClickMode.SLLN(lobbyName);
+		RightClickMode.SAAN(arenaName);
 
 		return CommandResult.success();
 	}
