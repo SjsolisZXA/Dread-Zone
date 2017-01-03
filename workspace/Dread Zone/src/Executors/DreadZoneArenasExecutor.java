@@ -5,23 +5,20 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import ConfigUtils.ArenaConfigUtils;
 
-public class TestExecutor implements CommandExecutor {
+public class DreadZoneArenasExecutor implements CommandExecutor {
 
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		
-		Player player =(Player)src;	
-		
-		player.sendMessage(Text.of(TextColors.AQUA,ArenaConfigUtils.getLobbySpawnLocation("NukeTown"), TextColors.DARK_RED,ArenaConfigUtils.getLobbySpawnLocationRotation("NukeTown")));
-		
+			
+			src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE,"Dread Zone arenas available: ",TextColors.DARK_RED, ArenaConfigUtils.getArenas()));
+			
 		return CommandResult.success();
 	}
+
 }
-
-

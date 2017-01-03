@@ -1,8 +1,7 @@
-/ConfigUtils/
-/Executors/
-/Delete/
-/Main.class
 /Main/
+/Delete/
+/ConfigUtils/
 /Setters/
 /Listeners/
-/ConfigFiles/
+/Executors/
+/Utils/

@@ -9,8 +9,8 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.LightningConfigUtils;
-import ConfigUtils.LobbyConfigUtils;
 import ConfigUtils.MobCreateConfigUtils;
 import ConfigUtils.NodeConfigUtils;
 import ConfigUtils.RightClickModeConfigUtils;
@@ -22,7 +22,7 @@ public class RightClickMode {
 	static String SMCLGN;
 	static String SMCLTN;
 	static String NN;
-	static String SLLN;
+	static String SAAN;
 	
 	public static void SLRLTN(String targetName) {
 		
@@ -40,9 +40,9 @@ public class RightClickMode {
 		NN = nodeName;
 	}
 	
-	public static void SLLN(String lobbyName) {
+	public static void SAAN(String arenaName) {
 		
-		SLLN = lobbyName;
+		SAAN = arenaName;
 	}
 	
 	@Listener
@@ -67,7 +67,7 @@ public class RightClickMode {
 				
 				//Confirmation message
 				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-						TextColors.WHITE, "Success, ", TextColors.DARK_RED, SLRLTN, TextColors.WHITE," DZ Rod created!"));
+						TextColors.WHITE, "Success, ", TextColors.DARK_RED, SLRLTN, TextColors.WHITE," Dread Zone Rod created!"));
 				
 				return;
 			}
@@ -87,7 +87,8 @@ public class RightClickMode {
 				
 				//Confirmation message
 				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-						TextColors.WHITE,"Success, DZ Mob Create ",TextColors.DARK_RED,SMCLTN,TextColors.WHITE, " added to group ", TextColors.DARK_RED, SMCLGN,TextColors.WHITE," !"));
+						TextColors.WHITE,"Success, DZ Mob Create ",TextColors.DARK_RED,SMCLTN,TextColors.WHITE, " added to group ", 
+						TextColors.DARK_RED, SMCLGN,TextColors.WHITE," !"));
 				
 				return;
 			}
@@ -114,32 +115,68 @@ public class RightClickMode {
 			    
 				//Confirmation message
 				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-						TextColors.WHITE,"Success, DZ Node ",TextColors.DARK_RED, NN ,TextColors.WHITE, " created !"));
+						TextColors.WHITE,"Success, DZ Node ",TextColors.DARK_RED, NN ,TextColors.WHITE, " created!"));
 			    
 			    return;
 			}
 			
-			//check for Lobby Create Mode
-			if(RightClickModeConfigUtils.getUserMode(player.getName().toString()).equals("CL")){
+			//check for Arena Create Mode
+			if(RightClickModeConfigUtils.getUserMode(player.getName().toString()).equals("CA")){
 				
-				if(!(LobbyConfigUtils.isLobbyInConfig(SLLN))){
+				if(!(ArenaConfigUtils.isArenaInConfig(SAAN))){
 					
-					LobbyConfigUtils.setLobbyp1(blockLocation, player.getWorld().getName(), SLLN);
+					ArenaConfigUtils.setArenap1(blockLocation, player.getWorld().getName(), SAAN);
 					
 					//Confirmation message 
 					player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-							TextColors.WHITE,"Select the oposite corner of that block to be the ceiling of the lobby."));
+							TextColors.WHITE,"Select the oposite corner of that block to be the ceiling of the arena."));
 					
 					return;
 				}				
 				
-				LobbyConfigUtils.setLobbyp2(blockLocation.add(0,-1,0), SLLN);
+				ArenaConfigUtils.setArenap2(blockLocation.add(0,-1,0), SAAN);
+				
+				RightClickModeConfigUtils.deleteUsernameInList(player.getName());
+				
+				RightClickModeConfigUtils.addToList(player.getName(),"CAL");
+				
+				//Confirmation message
+				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
+						
+						TextColors.WHITE,"Success, Arena ",TextColors.DARK_RED, SAAN,TextColors.WHITE, " created ! "
+								+ "Now right click on a block to be a floor corner of ",TextColors.DARK_RED,SAAN,"'s",TextColors.WHITE," lobby."));
+				
+				return;
+			}
+			
+			//check for Lobby Create Mode
+			if(RightClickModeConfigUtils.getUserMode(player.getName().toString()).equals("CAL")){
+				
+				if(!(ArenaConfigUtils.isLobbyInConfig(SAAN, SAAN+"Lobby"))){
+					
+					ArenaConfigUtils.setLobbyp1(blockLocation, player.getWorld().getName(), SAAN);
+					
+					//Confirmation message 
+					player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
+							TextColors.WHITE,"Select the oposite corner of that block to be the ceiling of ",TextColors.DARK_RED,SAAN,"'s",TextColors.WHITE," lobby."));
+					
+					return;
+				}				
+				
+				ArenaConfigUtils.setLobbyp2(blockLocation.add(0,-1,0), SAAN);
+				
+				ArenaConfigUtils.setArenaStatus(SAAN, "Open");
 				
 				RightClickModeConfigUtils.deleteUsernameInList(player.getName());
 				
 				//Confirmation message
 				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-						TextColors.WHITE,"Success, Lobby ",TextColors.DARK_RED, SLLN,TextColors.WHITE, " created !"));
+						TextColors.WHITE,"Success, ",TextColors.DARK_RED, SAAN,"'s ",TextColors.WHITE, "lobby created! To set ",
+						TextColors.DARK_RED, SAAN,"'s ",TextColors.WHITE,"lobby spawn area, stand where you want players to spawn and enter ",TextColors.DARK_RED,"/cdzlsa ",SAAN));
+				
+				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
+						TextColors.WHITE,"Although the arena and lobby have been created, you must create idividual modes for your arenas. "
+								+ "To do so, enter ",TextColors.DARK_RED,"/cdzam ",SAAN));
 				
 				return;
 			}

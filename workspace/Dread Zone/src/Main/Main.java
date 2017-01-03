@@ -26,28 +26,32 @@ import org.spongepowered.api.text.Text;
 
 import com.google.inject.Inject;
 
+import ConfigFiles.ArenaFileConfig;
 import ConfigFiles.LightningFileConfig;
-import ConfigFiles.LobbyFileConfig;
 import ConfigFiles.MobCrateFileConfig;
 import ConfigFiles.NodeFileConfig;
 import ConfigFiles.RightClickModeFileConfig;
 import ConfigUtils.MobCreateConfigUtils;
 import Delete.DeleteLightningRod;
-import Delete.DeleteLobby;
 import Delete.DeleteMobCrate;
 import Delete.DeleteNode;
+import Executors.DreadZoneArenasExecutor;
 import Executors.JoinExecuter;
+import Executors.LeaveDreadZoneArenaExecutor;
+import Executors.MoveLobbyExecutor;
 import Executors.TestExecutor;
-import Listeners.FreezePlayer;
 import Listeners.MobCreatePlayerDetector;
 import Listeners.MobCreateImpact;
 import Listeners.NodeListener;
+import Listeners.PlayerBarrier;
 import Listeners.RightClickMode;
 import Reset.ResetMobCreate;
 import Reset.ResetNodes;
 import Setters.SetNode;
+import Setters.SetArena;
+import Setters.SetArenaMode;
 import Setters.SetLightningRodLocation;
-import Setters.SetLobby;
+import Setters.SetLobbySpawn;
 import Setters.SetMobCrateLocation;
 import Utils.AutomatedLightningTimer;
 import Utils.TeamDeathmatchTimerTask;
@@ -55,7 +59,7 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 
 
-@Plugin(id = "dreadZone", name = "Dread Zone", version = "0.0.1")
+@Plugin(id = "dreadzone", name = "Dread Zone", version = "0.0.1")
 
 public class Main {
 	public static Main dreadzone;
@@ -117,7 +121,7 @@ public class Main {
 		LightningFileConfig.getConfig().setup();
 		MobCrateFileConfig.getConfig().setup();
 		NodeFileConfig.getConfig().setup();
-		LobbyFileConfig.getConfig().setup();
+		ArenaFileConfig.getConfig().setup();
 		
 		if (!Files.exists(configDir.resolve("Databases")))
 		{
@@ -171,6 +175,14 @@ public class Main {
 				.description(Text.of("Test method."))
 				.executor(new TestExecutor())
 				.build();
+		CommandSpec dzArenasCmd = CommandSpec.builder()
+				.description(Text.of("Gets all of the Dread Zone arenas"))
+				.executor(new DreadZoneArenasExecutor())
+				.build();
+		CommandSpec ldzarenaCmd = CommandSpec.builder()
+				.description(Text.of("Allows a dread Zone contestant to leave the current arena they are in"))
+				.executor(new LeaveDreadZoneArenaExecutor())
+				.build();
 		CommandSpec lightiningRodCmd = CommandSpec.builder()
 				.description(Text.of("Set lighting target."))
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("target name"))))
@@ -181,10 +193,15 @@ public class Main {
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("target name"))))
 				.executor(new DeleteLightningRod())
 				.build();
-		CommandSpec deleteLobbyCmd = CommandSpec.builder()
-				.description(Text.of("Delete a DZ arena lobby."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("lobby name"))))
-				.executor(new DeleteLobby())
+		CommandSpec setDZLSACmd = CommandSpec.builder()
+				.description(Text.of("Set a Dread Zone's lobby spawn area."))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))))
+				.executor(new SetLobbySpawn())
+				.build();
+		CommandSpec moveLobbyCmd = CommandSpec.builder()
+				.description(Text.of("Re-create a specified DZ arena lobby."))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))))
+				.executor(new MoveLobbyExecutor())
 				.build();
 		CommandSpec deleteNodeCmd = CommandSpec.builder()
 				.description(Text.of("Delete DZ Node."))
@@ -197,6 +214,12 @@ public class Main {
 						GenericArguments.string(Text.of("target name")))
 				.executor(new DeleteMobCrate())
 				.build();
+		CommandSpec setArenaModeCmd = CommandSpec.builder()
+				.description(Text.of("Create a Mode for a specified arena."))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))),
+						GenericArguments.string(Text.of("mode")))
+				.executor(new SetArenaMode())
+				.build();
 		CommandSpec mobSetterCmd = CommandSpec.builder()
 				.description(Text.of("Set mob dropper spawner."))
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("group name"))),
@@ -208,15 +231,15 @@ public class Main {
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("node name"))))
 				.executor(new SetNode())
 				.build();
-		CommandSpec cLobbyCmd = CommandSpec.builder()
-				.description(Text.of("Create a DZ arena lobby."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("lobby name"))))
-				.executor(new SetLobby())
+		CommandSpec cArenaCmd = CommandSpec.builder()
+				.description(Text.of("Create a DZ arena."))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))))
+				.executor(new SetArena())
 				.build();
 		CommandSpec joinCmd = CommandSpec.builder()
 				.description(Text.of("Join a Dread Zone Arena."))
 				.arguments(GenericArguments.onlyOne(
-				GenericArguments.string(Text.of("arena"))))
+				GenericArguments.string(Text.of("arena name"))))
 				.executor(new JoinExecuter())
 				.build();	
 		CommandSpec resetArenaMobCreatesCmd = CommandSpec.builder()
@@ -227,10 +250,13 @@ public class Main {
 				.description(Text.of("Reset Dread Zone Arena Nodes."))
 				.executor(new ResetNodes())
 				.build();	
-		
+		game.getCommandManager().register(this, setDZLSACmd, "cdzlsa");
+		game.getCommandManager().register(this, setArenaModeCmd, "cdzam");
+		game.getCommandManager().register(this, dzArenasCmd, "dzarenas");
+		game.getCommandManager().register(this, ldzarenaCmd, "dzlarena");
 		game.getCommandManager().register(this, testCmd, "test");
 		game.getCommandManager().register(this, nodeCmd, "dznode");
-		game.getCommandManager().register(this, cLobbyCmd, "dzclobby");
+		game.getCommandManager().register(this, cArenaCmd, "dzcarena");
 		game.getCommandManager().register(this, lightiningRodCmd, "dzlrod");
 		game.getCommandManager().register(this, deleteLightiningRodCmd, "rdzlrod");
 		game.getCommandManager().register(this, deleteNodeCmd, "rdznode");
@@ -239,10 +265,10 @@ public class Main {
 		game.getCommandManager().register(this, deleteMobCreateCmd, "rdzms");
 		game.getCommandManager().register(this, mobSetterCmd, "dzms");
 		game.getCommandManager().register(this, joinCmd, "dzjoin");
-		game.getCommandManager().register(this, deleteLobbyCmd, "rdzlobby");
+		game.getCommandManager().register(this, moveLobbyCmd, "dzmlobby");
 		
 		game.getEventManager().registerListeners(this, new NodeListener());
-		game.getEventManager().registerListeners(this, new FreezePlayer());
+		game.getEventManager().registerListeners(this, new PlayerBarrier());
 		game.getEventManager().registerListeners(this, new MobCreateImpact());
 		game.getEventManager().registerListeners(this, new MobCreatePlayerDetector());
 		game.getEventManager().registerListeners(this, new RightClickMode());
