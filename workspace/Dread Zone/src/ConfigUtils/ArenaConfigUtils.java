@@ -4,8 +4,6 @@ import java.util.Set;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.Transform;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -129,9 +127,7 @@ public class ArenaConfigUtils {
 	{
 		CommentedConfigurationNode targetLobby = UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, arenaName+"Lobby",arenaName+"Lobby"+"SpawnLocation");
 		
-		Sponge.getServer().getBroadcastChannel().send(Text.of(targetLobby));
-		
-		String worldName = targetLobby.getNode("World").getString();
+		String worldName = UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, arenaName+"Lobby","World").getString();
 		
 		World world = Sponge.getServer().getWorld(worldName).orElse(null);
 		
@@ -145,16 +141,6 @@ public class ArenaConfigUtils {
 	public static Vector3d getLobbySpawnLocationRotation(String arenaName)
 	{
 		CommentedConfigurationNode targetLobby = UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, arenaName+"Lobby",arenaName+"Lobby"+"SpawnLocation");
-		
-		Sponge.getServer().getBroadcastChannel().send(TextColors.AQUA,Text.of(targetLobby));
-		
-		String worldName = targetLobby.getNode("World").getString();
-		
-		Sponge.getServer().getBroadcastChannel().send(TextColors.AQUA,Text.of(worldName));
-		
-		//World world = Sponge.getServer().getWorld(worldName).orElse(null);
-		
-		Sponge.getServer().getBroadcastChannel().send(TextColors.AQUA,Text.of(targetLobby));
 		
 		int tx = targetLobby.getNode("Transform", "X").getInt();
 		int ty = targetLobby.getNode("Transform", "Y").getInt();
