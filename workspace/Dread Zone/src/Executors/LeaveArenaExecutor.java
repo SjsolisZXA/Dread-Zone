@@ -11,9 +11,10 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import ConfigUtils.ArenaConfigUtils;
+import ArenaConfigUtils.ArenaConfigUtils;
+import ArenaConfigUtils.ContestantConfigUtils;
 
-public class LeaveDreadZoneArenaExecutor implements CommandExecutor {
+public class LeaveArenaExecutor implements CommandExecutor {
 
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
@@ -31,13 +32,16 @@ public class LeaveDreadZoneArenaExecutor implements CommandExecutor {
 		
 		for(Object arena : arenas){
 			
-			Set<Object> contestants = ArenaConfigUtils.getArenaContestants(arena);
+			Set<Object> contestants = ContestantConfigUtils.getArenaContestants(arena);
 			
 			for(Object contestant: contestants){
 				
 				if((contestant).equals(player.getName())){
 					
-					ArenaConfigUtils.removeContestant(arena,player.getName());
+					player.setLocationAndRotation(ContestantConfigUtils.returnContestant(arena.toString(), player.getName().toString()), 
+							ContestantConfigUtils.returnContestantTransform(arena.toString(), player.getName().toString()));
+					
+					ContestantConfigUtils.removeContestant(arena,player.getName());
 					
 			    	player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 							TextColors.WHITE,"Thanks for playing!"));

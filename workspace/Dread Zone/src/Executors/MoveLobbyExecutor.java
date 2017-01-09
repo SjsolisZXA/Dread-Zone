@@ -8,7 +8,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import ConfigUtils.ArenaConfigUtils;
+import ArenaConfigUtils.LobbyConfigUtils;
 import ConfigUtils.RightClickModeConfigUtils;
 import Listeners.RightClickMode;
 
@@ -28,9 +28,9 @@ public class MoveLobbyExecutor implements CommandExecutor {
 		
 		String arenaName = args.<String> getOne("arena name").get();
 		
-		if (ArenaConfigUtils.isLobbyInConfig(arenaName,arenaName+"Lobby"))
+		if (LobbyConfigUtils.isLobbyInConfig(arenaName,arenaName+"Lobby"))
 		{
-			ArenaConfigUtils.deleteLobby(arenaName);
+			LobbyConfigUtils.deleteLobby(arenaName);
 			
 			RightClickModeConfigUtils.addToList(player.getName(),"CAL");
 			

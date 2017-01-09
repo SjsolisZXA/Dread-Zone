@@ -10,7 +10,9 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import ConfigUtils.ArenaConfigUtils;
+import ArenaConfigUtils.ArenaConfigUtils;
+import ArenaConfigUtils.ContestantConfigUtils;
+import ArenaConfigUtils.LobbyConfigUtils;
 import Listeners.PlayerBarrier;
 
 public class JoinExecuter implements CommandExecutor {
@@ -29,19 +31,37 @@ public class JoinExecuter implements CommandExecutor {
 		
 		String arenaName = args.<String> getOne("arena name").get();
 		
+		String mode = args.<String> getOne("mode").get();
+		
 		if(ArenaConfigUtils.isArenaInConfig(arenaName)){
 			
-			if(ArenaConfigUtils.isArenaOpen(arenaName)){
+			if((ArenaConfigUtils.getArenaData(arenaName, "Status").equals("Open")||ArenaConfigUtils.getArenaData(arenaName, "Status").equals("TDM"))&&
+					mode.toUpperCase().equals("TDM")){
 				
-				ArenaConfigUtils.addContestant(arenaName,player.getName());
+				if(ArenaConfigUtils.getArenaData(arenaName, "Status").equals("Open")){
+					
+					ArenaConfigUtils.setArenaStatus(arenaName, "TDM");
+				}
 				
-				PlayerBarrier.LN(arenaName);
+				//adds the player to the arena roster and saves their current location, to return the player, once they are done in the arena
+				ContestantConfigUtils.addContestant(arenaName,player.getName(),player.getTransform(),player.getWorld().getName());
 				
-				player.setLocationAndRotation(ArenaConfigUtils.getLobbySpawnLocation(arenaName), ArenaConfigUtils.getLobbySpawnLocationRotation(arenaName));
+				PlayerBarrier.AN(arenaName);
+				
+				player.setLocationAndRotation(LobbyConfigUtils.getLobbySpawnLocation(arenaName), LobbyConfigUtils.getLobbySpawnLocationRotation(arenaName));
 				
 				Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 						TextColors.DARK_RED, player.getName(),TextColors.WHITE," joined Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE,"!"
 								+ " To join, enter",TextColors.DARK_RED," /dzjoin ",TextColors.DARK_RED,arenaName));
+				
+				return CommandResult.success();
+			}
+			
+			if((ArenaConfigUtils.getArenaData(arenaName, "Status").equals("Open")||ArenaConfigUtils.getArenaData(arenaName, "Status").equals("NC"))&&
+					mode.toUpperCase().equals("NC")){
+				
+				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+						TextColors.WHITE,"Dread Zone Node Capture mode is currently not available, yet."));
 				
 				return CommandResult.success();
 			}

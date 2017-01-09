@@ -31,13 +31,14 @@ import ConfigFiles.LightningFileConfig;
 import ConfigFiles.MobCrateFileConfig;
 import ConfigFiles.NodeFileConfig;
 import ConfigFiles.RightClickModeFileConfig;
+import ConfigUtils.LightningConfigUtils;
 import ConfigUtils.MobCreateConfigUtils;
 import Delete.DeleteLightningRod;
 import Delete.DeleteMobCrate;
 import Delete.DeleteNode;
-import Executors.DreadZoneArenasExecutor;
+import Executors.ArenaListExecutor;
 import Executors.JoinExecuter;
-import Executors.LeaveDreadZoneArenaExecutor;
+import Executors.LeaveArenaExecutor;
 import Executors.MoveLobbyExecutor;
 import Executors.TestExecutor;
 import Listeners.MobCreatePlayerDetector;
@@ -177,11 +178,11 @@ public class Main {
 				.build();
 		CommandSpec dzArenasCmd = CommandSpec.builder()
 				.description(Text.of("Gets all of the Dread Zone arenas"))
-				.executor(new DreadZoneArenasExecutor())
+				.executor(new ArenaListExecutor())
 				.build();
 		CommandSpec ldzarenaCmd = CommandSpec.builder()
 				.description(Text.of("Allows a dread Zone contestant to leave the current arena they are in"))
-				.executor(new LeaveDreadZoneArenaExecutor())
+				.executor(new LeaveArenaExecutor())
 				.build();
 		CommandSpec lightiningRodCmd = CommandSpec.builder()
 				.description(Text.of("Set lighting target."))
@@ -238,8 +239,8 @@ public class Main {
 				.build();
 		CommandSpec joinCmd = CommandSpec.builder()
 				.description(Text.of("Join a Dread Zone Arena."))
-				.arguments(GenericArguments.onlyOne(
-				GenericArguments.string(Text.of("arena name"))))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))),
+						GenericArguments.string(Text.of("mode")))
 				.executor(new JoinExecuter())
 				.build();	
 		CommandSpec resetArenaMobCreatesCmd = CommandSpec.builder()
@@ -273,11 +274,16 @@ public class Main {
 		game.getEventManager().registerListeners(this, new MobCreatePlayerDetector());
 		game.getEventManager().registerListeners(this, new RightClickMode());
 		
-        game.getCommandManager().register(this,CommandSpec.builder().executor((source, commandContext) -> {
-        	game.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).delay(1, TimeUnit.SECONDS)
-        	.execute(new TeamDeathmatchTimerTask(source, commandContext)).submit(this);
-        	return CommandResult.success();
-        }).build(), "timer");
+		if(!LightningConfigUtils.getTargets().equals(null)){
+		
+		game.getCommandManager().register(this,CommandSpec.builder().executor((source, commandContext) -> {
+        		
+            	game.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).delay(1, TimeUnit.SECONDS)
+            	.execute(new TeamDeathmatchTimerTask(source, commandContext)).submit(this);
+        	
+	        	return CommandResult.success();
+	        }).build(), "timer");
+		}
 	}
 	
 	@Listener

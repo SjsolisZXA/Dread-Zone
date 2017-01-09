@@ -8,9 +8,9 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import ConfigUtils.ArenaConfigUtils;
+import ArenaConfigUtils.ArenaConfigUtils;
 
-public class DreadZoneArenasExecutor implements CommandExecutor {
+public class ArenaListExecutor implements CommandExecutor {
 
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {

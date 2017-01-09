@@ -1,5 +1,10 @@
 package Listeners;
 
+import java.util.concurrent.TimeUnit;
+
+import org.spongepowered.api.Game;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.InteractBlockEvent;
@@ -9,12 +14,16 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-import ConfigUtils.ArenaConfigUtils;
+import com.google.inject.Inject;
+
+import ArenaConfigUtils.ArenaConfigUtils;
+import ArenaConfigUtils.LobbyConfigUtils;
 import ConfigUtils.LightningConfigUtils;
 import ConfigUtils.MobCreateConfigUtils;
 import ConfigUtils.NodeConfigUtils;
 import ConfigUtils.RightClickModeConfigUtils;
 import Utils.NodeUtils;
+import Utils.TeamDeathmatchTimerTask;
 
 public class RightClickMode {
 	
@@ -23,6 +32,9 @@ public class RightClickMode {
 	static String SMCLTN;
 	static String NN;
 	static String SAAN;
+	
+	@Inject
+	Game game;
 	
 	public static void SLRLTN(String targetName) {
 		
@@ -68,6 +80,17 @@ public class RightClickMode {
 				//Confirmation message
 				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 						TextColors.WHITE, "Success, ", TextColors.DARK_RED, SLRLTN, TextColors.WHITE," Dread Zone Rod created!"));
+				
+				if(!LightningConfigUtils.getTargets().equals(null)){
+					
+					game.getCommandManager().register(this,CommandSpec.builder().executor((source, commandContext) -> {
+			        		
+			            	game.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).delay(1, TimeUnit.SECONDS)
+			            	.execute(new TeamDeathmatchTimerTask(source, commandContext)).submit(this);
+			        	
+				        	return CommandResult.success();
+				        }).build(), "timer");
+					}
 				
 				return;
 			}
@@ -152,9 +175,9 @@ public class RightClickMode {
 			//check for Lobby Create Mode
 			if(RightClickModeConfigUtils.getUserMode(player.getName().toString()).equals("CAL")){
 				
-				if(!(ArenaConfigUtils.isLobbyInConfig(SAAN, SAAN+"Lobby"))){
+				if(!(LobbyConfigUtils.isLobbyInConfig(SAAN, SAAN+"Lobby"))){
 					
-					ArenaConfigUtils.setLobbyp1(blockLocation, player.getWorld().getName(), SAAN);
+					LobbyConfigUtils.setLobbyp1(blockLocation, player.getWorld().getName(), SAAN);
 					
 					//Confirmation message 
 					player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
@@ -163,7 +186,7 @@ public class RightClickMode {
 					return;
 				}				
 				
-				ArenaConfigUtils.setLobbyp2(blockLocation.add(0,-1,0), SAAN);
+				LobbyConfigUtils.setLobbyp2(blockLocation.add(0,-1,0), SAAN);
 				
 				ArenaConfigUtils.setArenaStatus(SAAN, "Open");
 				

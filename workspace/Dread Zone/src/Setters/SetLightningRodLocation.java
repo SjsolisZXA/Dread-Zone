@@ -17,9 +17,13 @@ public class SetLightningRodLocation implements CommandExecutor {
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args){
 		if(!(src instanceof Player)){
+			
 			src.sendMessage(Text.of(TextColors.RED, "Console already decides where lightning hits."));
+			
 			return CommandResult.success();
+			
 		}
+		
 		Player player = (Player)src;
 				
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 

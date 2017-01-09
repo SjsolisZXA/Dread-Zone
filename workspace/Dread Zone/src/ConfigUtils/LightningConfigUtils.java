@@ -48,4 +48,3 @@ public class LightningConfigUtils {
 		UnversalConfigs.removeChild(lightningConfig, new Object[] { "lightningRod"}, getLightningConfigName(targetName));
 	}
 }
-

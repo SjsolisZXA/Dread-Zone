@@ -7,7 +7,9 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import ConfigUtils.ArenaConfigUtils;
+
+import ArenaConfigUtils.ArenaConfigUtils;
+import ArenaConfigUtils.LobbyConfigUtils;
 
 public class SetLobbySpawn implements CommandExecutor{
 	
@@ -33,7 +35,7 @@ public class SetLobbySpawn implements CommandExecutor{
 			return CommandResult.success();
 		}
 		
-		if(!ArenaConfigUtils.isUserinLobby(player.getLocation(), arenaName)){
+		if(!LobbyConfigUtils.isUserinLobby(player.getLocation(), arenaName)){
 			
 			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 					TextColors.WHITE,"You must be in the specified arena's lobby to execute this commmand!"));
@@ -41,7 +43,7 @@ public class SetLobbySpawn implements CommandExecutor{
 			return CommandResult.success();
 		}
 		
-		ArenaConfigUtils.setLobbySpawn(player.getTransform(), arenaName, arenaName+"Lobby");
+		LobbyConfigUtils.setLobbySpawn(player.getTransform(), arenaName, arenaName+"Lobby");
 		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 				TextColors.WHITE,"Sucess lobby spawn area set!"));
