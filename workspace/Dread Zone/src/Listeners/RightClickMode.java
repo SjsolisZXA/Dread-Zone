@@ -1,10 +1,7 @@
 package Listeners;
 
-import java.util.concurrent.TimeUnit;
-
 import org.spongepowered.api.Game;
-import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.InteractBlockEvent;
@@ -16,14 +13,14 @@ import org.spongepowered.api.world.World;
 
 import com.google.inject.Inject;
 
-import ArenaConfigUtils.ArenaConfigUtils;
-import ArenaConfigUtils.LobbyConfigUtils;
+import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.LightningConfigUtils;
+import ConfigUtils.LobbyConfigUtils;
 import ConfigUtils.MobCreateConfigUtils;
 import ConfigUtils.NodeConfigUtils;
 import ConfigUtils.RightClickModeConfigUtils;
+import Utils.AutomatedLightningTimer;
 import Utils.NodeUtils;
-import Utils.TeamDeathmatchTimerTask;
 
 public class RightClickMode {
 	
@@ -81,16 +78,10 @@ public class RightClickMode {
 				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 						TextColors.WHITE, "Success, ", TextColors.DARK_RED, SLRLTN, TextColors.WHITE," Dread Zone Rod created!"));
 				
-				if(!LightningConfigUtils.getTargets().equals(null)){
-					
-					game.getCommandManager().register(this,CommandSpec.builder().executor((source, commandContext) -> {
-			        		
-			            	game.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).delay(1, TimeUnit.SECONDS)
-			            	.execute(new TeamDeathmatchTimerTask(source, commandContext)).submit(this);
-			        	
-				        	return CommandResult.success();
-				        }).build(), "timer");
-					}
+				if(!LightningConfigUtils.getTargets().isEmpty()){
+
+					Sponge.getScheduler().createTaskBuilder().execute(new AutomatedLightningTimer()).submit(Main.Main.dreadzone);
+				}
 				
 				return;
 			}
@@ -196,10 +187,6 @@ public class RightClickMode {
 				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 						TextColors.WHITE,"Success, ",TextColors.DARK_RED, SAAN,"'s ",TextColors.WHITE, "lobby created! To set ",
 						TextColors.DARK_RED, SAAN,"'s ",TextColors.WHITE,"lobby spawn area, stand where you want players to spawn and enter ",TextColors.DARK_RED,"/cdzlsa ",SAAN));
-				
-				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-						TextColors.WHITE,"Although the arena and lobby have been created, you must create idividual modes for your arenas. "
-								+ "To do so, enter ",TextColors.DARK_RED,"/cdzam ",SAAN));
 				
 				return;
 			}

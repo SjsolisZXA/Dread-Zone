@@ -8,9 +8,9 @@ import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import ArenaConfigUtils.ArenaConfigUtils;
-import ArenaConfigUtils.ContestantConfigUtils;
-import ArenaConfigUtils.LobbyConfigUtils;
+import ConfigUtils.ArenaConfigUtils;
+import ConfigUtils.ContestantConfigUtils;
+import ConfigUtils.LobbyConfigUtils;
 
 public class PlayerBarrier {
 	

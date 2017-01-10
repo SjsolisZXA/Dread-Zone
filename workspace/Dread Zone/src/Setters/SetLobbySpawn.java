@@ -8,8 +8,8 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import ArenaConfigUtils.ArenaConfigUtils;
-import ArenaConfigUtils.LobbyConfigUtils;
+import ConfigUtils.ArenaConfigUtils;
+import ConfigUtils.LobbyConfigUtils;
 
 public class SetLobbySpawn implements CommandExecutor{
 	
@@ -46,8 +46,10 @@ public class SetLobbySpawn implements CommandExecutor{
 		LobbyConfigUtils.setLobbySpawn(player.getTransform(), arenaName, arenaName+"Lobby");
 		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-				TextColors.WHITE,"Sucess lobby spawn area set!"));
-		
+				TextColors.WHITE,"Sucess, ",TextColors.DARK_RED,arenaName+"Lobby",TextColors.WHITE," spawn point set! "
+						+ "Although the arena and lobby have been created, you must create idividual modes for your arenas. "
+						+ "To do so, enter ",TextColors.DARK_RED,"/cdzam ",arenaName));
+
 		return CommandResult.success();
 	}
 }

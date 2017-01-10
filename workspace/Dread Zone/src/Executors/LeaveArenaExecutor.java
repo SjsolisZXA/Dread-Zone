@@ -11,8 +11,8 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import ArenaConfigUtils.ArenaConfigUtils;
-import ArenaConfigUtils.ContestantConfigUtils;
+import ConfigUtils.ArenaConfigUtils;
+import ConfigUtils.ContestantConfigUtils;
 
 public class LeaveArenaExecutor implements CommandExecutor {
 
@@ -42,6 +42,11 @@ public class LeaveArenaExecutor implements CommandExecutor {
 							ContestantConfigUtils.returnContestantTransform(arena.toString(), player.getName().toString()));
 					
 					ContestantConfigUtils.removeContestant(arena,player.getName());
+					
+					if(ContestantConfigUtils.getArenaContestants(arena).equals(null)){
+						
+						ArenaConfigUtils.setArenaStatus(arena, "Open");
+					}
 					
 			    	player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 							TextColors.WHITE,"Thanks for playing!"));

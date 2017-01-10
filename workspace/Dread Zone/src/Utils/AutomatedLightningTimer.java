@@ -7,13 +7,9 @@ import java.util.function.Consumer;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
-
 import AutomatedExecutors.LightningExecutor;
 import Main.Main;
 
-@SuppressWarnings("unused")
 public class AutomatedLightningTimer implements Consumer<Task> {
 
     @Override
@@ -22,8 +18,6 @@ public class AutomatedLightningTimer implements Consumer<Task> {
 		Object target = LightningExecutor.getRandom();
 		
 		String TTS = target.toString();
-		
-		//Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED,target));
 		
 		Utils.EntitySpawner.spawnEntity(LightningExecutor.getTarget(TTS), EntityTypes.LIGHTNING);
 		

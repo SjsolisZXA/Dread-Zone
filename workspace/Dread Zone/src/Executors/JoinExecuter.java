@@ -10,9 +10,9 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import ArenaConfigUtils.ArenaConfigUtils;
-import ArenaConfigUtils.ContestantConfigUtils;
-import ArenaConfigUtils.LobbyConfigUtils;
+import ConfigUtils.ArenaConfigUtils;
+import ConfigUtils.ContestantConfigUtils;
+import ConfigUtils.LobbyConfigUtils;
 import Listeners.PlayerBarrier;
 
 public class JoinExecuter implements CommandExecutor {
@@ -35,46 +35,61 @@ public class JoinExecuter implements CommandExecutor {
 		
 		if(ArenaConfigUtils.isArenaInConfig(arenaName)){
 			
-			if((ArenaConfigUtils.getArenaData(arenaName, "Status").equals("Open")||ArenaConfigUtils.getArenaData(arenaName, "Status").equals("TDM"))&&
-					mode.toUpperCase().equals("TDM")){
+			if(LobbyConfigUtils.isLobbyInConfig(arenaName, arenaName+"Lobby")){
+			
+				if(LobbyConfigUtils.doesLobbySpawnExist(arenaName)){
 				
-				if(ArenaConfigUtils.getArenaData(arenaName, "Status").equals("Open")){
+					if((mode.toUpperCase().equals("TDM"))){
+						
+						if(ArenaConfigUtils.getArenaData(arenaName, "Status").equals("Open")){
+							
+							ArenaConfigUtils.setArenaStatus(arenaName, "TDM");
+						}
+						
+						ContestantConfigUtils.addContestant(arenaName,player.getName(),player.getTransform(),player.getWorld().getName());
+						
+						PlayerBarrier.AN(arenaName);
+						
+						player.setLocationAndRotation(LobbyConfigUtils.getLobbySpawnLocation(arenaName), LobbyConfigUtils.getLobbySpawnLocationRotation(arenaName));
+						
+						Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+								TextColors.DARK_RED, player.getName(),TextColors.WHITE," joined Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE,"!"
+										+ " To join, enter",TextColors.DARK_RED," /dzjoin ",TextColors.DARK_RED,arenaName));
+						
+						return CommandResult.success();
+					}
 					
-					ArenaConfigUtils.setArenaStatus(arenaName, "TDM");
+					if((mode.toUpperCase().equals("NC"))){
+						
+						player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+								TextColors.WHITE,"Dread Zone Node Capture mode is currently not available, yet."));
+						
+						return CommandResult.success();
+					}
+					
+					player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+							TextColors.WHITE,"The Dread Zone mode you have specified does not exist!"));
+					
+					return CommandResult.success();
 				}
 				
-				//adds the player to the arena roster and saves their current location, to return the player, once they are done in the arena
-				ContestantConfigUtils.addContestant(arenaName,player.getName(),player.getTransform(),player.getWorld().getName());
-				
-				PlayerBarrier.AN(arenaName);
-				
-				player.setLocationAndRotation(LobbyConfigUtils.getLobbySpawnLocation(arenaName), LobbyConfigUtils.getLobbySpawnLocationRotation(arenaName));
-				
-				Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-						TextColors.DARK_RED, player.getName(),TextColors.WHITE," joined Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE,"!"
-								+ " To join, enter",TextColors.DARK_RED," /dzjoin ",TextColors.DARK_RED,arenaName));
-				
-				return CommandResult.success();
-			}
-			
-			if((ArenaConfigUtils.getArenaData(arenaName, "Status").equals("Open")||ArenaConfigUtils.getArenaData(arenaName, "Status").equals("NC"))&&
-					mode.toUpperCase().equals("NC")){
-				
 				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-						TextColors.WHITE,"Dread Zone Node Capture mode is currently not available, yet."));
-				
+						TextColors.WHITE,"Dread Zone arena ",TextColors.DARK_RED,arenaName,
+						TextColors.WHITE," needs a lobby spawn. To set the lobby spawn, enter ",TextColors.DARK_RED,"/cdzlsa ",arenaName));
+					
 				return CommandResult.success();
 			}
 			
 			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-					TextColors.WHITE,"Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," is currently not avaiable."));
+					TextColors.WHITE,"Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," does not have a lobby! "
+							+ "To create ",TextColors.DARK_RED,arenaName,"'s",TextColors.WHITE," lobby, enter, ",TextColors.DARK_RED,"/dzmlobby ",arenaName));
 			
 			return CommandResult.success();
 		}
 		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 				TextColors.WHITE,"Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," does not exists! "
-						+ "To view a list of avaiable Dread Zone arenas, enter, ",TextColors.DARK_RED,"/dzarenas"));
+						+ "To view a list of avaiable Dread Zone arenas, enter ",TextColors.DARK_RED,"/dzarenas"));
 		
 		return CommandResult.success();
 		

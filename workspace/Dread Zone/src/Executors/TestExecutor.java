@@ -10,7 +10,7 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import ArenaConfigUtils.ContestantConfigUtils;
+import ConfigUtils.LightningConfigUtils;
 
 public class TestExecutor implements CommandExecutor {
 
@@ -19,9 +19,11 @@ public class TestExecutor implements CommandExecutor {
 		
 		//Player player =(Player)src;	
 		
-		Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED,ContestantConfigUtils.returnContestant("NukeTown", "SalvadorZXA")));
+		Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED,LightningConfigUtils.getTargets()));
 		
-		Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_BLUE,ContestantConfigUtils.returnContestantTransform("NukeTown", "SalvadorZXA")));
+		Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED,LightningConfigUtils.getTargets().equals(null)));
+		
+		Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED,LightningConfigUtils.getTargets().isEmpty()));
 		
 		return CommandResult.success();
 	}

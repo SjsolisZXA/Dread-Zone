@@ -10,6 +10,7 @@ import ConfigFiles.Configurable;
 import ConfigFiles.LightningFileConfig;
 
 public class LightningConfigUtils {
+	
 	private static Configurable lightningConfig = LightningFileConfig.getConfig();
 	
 	public static void setTarget(Location<World> blockLocation, String worldName, String targetName)

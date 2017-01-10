@@ -274,22 +274,23 @@ public class Main {
 		game.getEventManager().registerListeners(this, new MobCreatePlayerDetector());
 		game.getEventManager().registerListeners(this, new RightClickMode());
 		
-		if(!LightningConfigUtils.getTargets().equals(null)){
-		
 		game.getCommandManager().register(this,CommandSpec.builder().executor((source, commandContext) -> {
-        		
-            	game.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).delay(1, TimeUnit.SECONDS)
-            	.execute(new TeamDeathmatchTimerTask(source, commandContext)).submit(this);
-        	
-	        	return CommandResult.success();
-	        }).build(), "timer");
-		}
+    		
+        	game.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).delay(1, TimeUnit.SECONDS)
+        	.execute(new TeamDeathmatchTimerTask(source, commandContext)).submit(this);
+    	
+        	return CommandResult.success();
+        }).build(), "timer");
+		
 	}
 	
 	@Listener
 	public void postInit (GamePostInitializationEvent event){
+		
+		if(!LightningConfigUtils.getTargets().isEmpty()){
 
-		Sponge.getScheduler().createTaskBuilder().execute(new AutomatedLightningTimer()).submit(this);
+			Sponge.getScheduler().createTaskBuilder().execute(new AutomatedLightningTimer()).submit(this);
+		}
 	}
 	
 	@Listener 

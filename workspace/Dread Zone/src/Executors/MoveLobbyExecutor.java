@@ -8,7 +8,8 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import ArenaConfigUtils.LobbyConfigUtils;
+import ConfigUtils.ArenaConfigUtils;
+import ConfigUtils.LobbyConfigUtils;
 import ConfigUtils.RightClickModeConfigUtils;
 import Listeners.RightClickMode;
 
@@ -28,22 +29,26 @@ public class MoveLobbyExecutor implements CommandExecutor {
 		
 		String arenaName = args.<String> getOne("arena name").get();
 		
-		if (LobbyConfigUtils.isLobbyInConfig(arenaName,arenaName+"Lobby"))
-		{
-			LobbyConfigUtils.deleteLobby(arenaName);
-			
+		if(ArenaConfigUtils.isArenaInConfig(arenaName)){
+		
+			if (LobbyConfigUtils.isLobbyInConfig(arenaName,arenaName+"Lobby"))
+			{
+				LobbyConfigUtils.deleteLobby(arenaName);
+			}
+				
 			RightClickModeConfigUtils.addToList(player.getName(),"CAL");
 			
 			RightClickMode.SAAN(arenaName);
 			
 			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-					TextColors.WHITE,"Right click on a block to be a floor corner of ",arenaName,"'s lobby."));
+					TextColors.WHITE,"Right click on a block to be a floor corner of ",TextColors.DARK_RED,arenaName,"'s",TextColors.WHITE," lobby."));
 			
 			return CommandResult.success();
+
 		}
 		
-		src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-				TextColors.WHITE,"Error, DZ Lobby ", TextColors.DARK_RED, arenaName, TextColors.WHITE, " not found!"));
+		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
+				TextColors.WHITE,"Dread Zone arena ", TextColors.DARK_RED, arenaName, TextColors.WHITE, " does not exist!"));
 		
 		return CommandResult.success();
 	}

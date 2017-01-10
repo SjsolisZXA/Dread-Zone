@@ -8,7 +8,7 @@ import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import ArenaConfigUtils.ArenaConfigUtils;
+import ConfigUtils.ArenaConfigUtils;
 
 public class ArenaListExecutor implements CommandExecutor {
 

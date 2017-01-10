@@ -1,4 +1,4 @@
-package ArenaConfigUtils;
+package ConfigUtils;
 
 import java.util.Set;
 

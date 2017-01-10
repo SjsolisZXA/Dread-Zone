@@ -1,4 +1,4 @@
-package ArenaConfigUtils;
+package ConfigUtils;
 
 import java.util.Set;
 
@@ -162,5 +162,15 @@ public class LobbyConfigUtils {
 	public static void deleteLobby(String arenaName)
 	{
 		UnversalConfigs.removeChild(ArenaConfig, new Object[] {"Arena", arenaName}, getLobbyInConfig(arenaName,arenaName+"Lobby"));
+	}
+
+	public static boolean doesLobbySpawnExist(Object arenaName) {
+		
+		if(getLobbySpawnLocation(arenaName.toString())!=null){
+			
+			return true;
+		}
+		
+		return false;
 	}
 }

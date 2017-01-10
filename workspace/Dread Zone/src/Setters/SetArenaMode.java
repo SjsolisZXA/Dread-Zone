@@ -8,7 +8,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import ArenaConfigUtils.ArenaConfigUtils;
+import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.RightClickModeConfigUtils;
 import Listeners.RightClickMode;
 
@@ -26,15 +26,15 @@ public class SetArenaMode implements CommandExecutor{
 		
 		String arenaName = args.<String> getOne("arena name").get();
 		
+		Player player = (Player)src;
+		
 		if(!ArenaConfigUtils.isArenaInConfig(arenaName)){
 			
-			src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
+			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 					TextColors.WHITE,"The Dread Zone arena specified does not exists!"));
 			
 			return CommandResult.success();
 		}
-		
-		Player player = (Player)src;
 		
 		String mode = args.<String> getOne("mode").get();
 				
