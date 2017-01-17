@@ -52,6 +52,9 @@ public class JoinExecuter implements CommandExecutor {
 						
 						player.setLocationAndRotation(LobbyConfigUtils.getLobbySpawnLocation(arenaName), LobbyConfigUtils.getLobbySpawnLocationRotation(arenaName));
 						
+						player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"]",
+								TextColors.WHITE," Right click on the sign with your desired class."));
+						
 						Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 								TextColors.DARK_RED, player.getName(),TextColors.WHITE," joined Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE,"!"
 										+ " To join, enter",TextColors.DARK_RED," /dzjoin ",TextColors.DARK_RED,arenaName));
@@ -93,9 +96,7 @@ public class JoinExecuter implements CommandExecutor {
 		
 		return CommandResult.success();
 		
-		/**player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"]",
-				TextColors.WHITE," Choose your class ",TextColors.DARK_RED, player.getName(),"!"));
-
+		/**
 		 * 
 		 * A method in which the player's inventory is saved, cleared and, and given back, once they leave the arena.
 		 * 

@@ -1,10 +1,4 @@
-/Listeners/
-/Main/
-/Reset/
-/Setters/
-/Utils/
-/ConfigUtils/
-/Executors/
-/ArenaConfigUtils/
-/AutomatedExecutors/
 /Delete/
+/Main/
+/Executors/
+/ConfigUtils/

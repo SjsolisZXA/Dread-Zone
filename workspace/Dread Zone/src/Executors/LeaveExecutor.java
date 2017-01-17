@@ -14,7 +14,7 @@ import org.spongepowered.api.text.format.TextColors;
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 
-public class LeaveArenaExecutor implements CommandExecutor {
+public class LeaveExecutor implements CommandExecutor {
 
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
@@ -44,6 +44,8 @@ public class LeaveArenaExecutor implements CommandExecutor {
 					ContestantConfigUtils.removeContestant(arena,player.getName());
 					
 					if(ContestantConfigUtils.getArenaContestants(arena).equals(null)){
+						
+						ArenaConfigUtils.removeArenaChild(arena.toString(), "Contestants");
 						
 						ArenaConfigUtils.setArenaStatus(arena, "Open");
 					}

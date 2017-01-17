@@ -61,7 +61,7 @@ public class RightClickMode {
 			
 			Location<World> blockLocation = event.getTargetBlock().getLocation().get().add(0,1,0);
 			
-			//check for Lightning Rod Mode
+			//check for Lightning Rod ModFe
 			if (RightClickModeConfigUtils.getUserMode(player.getName().toString()).equals("LM")){
 				
 				//check to see if rod exists, if not create it in the configuration file 

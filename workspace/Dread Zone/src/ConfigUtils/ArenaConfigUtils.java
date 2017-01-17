@@ -2,6 +2,7 @@ package ConfigUtils;
 
 import java.util.Set;
 
+import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -15,8 +16,7 @@ public class ArenaConfigUtils {
 	private static Configurable ArenaConfig = ArenaFileConfig.getConfig();
 	
 	//corner 1 of the arena
-	public static void setArenap1(Location<World> blockLocation, String worldName, String arenaName)
-	{
+	public static void setArenap1(Location<World> blockLocation, String worldName, String arenaName){
 		
 		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "World").setValue(worldName);
 		
@@ -30,8 +30,7 @@ public class ArenaConfigUtils {
 	}
 	
 	//corner 2 of the arena
-	public static void setArenap2(Location<World> blockLocation, String arenaName)
-	{
+	public static void setArenap2(Location<World> blockLocation, String arenaName){
 		
 		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Max X").setValue(blockLocation.getBlockX());
 		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Max Y").setValue(blockLocation.getBlockY());
@@ -42,6 +41,46 @@ public class ArenaConfigUtils {
 		compareArenaCoordinates(arenaName, "Min Z","Max Z");
 
 		UnversalConfigs.saveConfig(ArenaConfig);
+	}
+	
+	public static void addArenaSpawn(String arenaName, Object team,Object spawnPointName,Transform<World> location){
+
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Spawnpoints", team, spawnPointName, "X").setValue(location.getLocation().getBlockX());
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Spawnpoints", team, spawnPointName, "Y").setValue(location.getLocation().getBlockY());
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Spawnpoints", team, spawnPointName, "Z").setValue(location.getLocation().getBlockZ());
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Spawnpoints", team, spawnPointName, "Transform", "X").setValue(((int)location.getRotation().getX()));
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Spawnpoints", team, spawnPointName, "Transform", "Y").setValue(((int)location.getRotation().getY()));
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Spawnpoints", team, spawnPointName, "Transform", "Z").setValue(((int)location.getRotation().getZ()));
+
+		UnversalConfigs.saveConfig(ArenaConfig);
+	}
+	
+	public static Set<Object> getArenaTeamSpawnpoints(Object arenaName, Object team)
+	{
+		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Spawnpoints", team).getChildrenMap().keySet();
+	}
+	
+	public static Set<Object> getArenaSpawnpointTeams(Object arenaName)
+	{
+		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Spawnpoints").getChildrenMap().keySet();
+	}
+	
+	public static boolean doTeamSpawnpointsExists(Object arenaName){
+		
+		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Spawnpoints") != null;
+	}
+	
+	public static int getNumOfArenaTeamSpawnpoints(Object arenaName, Object team){
+		
+		Set<Object> teamSpawnpoints = getArenaTeamSpawnpoints(arenaName,team);
+		
+		int NOATS = 0;
+		
+		for(@SuppressWarnings("unused") Object tSP:teamSpawnpoints){
+			
+			NOATS++;
+		}
+		return NOATS;
 	}
 	
 	//correct the Max and Min coordinate values of point 1 and 2 of the area specified
@@ -66,14 +105,38 @@ public class ArenaConfigUtils {
 		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena").getChildrenMap().keySet();
 	}
 	
+	public static void setIntGoal(Object arenaName, Integer i){
+		
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "SASP_G").setValue(i);
+		
+		UnversalConfigs.saveConfig(ArenaConfig);
+	}
+	
+	public static void setIntCurrent(Object arenaName, Integer i){
+		
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "SASP_C").setValue(i);
+		
+		UnversalConfigs.saveConfig(ArenaConfig);
+	}
+	
 	//get all of the arena's children in the configuration
 	public static Set<Object> getArenaChildren(Object arenaName)
 	{
 		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena",arenaName).getChildrenMap().keySet();
 	}
 	
+	public static Set<Object> getArenaGrandchildren(Object arenaName, Object parent)
+	{
+		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena",arenaName,parent).getChildrenMap().keySet();
+	}
+	
 	//get a child of an arena
 	public static Object getArenaData(Object arenaName, Object target)
+	{
+		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, target).getValue();
+	}
+	
+	public static Object getArenaDataInt(Object arenaName, String target)
 	{
 		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, target).getValue();
 	}
@@ -94,6 +157,52 @@ public class ArenaConfigUtils {
 	public static void deleteArena(String arenaName)
 	{
 		UnversalConfigs.removeChild(ArenaConfig, new Object[] {"Arena"}, getArenaInConfig(arenaName));
+	}
+	
+	public static void removeArenaChild(String arenaName,Object child){
+		
+		UnversalConfigs.removeChild(ArenaConfig, new Object[] {"Arena",arenaName}, getArenaChildInConfig(arenaName,child));
+	}
+	
+	public static void removeArenaGrandchild(String arenaName, Object parent, Object child){
+		
+		UnversalConfigs.removeChild(ArenaConfig, new Object[] {"Arena", arenaName, parent}, getArenaGrandchildInConfig(arenaName, parent, child));
+	}
+	
+	public static Object getArenaChildInConfig(Object arenaName, Object targetChild)
+	{
+		Set<Object> arenas = getArenas();
+		
+		for (Object arena : arenas)
+		{	
+			Set<Object> children = getArenaChildren(arena);
+			
+			for(Object child : children){
+
+				if(child.equals(targetChild)){
+					
+					return child;
+			    }
+			}
+			
+		}
+		return null;
+	}
+	
+	public static Object getArenaGrandchildInConfig(Object arenaName, Object parent, Object targetChild)
+	{
+		
+		Set<Object> children = getArenaGrandchildren(arenaName,parent);
+		
+		for(Object child: children){
+
+			if(child.equals(targetChild)){
+				
+				return child;
+		    }
+		}
+		
+		return null;
 	}
 	
 	//reset all of the arena status'

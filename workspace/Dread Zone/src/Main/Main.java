@@ -33,12 +33,16 @@ import ConfigFiles.NodeFileConfig;
 import ConfigFiles.RightClickModeFileConfig;
 import ConfigUtils.LightningConfigUtils;
 import ConfigUtils.MobCreateConfigUtils;
+import Delete.DeleteClass;
 import Delete.DeleteLightningRod;
 import Delete.DeleteMobCrate;
 import Delete.DeleteNode;
-import Executors.ArenaListExecutor;
+import Executors.AddClassExecutor;
+import Executors.AddItemToClassExecutor;
+import Executors.ViewArenas;
+import Executors.ViewClasses;
 import Executors.JoinExecuter;
-import Executors.LeaveArenaExecutor;
+import Executors.LeaveExecutor;
 import Executors.MoveLobbyExecutor;
 import Executors.TestExecutor;
 import Listeners.MobCreatePlayerDetector;
@@ -46,6 +50,7 @@ import Listeners.MobCreateImpact;
 import Listeners.NodeListener;
 import Listeners.PlayerBarrier;
 import Listeners.RightClickMode;
+import Modes.TDM;
 import Reset.ResetMobCreate;
 import Reset.ResetNodes;
 import Setters.SetNode;
@@ -169,20 +174,36 @@ public class Main {
 			logger.warning("Error loading default configuration!"); 
 		}
 		
-		MobCreateConfigUtils.resetMobCreateBoolean();
+		//MobCreateConfigUtils.resetMobCreateBoolean();
 		
 		//Commands
 		CommandSpec testCmd = CommandSpec.builder()
 				.description(Text.of("Test method."))
 				.executor(new TestExecutor())
+				.build();		
+		CommandSpec addArenaSpawnsCmd = CommandSpec.builder()
+				.description(Text.of("Set specified arena spawn points"))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("spawn name"))))
+				.executor(new TDM())
 				.build();
 		CommandSpec dzArenasCmd = CommandSpec.builder()
 				.description(Text.of("Gets all of the Dread Zone arenas"))
-				.executor(new ArenaListExecutor())
+				.executor(new ViewArenas())
+				.build();
+		CommandSpec dzClassesCmd = CommandSpec.builder()
+				.description(Text.of("Gets all of the classes for a specified arena"))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))))
+				.executor(new ViewClasses())
+				.build();
+		CommandSpec addClassItemCmd = CommandSpec.builder()
+				.description(Text.of("Add an item in hand to a specified arena class"))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))),
+						GenericArguments.string(Text.of("class name")))
+				.executor(new AddItemToClassExecutor())
 				.build();
 		CommandSpec ldzarenaCmd = CommandSpec.builder()
 				.description(Text.of("Allows a dread Zone contestant to leave the current arena they are in"))
-				.executor(new LeaveArenaExecutor())
+				.executor(new LeaveExecutor())
 				.build();
 		CommandSpec lightiningRodCmd = CommandSpec.builder()
 				.description(Text.of("Set lighting target."))
@@ -218,7 +239,7 @@ public class Main {
 		CommandSpec setArenaModeCmd = CommandSpec.builder()
 				.description(Text.of("Create a Mode for a specified arena."))
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))),
-						GenericArguments.string(Text.of("mode")))
+						GenericArguments.string(Text.of("mode")),GenericArguments.integer(Text.of("number of players per team")))
 				.executor(new SetArenaMode())
 				.build();
 		CommandSpec mobSetterCmd = CommandSpec.builder()
@@ -226,6 +247,18 @@ public class Main {
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("group name"))),
 						GenericArguments.string(Text.of("target name")))
 				.executor(new SetMobCrateLocation())
+				.build();
+		CommandSpec addClassCmd = CommandSpec.builder()
+				.description(Text.of("Add an arena class to a specified Dread Zone arena."))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))),
+						GenericArguments.string(Text.of("class name")))
+				.executor(new AddClassExecutor())
+				.build();
+		CommandSpec removeClassCmd = CommandSpec.builder()
+				.description(Text.of("Delete an arena class in a specified Dread Zone arena."))
+				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))),
+						GenericArguments.string(Text.of("class name")))
+				.executor(new DeleteClass())
 				.build();
 		CommandSpec nodeCmd = CommandSpec.builder()
 				.description(Text.of("Create a capture node."))
@@ -251,9 +284,14 @@ public class Main {
 				.description(Text.of("Reset Dread Zone Arena Nodes."))
 				.executor(new ResetNodes())
 				.build();	
+		
+		game.getCommandManager().register(this, removeClassCmd, "rdzc");
+		game.getCommandManager().register(this, addClassCmd, "adzc");
+		game.getCommandManager().register(this, addClassItemCmd, "adzci");
 		game.getCommandManager().register(this, setDZLSACmd, "cdzlsa");
 		game.getCommandManager().register(this, setArenaModeCmd, "cdzam");
 		game.getCommandManager().register(this, dzArenasCmd, "dzarenas");
+		game.getCommandManager().register(this, dzClassesCmd, "dzac");
 		game.getCommandManager().register(this, ldzarenaCmd, "dzlarena");
 		game.getCommandManager().register(this, testCmd, "test");
 		game.getCommandManager().register(this, nodeCmd, "dznode");
@@ -267,6 +305,7 @@ public class Main {
 		game.getCommandManager().register(this, mobSetterCmd, "dzms");
 		game.getCommandManager().register(this, joinCmd, "dzjoin");
 		game.getCommandManager().register(this, moveLobbyCmd, "dzmlobby");
+		game.getCommandManager().register(this, addArenaSpawnsCmd, "dzasp");
 		
 		game.getEventManager().registerListeners(this, new NodeListener());
 		game.getEventManager().registerListeners(this, new PlayerBarrier());
@@ -294,8 +333,8 @@ public class Main {
 	}
 	
 	@Listener 
-	public void fgf(GameStartedServerEvent event){
-		ResetNodes.resetTeamNodes();
+	public void postStartedServer(GameStartedServerEvent event){
+		//ResetNodes.resetTeamNodes();
 	}
 	
 	@Listener
