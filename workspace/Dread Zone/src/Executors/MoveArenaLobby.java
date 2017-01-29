@@ -13,7 +13,7 @@ import ConfigUtils.LobbyConfigUtils;
 import ConfigUtils.RightClickModeConfigUtils;
 import Listeners.RightClickMode;
 
-public class MoveLobbyExecutor implements CommandExecutor {
+public class MoveArenaLobby implements CommandExecutor {
 	
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args){

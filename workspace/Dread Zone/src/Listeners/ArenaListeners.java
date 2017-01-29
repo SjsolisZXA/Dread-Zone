@@ -2,17 +2,19 @@ package Listeners;
 
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.entity.DisplaceEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
+import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
+import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.LobbyConfigUtils;
 
-public class PlayerBarrier {
+public class ArenaListeners {
 	
 	static String AN;
 	
@@ -83,13 +85,30 @@ public class PlayerBarrier {
     	
     	String command = commandEvent.getCommand();
     
-    	if(ContestantConfigUtils.isUserAnArenaContestant(AN, player.getName())&&!command.equals("dzlarena")){
+    	if(ContestantConfigUtils.isUserAnArenaContestant(AN, player.getName())&&!command.equals("ldzarena")){
     		
     		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-					TextColors.WHITE,"Commands are not allowed in Dread Zone!"));
+					TextColors.WHITE,"Commands are not allowed in Dread Zone! To leave this arena, enter ",TextColors.DARK_RED,"/ldzarena"));
     		
     		commandEvent.setCancelled(true);
     	}
+    }
+    
+    @Listener
+    public void playerClickInventoryItem(ClickInventoryEvent event, @First Player player){
     	
+    	if(LobbyConfigUtils.isUserinLobby(player.getLocation(), AN)){
+    		
+    		event.setCancelled(true);
+    	}
+    }
+    
+    @Listener
+    public void playerDropItem(DropItemEvent.Dispense event, @First EntitySpawnCause spawncause){
+
+       	if(LobbyConfigUtils.isUserinLobby(spawncause.getEntity().getLocation().get(), AN)){
+    		
+    		event.setCancelled(true);
+    	}
     }
 }

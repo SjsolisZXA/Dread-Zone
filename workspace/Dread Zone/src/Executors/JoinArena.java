@@ -13,9 +13,9 @@ import org.spongepowered.api.text.format.TextColors;
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.LobbyConfigUtils;
-import Listeners.PlayerBarrier;
+import Listeners.ArenaListeners;
 
-public class JoinExecuter implements CommandExecutor {
+public class JoinArena implements CommandExecutor {
 	
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException{
@@ -48,7 +48,7 @@ public class JoinExecuter implements CommandExecutor {
 						
 						ContestantConfigUtils.addContestant(arenaName,player.getName(),player.getTransform(),player.getWorld().getName());
 						
-						PlayerBarrier.AN(arenaName);
+						ArenaListeners.AN(arenaName);
 						
 						player.setLocationAndRotation(LobbyConfigUtils.getLobbySpawnLocation(arenaName), LobbyConfigUtils.getLobbySpawnLocationRotation(arenaName));
 						

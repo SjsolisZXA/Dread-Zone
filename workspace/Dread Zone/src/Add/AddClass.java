@@ -1,4 +1,4 @@
-package Executors;
+package Add;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -12,7 +12,7 @@ import org.spongepowered.api.text.format.TextColors;
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ClassConfigUtils;
 
-public class AddClassExecutor implements CommandExecutor{
+public class AddClass implements CommandExecutor{
 	
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
@@ -34,7 +34,9 @@ public class AddClassExecutor implements CommandExecutor{
 				
 				String className = args.<String> getOne("class name").get();
 				
-				ClassConfigUtils.addClass(arenaName, className);
+				int numOfItems = args.<Integer> getOne("number of class items").get();
+				
+				ClassConfigUtils.addClass(arenaName, className, numOfItems);
 				
 				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 						TextColors.WHITE,"Class ",TextColors.DARK_RED,className,TextColors.WHITE," successfuly added to arena ",

@@ -14,7 +14,7 @@ import org.spongepowered.api.text.format.TextColors;
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 
-public class LeaveExecutor implements CommandExecutor {
+public class LeaveArena implements CommandExecutor {
 
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
