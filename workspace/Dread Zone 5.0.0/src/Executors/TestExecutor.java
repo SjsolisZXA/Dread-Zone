@@ -1,11 +1,27 @@
 package Executors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.Inventory;
+import org.spongepowered.api.item.inventory.InventoryArchetypes;
+import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.property.InventoryDimension;
+import org.spongepowered.api.item.inventory.property.InventoryTitle;
+import org.spongepowered.api.item.inventory.property.SlotPos;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 
 import Utils.EntitySpawner;
 
@@ -18,7 +34,7 @@ public class TestExecutor implements CommandExecutor {
 		
 		EntitySpawner.spawnNPC(player.getLocation(), EntityTypes.HUMAN, player.getUniqueId(), "Escobar");
 		
-		EntitySpawner.spawnEntity(player.getLocation(), EntityTypes.LIGHTNING);
+		//EntitySpawner.spawnEntity(player.getLocation(), EntityTypes.LIGHTNING);
 		
 		/**try {
 			ClassConfigUtils.offerClass(player, ClassConfigUtils.getClassItems("NukeTown", "Bukkit"));
@@ -30,10 +46,10 @@ public class TestExecutor implements CommandExecutor {
 		
 		
 
-		/**Inventory vrmmenu = Inventory.builder().of(InventoryArchetypes.CHEST)
+		Inventory vrmmenu = Inventory.builder().of(InventoryArchetypes.CHEST)
 				.property(InventoryDimension.PROPERTY_NAM, new InventoryDimension(9, 2))
 				.property(InventoryTitle.PROPERTY_NAME, InventoryTitle.of(Text.builder("Vote Rewards").color(TextColors.DARK_AQUA).style(TextStyles.BOLD).build()))
-				.build(this.plugin);
+				.build(Main.Main.dreadzone);
 		ItemStack emer = ItemStack.of(ItemTypes.EMERALD, 1);
 		emer.offer(Keys.DISPLAY_NAME, Text.of("Emerald"));
 		List<Text> itemLore = new ArrayList<Text>();
@@ -44,7 +60,7 @@ public class TestExecutor implements CommandExecutor {
 		vrmmenu.query(new SlotPos(2,1)).set(ItemStack.of(ItemTypes.IRON_INGOT, 1));
 		//TODO 
 		
-		player.openInventory(vrmmenu, Cause.of(NamedCause.of("plugin", plugin), NamedCause.source(player)));**/
+		player.openInventory(vrmmenu, Cause.of(NamedCause.owner(Main.Main.dreadzone)));
 		
 		
 		
