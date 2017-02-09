@@ -43,12 +43,14 @@ public class LeaveArena implements CommandExecutor {
 					
 					ContestantConfigUtils.removeContestant(arena,player.getName());
 					
-					if(ContestantConfigUtils.getArenaContestants(arena).equals(null)){
+					if(ContestantConfigUtils.getArenaContestants(arena).isEmpty()){
 						
 						ArenaConfigUtils.removeArenaChild(arena.toString(), "Contestants");
 						
 						ArenaConfigUtils.setArenaStatus(arena, "Open");
 					}
+					
+					player.getInventory().clear();
 					
 			    	player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 							TextColors.WHITE,"Thanks for playing!"));

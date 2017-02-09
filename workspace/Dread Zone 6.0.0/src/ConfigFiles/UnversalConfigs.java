@@ -15,6 +15,10 @@ public final class UnversalConfigs
 		config.save();
 	}
 
+	public static void reloadConfig()
+	{
+	    Main.Main.dreadzone.loadConfig();
+	}
 	public static void setValue(Configurable config, Object[] nodePath, Object value)
 	{
 		config.get().getNode(nodePath).setValue(value);

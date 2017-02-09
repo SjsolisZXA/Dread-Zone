@@ -14,7 +14,7 @@ import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ClassConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.LobbyConfigUtils;
-import Listeners.ArenaListeners;
+import Listeners.GeneralArenaListeners;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 public class JoinArena implements CommandExecutor {
@@ -43,32 +43,64 @@ public class JoinArena implements CommandExecutor {
 				
 					if((mode.toUpperCase().equals("TDM"))){
 						
-						if(ArenaConfigUtils.getArenaData(arenaName, "Status").equals("Open")){
-							
-							ArenaConfigUtils.setArenaStatus(arenaName, "TDM");
-							
-							try {
+						int numOfSpots = ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team A Spawnpoints") + 
+								ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team B Spawnpoints");
+						
+						if(ContestantConfigUtils.getNumOfArenaContestants(arenaName)<numOfSpots){
+						
+							if(ArenaConfigUtils.getArenaData(arenaName, "Status").equals("Open")){
 								
-								ClassConfigUtils.spawnArenaNPCs(player.getUniqueId(),arenaName);
+								ArenaConfigUtils.setArenaStatus(arenaName, "TDM");
 								
-							} catch (ObjectMappingException e) {
-								
-								e.printStackTrace();
+								try {
+									
+									ClassConfigUtils.spawnArenaNPCs(player.getUniqueId(),arenaName);
+									
+								} catch (ObjectMappingException e) {
+									
+									e.printStackTrace();
+								}
 							}
+							
+							ContestantConfigUtils.addContestant(arenaName,player.getName(),player.getTransform(),player.getWorld().getName());
+								
+							player.getInventory().clear();
+							
+							GeneralArenaListeners.AN(arenaName);
+							
+							player.setLocationAndRotation(LobbyConfigUtils.getLobbySpawnLocation(arenaName), LobbyConfigUtils.getLobbySpawnLocationRotation(arenaName));
+							
+							player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"]",
+									TextColors.WHITE," Left click on a Dread Zone NPC to choose a class. Right click on the Dread Zone NPC class for details. When you're "
+											+ "ready, enter ",TextColors.DARK_RED,"/dzready"));
+							
+							if(numOfSpots-ContestantConfigUtils.getNumOfArenaContestants(arenaName)!=1&&numOfSpots-ContestantConfigUtils.getNumOfArenaContestants(arenaName)!=0){
+								
+								Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+										TextColors.DARK_RED, player.getName(),TextColors.WHITE," joined Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE,"! ",
+										TextColors.DARK_RED,numOfSpots-ContestantConfigUtils.getNumOfArenaContestants(arenaName),TextColors.WHITE," spots left."
+												+ " To join, enter",TextColors.DARK_RED," /dzjoin ",TextColors.DARK_RED,arenaName));
+								
+								return CommandResult.success();
+							}
+							if(numOfSpots-ContestantConfigUtils.getNumOfArenaContestants(arenaName)==1){
+							
+								Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+										TextColors.DARK_RED, player.getName(),TextColors.WHITE," joined Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE,"! ",
+										TextColors.DARK_RED,1,TextColors.WHITE," spot left!"
+												+ " To join, enter",TextColors.DARK_RED," /dzjoin ",TextColors.DARK_RED,arenaName));
+	
+								return CommandResult.success();
+							}
+							
+							Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+									TextColors.WHITE,"Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," closed!"));
+
+							return CommandResult.success();
 						}
 						
-						ContestantConfigUtils.addContestant(arenaName,player.getName(),player.getTransform(),player.getWorld().getName());
-						
-						ArenaListeners.AN(arenaName);
-						
-						player.setLocationAndRotation(LobbyConfigUtils.getLobbySpawnLocation(arenaName), LobbyConfigUtils.getLobbySpawnLocationRotation(arenaName));
-						
-						player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"]",
-								TextColors.WHITE," Left click on a Dread Zone NPC to choose a class. Right click on the Dread Zone NPC class for details."));
-						
-						Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-								TextColors.DARK_RED, player.getName(),TextColors.WHITE," joined Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE,"!"
-										+ " To join, enter",TextColors.DARK_RED," /dzjoin ",TextColors.DARK_RED,arenaName));
+						player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+								TextColors.WHITE,"Sorry, Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," is full."));
 						
 						return CommandResult.success();
 					}

@@ -2,22 +2,26 @@ package Listeners;
 
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
+import org.spongepowered.api.event.entity.projectile.LaunchProjectileEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
+import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.LobbyConfigUtils;
+import Utils.TeamDeathmatchTimer;
 
-public class ArenaListeners {
+public class GeneralArenaListeners {
 	
 	static String AN;
 	
@@ -90,10 +94,21 @@ public class ArenaListeners {
     	
     	String command = commandEvent.getCommand();
     
-    	if(ContestantConfigUtils.isUserAnArenaContestant(AN, player.getName())&&(!command.equals("ldzarena")&&!command.equals("test"))){
+    	if(ContestantConfigUtils.isUserAnArenaContestant(AN, player.getName())
+    			&&(!command.equals("ldzarena")&&!command.equals("test")&&!command.equals("dzreload")&&!command.equals("dzready"))){
     		
     		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-					TextColors.WHITE,"Commands are not allowed in Dread Zone! To leave this arena, enter ",TextColors.DARK_RED,"/ldzarena"));
+					TextColors.WHITE,"Commands are not allowed in Dread Zone other than ",
+					TextColors.DARK_RED,"/ldzarena",TextColors.WHITE," and ",TextColors.DARK_RED,"/dzready"));
+    		
+    		commandEvent.setCancelled(true);
+    	}
+    	
+    	if(ContestantConfigUtils.isUserAnArenaContestant(AN, player.getName())&&command.equals("dzready")
+    			&&!LobbyConfigUtils.isUserinLobby(player.getLocation(), ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation()))){
+    		
+    		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE,"This is a lobby command only!"));
     		
     		commandEvent.setCancelled(true);
     	}
@@ -139,7 +154,21 @@ public class ArenaListeners {
     	}
     }
     
-    //prevents users from damaging other players
+    //prevents users from destroying blocks in a lobby and arena
+    @Listener
+    public void onDestroyBlock(ChangeBlockEvent.Break event, @First Player player){
+    	
+    	if(ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation())!=null){
+	    	
+	    	if(LobbyConfigUtils.isUserinLobby(player.getLocation(), ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation()))
+	    			||ArenaConfigUtils.isUserinArena(player.getLocation(), ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation()))){
+	    		
+	    		event.setCancelled(true);
+	    	}
+    	}
+    }
+    
+    //prevents users from hurting other players
     @Listener
     public void playerReceiveDamage(DamageEntityEvent event, @First EntityDamageSource source){
 
@@ -148,4 +177,28 @@ public class ArenaListeners {
     		event.setCancelled(true);
     	}
     }
+    
+    //prevents users form using potions in the lobby
+    @Listener
+    public void onPlayerConsumption(UseItemStackEvent.Start event,@First Player player){
+
+        	event.setCancelled(true);
+    }
+    
+    //prevents players from throwing potions at each other in the lobby
+    @Listener
+    public void onPotionThrow(LaunchProjectileEvent event) {
+    	
+            event.setCancelled(true);
+    }
+    
+    //prevents contestatns from moving during the count down timer
+	@Listener
+	public void onPlayerMoveInArena(MoveEntityEvent event, @First Player player){
+		
+		if(ContestantConfigUtils.isUserAnArenaContestant(ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation()), player.getName())){
+			
+			event.setCancelled(TeamDeathmatchTimer.isFreezingPlayers());
+		}
+	}
 }

@@ -37,6 +37,14 @@ public class AddClass implements CommandExecutor{
 				
 				int numOfItems = args.<Integer> getOne("number of class items").get();
 				
+				if(numOfItems>9){
+					
+					player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+							TextColors.WHITE,"A Dread Zone class can only have 9 or less items!"));
+					
+					return CommandResult.success();
+				}
+				
 				ClassConfigUtils.addClass(arenaName, className, numOfItems);
 				
 				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
@@ -56,9 +64,12 @@ public class AddClass implements CommandExecutor{
 								
 							}
 							
-							if(ClassConfigUtils.getNumOfClasses(arenaName)==4){
+							if(ClassConfigUtils.getNumOfClasses(arenaName)==4&&i==4){
+								
 								player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 										TextColors.WHITE,"1 more class!"));
+								
+								return CommandResult.success();
 							}
 						}
 					}

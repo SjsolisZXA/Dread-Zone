@@ -4,12 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
@@ -43,12 +41,14 @@ import Delete.DeleteMobCrate;
 import Delete.DeleteNode;
 import Executors.ViewArenas;
 import Executors.ViewClasses;
+import Executors.reloadExecutor;
 import Executors.JoinArena;
 import Executors.LeaveArena;
 import Executors.MoveArenaLobby;
+import Executors.Ready;
 import Executors.TestExecutor;
 import Listeners.MobCreatePlayerDetector;
-import Listeners.ArenaListeners;
+import Listeners.GeneralArenaListeners;
 import Listeners.DZNPCListener;
 import Listeners.MobCreateImpact;
 import Listeners.NodeListener;
@@ -63,7 +63,6 @@ import Setters.SetLightningRodLocation;
 import Setters.SetLobbySpawn;
 import Setters.SetMobCrateLocation;
 import Utils.AutomatedLightningTimer;
-import Utils.TeamDeathmatchTimerTask;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 
@@ -89,9 +88,8 @@ public class Main {
 		return dreadzone;
 	}
 	
-	//Checks for existence of the configuration files
-	@Listener
-	public void onPreInitialization(GamePreInitializationEvent event){
+	public void loadConfig(){
+		
 		dreadzone = this;
 		
 		if (!Files.exists(configDir)){
@@ -147,6 +145,13 @@ public class Main {
 		RightClickModeFileConfig.getConfig().setup();
 	}
 	
+	//Checks for existence of the configuration files
+	@Listener
+	public void onPreInitialization(GamePreInitializationEvent event){
+		
+		loadConfig();
+	}
+	
 	//Checks for the main configuration
 	@Inject
 	@DefaultConfig(sharedRoot = false)
@@ -181,6 +186,11 @@ public class Main {
 		//MobCreateConfigUtils.resetMobCreateBoolean();
 		
 		//Commands
+		
+		CommandSpec reloadCmd = CommandSpec.builder()
+				.description(Text.of("Reload Dread Zone configuration."))
+				.executor(new reloadExecutor())
+				.build();
 		CommandSpec testCmd = CommandSpec.builder()
 				.description(Text.of("Test method."))
 				.executor(new TestExecutor())
@@ -300,7 +310,12 @@ public class Main {
 				.description(Text.of("Reset Dread Zone Arena Nodes."))
 				.executor(new ResetNodes())
 				.build();	
+		CommandSpec dzReadyCmd = CommandSpec.builder()
+				.description(Text.of("Ready for combat!"))
+				.executor(new Ready())
+				.build();
 		
+		game.getCommandManager().register(this, dzReadyCmd, "dzready");
 		game.getCommandManager().register(this, addClassNPCCmd, "adzcnpc");
 		game.getCommandManager().register(this, removeClassItemCmd, "rdzci");
 		game.getCommandManager().register(this, removeClassCmd, "rdzc");
@@ -312,6 +327,7 @@ public class Main {
 		game.getCommandManager().register(this, dzClassesCmd, "dzcl");
 		game.getCommandManager().register(this, ldzarenaCmd, "ldzarena");
 		game.getCommandManager().register(this, testCmd, "test");
+		game.getCommandManager().register(this, reloadCmd, "dzreload");
 		game.getCommandManager().register(this, nodeCmd, "dznode");
 		game.getCommandManager().register(this, cArenaCmd, "dzcarena");
 		game.getCommandManager().register(this, lightiningRodCmd, "dzlrod");
@@ -327,18 +343,10 @@ public class Main {
 		
 		game.getEventManager().registerListeners(this, new DZNPCListener());
 		game.getEventManager().registerListeners(this, new NodeListener());
-		game.getEventManager().registerListeners(this, new ArenaListeners());
+		game.getEventManager().registerListeners(this, new GeneralArenaListeners());
 		game.getEventManager().registerListeners(this, new MobCreateImpact());
 		game.getEventManager().registerListeners(this, new MobCreatePlayerDetector());
 		game.getEventManager().registerListeners(this, new RightClickMode());
-		
-		game.getCommandManager().register(this,CommandSpec.builder().executor((source, commandContext) -> {
-    		
-        	game.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).delay(1, TimeUnit.SECONDS)
-        	.execute(new TeamDeathmatchTimerTask(source, commandContext)).submit(this);
-    	
-        	return CommandResult.success();
-        }).build(), "timer");
 		
 	}
 	
