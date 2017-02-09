@@ -79,31 +79,7 @@ public class ClassConfigUtils {
 		
 		for(ItemStack item: list){
 			
-			/*if(player.canEquip(EquipmentTypes.ANY, item)){
-			
-				if(player.canEquip(EquipmentTypes.HEADWEAR, item)){
-					
-					player.setHelmet(item);
-				}
-				
-				if(player.canEquip(EquipmentTypes.CHESTPLATE, item)){
-					
-					player.setChestplate(item);
-				}
-				
-				if(player.canEquip(EquipmentTypes.LEGGINGS, item)){
-					
-					player.setLeggings(item);
-				}
-				
-				if(player.canEquip(EquipmentTypes.BOOTS, item)){
-					
-					player.setBoots(item);
-				}
-			}else{*/
-				
-				player.getInventory().offer(item);
-			//}			
+			player.getInventory().offer(item);
 		}
 	}
 	
@@ -311,7 +287,7 @@ public class ClassConfigUtils {
 		
 		for(Object aClass: classes){
 			
-			EntitySpawner.spawnNPC(getClassNPCLocation(arenaName, aClass.toString()), getClassNPCDirection(arenaName, aClass.toString()), EntityTypes.HUMAN, uuid, aClass.toString(), getClassItems(arenaName,aClass));
+			EntitySpawner.spawnNPC(getClassNPCLocation(arenaName, aClass.toString()), getClassNPCDirection(arenaName, aClass.toString()), EntityTypes.HUMAN, uuid, aClass.toString());
 		}
 	}
 }

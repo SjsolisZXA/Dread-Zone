@@ -273,11 +273,6 @@ public class ArenaConfigUtils {
 				
 				return arena.toString();
 			}
-			
-			if(ArenaConfigUtils.isUserinArena(location, arena.toString())){
-				
-				return arena.toString();
-			}
 		}
 		return null;
 	}

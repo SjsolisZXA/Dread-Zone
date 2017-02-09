@@ -1,6 +1,5 @@
 package Utils;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.spongepowered.api.data.key.Keys;
@@ -9,7 +8,6 @@ import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.cause.entity.spawn.SpawnTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
@@ -24,7 +22,7 @@ public class EntitySpawner {
         spawnLocation.getExtent().spawnEntity(entity,Cause.source(EntitySpawnCause.builder().entity(entity).type(SpawnTypes.PLUGIN).build()).build());
     }
     
-	public static void spawnNPC(Location<World> location, Direction direction,EntityType x, UUID UUID, String displayName, List<ItemStack> items) {
+	public static void spawnNPC(Location<World> location, Direction direction,EntityType x, UUID UUID, String displayName) {
 		
 		final Entity entity = location.getExtent().createEntity(x, location.getPosition().toDouble().add(0.5,0,0.5));
 		
