@@ -1,5 +1,8 @@
 package Listeners;
 
+import java.util.Optional;
+
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
@@ -8,15 +11,17 @@ import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
-import org.spongepowered.api.event.entity.projectile.LaunchProjectileEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
-import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
+
 import ConfigUtils.ArenaConfigUtils;
+import ConfigUtils.ClassConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.LobbyConfigUtils;
 import Utils.TeamDeathmatchTimer;
@@ -90,7 +95,7 @@ public class GeneralArenaListeners {
 	
 	//prevents contestants from executing any commands
     @Listener
-    public void playerCommand(SendCommandEvent commandEvent, @First Player player) {
+    public void playerCommand(SendCommandEvent commandEvent, @First Player player) {//WORKS
     	
     	String command = commandEvent.getCommand();
     
@@ -105,85 +110,162 @@ public class GeneralArenaListeners {
     	}
     }
     
-    //prevents users from moving any inventories
+    //prevents contestants from moving their inventories in lobbies
     @Listener
-    public void playerClickInventoryItem(ClickInventoryEvent event, @First Player player){
+    public void contestantClickInventoryItem(ClickInventoryEvent event, @First Player player){//WORKS
     	
-    	if(LobbyConfigUtils.isUserinLobby(player.getLocation(), AN)){
+    	if(ContestantConfigUtils.isUserAnArenaContestant(AN, player.getName())&&
+    			LobbyConfigUtils.isUserinLobby(player.getLocation(), AN)){
     		
     		event.setCancelled(true);
     	}
     }
     
-    //prevents users from dropping items in the arena
+    //prevents contestants from picking up items in lobbies and prevents non-contestants from picking up contestant's items
     @Listener
-    public void playerDropItem(DropItemEvent.Dispense event, @First EntitySpawnCause spawncause){
-
-       	if(LobbyConfigUtils.isUserinLobby(spawncause.getEntity().getLocation(), AN)){
+    public void pickUpItem(ChangeInventoryEvent.Pickup event, @First Player player){//WORKS
+    	
+    	if(ContestantConfigUtils.isUserAnArenaContestant(AN, player.getName())&&
+    			LobbyConfigUtils.isUserinLobby(player.getLocation(), AN)){
     		
     		event.setCancelled(true);
+    		
+    		return;
+    	}
+    	
+    	if(!ContestantConfigUtils.isUserAnArenaContestant(AN, player.getName())&&
+    			ArenaConfigUtils.isUserinArena(player.getLocation(), AN)){
+    		
+    		event.setCancelled(true);
+    		
+    		return;
     	}
     }
     
-    //prevents users from picking up items from the floor
+    //prevents the Dread Zone NPCs and contestants from receiving damage in lobbies
     @Listener
-    public void playerReceiveItem(ChangeInventoryEvent.Pickup event, @First Player player){
+    public void contestantAndNPCReceiveDamage(DamageEntityEvent event, @First EntityDamageSource source){//WORKS
     	
-    	if(ContestantConfigUtils.isUserAnArenaContestant(AN, player.getName())){
-    		
-    		event.setCancelled(true);
+    	Location<World> sourceLocation = source.getSource().getLocation();
+    	
+    	if(ArenaConfigUtils.getUserArenaNameFromLocation(sourceLocation)!=null){
+    	
+	    	String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(sourceLocation);
+	    	
+	    	Optional<Text> userN = event.getTargetEntity().get(Keys.DISPLAY_NAME);
+	    	
+	    	if(userN.isPresent()){
+	    		
+	    		String userName = userN.get().toPlain();
+	    		
+		    	if(LobbyConfigUtils.isUserinLobby(sourceLocation, arenaName)&&
+		    			(ContestantConfigUtils.isUserAnArenaContestant(arenaName, userName)||
+		    			ClassConfigUtils.doesClassExist(arenaName, userName))){
+		    		
+		    		event.setCancelled(true);
+		    	}
+	    	}
     	}
-    }
-    
-    //prevents users from obtaining items in creative by middle clicking their mouse button
-    @Listener
-    public void playerMiddleMouseClick(ClickInventoryEvent.Middle event, @First Player player){
-    	
-    	if(ContestantConfigUtils.isUserAnArenaContestant(AN, player.getName())){
-    		
-    		event.setCancelled(true);
-    	}
-    }
-    
-    @Listener
-    public void onDestroyBlock(ChangeBlockEvent.Break event, @First Player player) {
-    	
-        if (ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation()) != null && 
-        		(LobbyConfigUtils.isUserinLobby(player.getLocation(), ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation())) || 
-        				ArenaConfigUtils.isUserinArena(player.getLocation(), ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation())))) {
-           
-        	event.setCancelled(true);
-        }
-    }
-    
-    //prevents users from damaging other players
-    @Listener
-    public void playerReceiveDamage(DamageEntityEvent event, @First EntityDamageSource source){
-
-    	if(LobbyConfigUtils.isUserinLobby(source.getSource().getLocation(), ArenaConfigUtils.getUserArenaNameFromLocation(source.getSource().getLocation()))){
-    		
-    		event.setCancelled(true);
-    	}
-    }
-    
-    @Listener
-    public void onPlayerConsumption(UseItemStackEvent.Start event, @First Player player) {
-    	
-        event.setCancelled(true);
     }
 
+    //prevents contestants from moving during the TDM countdown
     @Listener
-    public void onPotionThrow(LaunchProjectileEvent event) {
+    public void onPlayerMoveInArena(MoveEntityEvent event, @First Player player) {//WORKS
     	
-        event.setCancelled(true);
-    }
-
+    	if(ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation())!=null){
+    		
+    		String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation());
+    	
+	        if (ContestantConfigUtils.isUserAnArenaContestant(arenaName, player.getName())) {
+	        	
+	            event.setCancelled(TeamDeathmatchTimer.isFreezingPlayers());
+	        }
+    	}
+    }    
+    
+    //prevents anyone from destroying blocks inside the Dread Zone arena and lobby
     @Listener
-    public void onPlayerMoveInArena(MoveEntityEvent event, @First Player player) {
+    public void onDestroyBlock(ChangeBlockEvent.Break event) {//WORKS
     	
-        if (ContestantConfigUtils.isUserAnArenaContestant(ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation()), player.getName())) {
+        event.getTransactions().stream().forEach((trans) -> {
+            	
+            Location<World> eventLocation = trans.getOriginal().getLocation().get();
+                
+        	if(ArenaConfigUtils.getUserArenaNameFromLocation(eventLocation) != null){
         	
-            event.setCancelled(TeamDeathmatchTimer.isFreezingPlayers());
-        }
+    	        if (LobbyConfigUtils.isUserinLobby(eventLocation, AN)|| 
+    	        		ArenaConfigUtils.isUserinArena(eventLocation, AN)) {
+    	        	
+    	            boolean playerCause = event.getCause().first(Player.class).isPresent();
+    	            
+    	            if (playerCause) {
+    	            	
+    	                Player player = event.getCause().first(Player.class).get();
+    	                
+			              player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
+			                      TextColors.WHITE, "You can't break a Dreaz Zone arena or it's lobby!"));
+    	            }
+    	        	    	           
+    	        	event.setCancelled(true);
+    	        }
+        	}
+        });
     }
+    
+    //prevents contestants from dropping items in lobbies and prevents non-contestants from dropping items in arenas
+    @Listener
+    public void contestantDropItem(DropItemEvent.Dispense event, @First EntitySpawnCause spawncause){//TEST
+    	
+    	Optional<Text> userN = spawncause.getEntity().get(Keys.DISPLAY_NAME);
+    	
+    	if(userN.isPresent()){
+    		
+    		String userName = userN.get().toPlain();
+    		
+    		if(ArenaConfigUtils.getUserArenaNameFromLocation(spawncause.getEntity().getLocation())!=null){
+    		
+	    		if(ContestantConfigUtils.isUserAnArenaContestant(AN, userName)&&
+	    				LobbyConfigUtils.isUserinLobby(spawncause.getEntity().getLocation(), AN)){
+	    			
+	    			event.setCancelled(true);
+	    			
+	    			return;
+	    		}
+    		}
+    		
+    		Player player = (Player)spawncause.getEntity();
+    		
+	       	if(!ContestantConfigUtils.isUserAnArenaContestant(AN, userName)&&
+	       			ArenaConfigUtils.isUserinArena(spawncause.getEntity().getLocation(), AN)){
+	              
+                player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
+                      TextColors.WHITE, "Non-contestants can't drop items in Dread Zone arenas!"));
+	    		
+	    		event.setCancelled(true);
+	    		
+	    		return;
+	       	}
+    	}
+    }
+
+    
+
+    
+    
+    //Abstract listeners
+    /**
+    //prevents contestants from consuming potions in lobbies
+    @Listener
+    public void onPlayerConsumption(UseItemStackEvent.Start event) {//needs cause event location and if the cause if by a contestnat//FIX
+    		
+    	event.setCancelled(true);
+
+    }
+
+    //prevents players from throwing potions in Lobbies
+    @Listener
+    public void onPotionThrow(LaunchProjectileEvent event) {//needs cause event location and if the cause if by a contestnat//FIX
+    
+        event.setCancelled(true);
+    }**/
 }

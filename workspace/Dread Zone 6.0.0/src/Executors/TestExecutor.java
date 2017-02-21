@@ -2,6 +2,7 @@ package Executors;
 
 import java.util.Optional;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -14,18 +15,36 @@ import org.spongepowered.api.scoreboard.critieria.Criteria;
 import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
 import org.spongepowered.api.scoreboard.objective.Objective;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
-
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ClassConfigUtils;
+import ConfigUtils.TDMConfigUtils;
 
+@SuppressWarnings("unused")
 public class TestExecutor implements CommandExecutor {
 	
     public CommandResult execute(CommandSource src, CommandContext args) {
     	
         Player player = (Player)src;
         
-        Scoreboard scoreboard = Scoreboard.builder().build();
+        player.sendMessage(Text.of(TDMConfigUtils.getRandomTeam().toPlain()));
+        player.sendMessage(Text.of(TDMConfigUtils.getRandomTeam().toPlainSingle()));
+        player.sendMessage(Text.of(TDMConfigUtils.getRandomTeam().toString()));
+    	
+    	/**for(Player player: Sponge.getServer().getOnlinePlayers()){
+        
+	        Scoreboard teamTagName = Scoreboard.builder().build();
+	        
+	        Objective teamTagNameObjective = Objective.builder().name("Team").displayName(Text.of(TDMConfigUtils.getRandomTeam())).criterion(Criteria.DUMMY).build();
+	        
+	        teamTagName.addObjective(teamTagNameObjective);
+	        
+	        teamTagName.updateDisplaySlot(teamTagNameObjective, DisplaySlots.BELOW_NAME);
+	        
+	        player.setScoreboard(teamTagName);
+    	}*/
+        
+        //crate test scoreboard
+        /**Scoreboard scoreboard = Scoreboard.builder().build();
         
         Objective objective = Objective.builder().name("Stats").displayName(Text.of((String.valueOf(player.getName()) + " Stats"))).criterion(Criteria.DUMMY).build();
         
@@ -39,13 +58,14 @@ public class TestExecutor implements CommandExecutor {
         
         player.setScoreboard(scoreboard);
         
+        //interact with scoreboard
         int score = (player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get()).getScore(Text.of("Kills")).get().getScore();
         
         player.sendMessage(Text.of(TextColors.GOLD, score));
         
         player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get().getScore(Text.of("Kills")).get().setScore(score + 1);
         
-        player.sendMessage(Text.of(TextColors.GREEN, score));
+        player.sendMessage(Text.of(TextColors.GREEN, score));*/
         
         return CommandResult.success();
     }

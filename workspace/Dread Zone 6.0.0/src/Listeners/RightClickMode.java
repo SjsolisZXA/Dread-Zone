@@ -139,7 +139,7 @@ public class RightClickMode {
 				
 				if(!(ArenaConfigUtils.isArenaInConfig(SAAN))){
 					
-					ArenaConfigUtils.setArenap1(blockLocation, player.getWorld().getName(), SAAN);
+					ArenaConfigUtils.setArenap1(blockLocation.add(0,-1,0), player.getWorld().getName(), SAAN);
 					
 					//Confirmation message 
 					player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
@@ -149,7 +149,7 @@ public class RightClickMode {
 					
 				}else{				
 				
-					ArenaConfigUtils.setArenap2(blockLocation.add(0,-1,0), SAAN);
+					ArenaConfigUtils.setArenap2(blockLocation, SAAN);
 					
 					RightClickModeConfigUtils.deleteUsernameInList(player.getName());
 					
@@ -168,7 +168,7 @@ public class RightClickMode {
 				
 				if(!(LobbyConfigUtils.isLobbyInConfig(SAAN, SAAN+"Lobby"))){
 					
-					LobbyConfigUtils.setLobbyp1(blockLocation, player.getWorld().getName(), SAAN);
+					LobbyConfigUtils.setLobbyp1(blockLocation.add(0,-1,0), player.getWorld().getName(), SAAN);
 					
 					//Confirmation message 
 					player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
@@ -177,7 +177,7 @@ public class RightClickMode {
 					return;
 				}				
 				
-				LobbyConfigUtils.setLobbyp2(blockLocation.add(0,-1,0), SAAN);
+				LobbyConfigUtils.setLobbyp2(blockLocation, SAAN);
 				
 				ArenaConfigUtils.setArenaStatus(SAAN, "Open");
 				

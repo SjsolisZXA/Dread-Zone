@@ -47,7 +47,15 @@ public class JoinArena implements CommandExecutor {
 			                    ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team B Spawnpoints");
 						
 			            if (ContestantConfigUtils.getNumOfArenaContestants(arenaName) < numOfSpots){
-			            
+			            		
+							ContestantConfigUtils.addContestant(arenaName,player.getName(),player.getTransform(),player.getWorld().getName());
+							
+							GeneralArenaListeners.AN(arenaName);
+							
+							player.getInventory().clear();
+							
+							player.setLocationAndRotation(LobbyConfigUtils.getLobbySpawnLocation(arenaName), LobbyConfigUtils.getLobbySpawnLocationRotation(arenaName));
+							
 				            if(ArenaConfigUtils.getArenaData(arenaName, "Status").equals("Open")){
 								
 								ArenaConfigUtils.setArenaStatus(arenaName, "TDM");
@@ -62,22 +70,24 @@ public class JoinArena implements CommandExecutor {
 								}
 							}
 							
-							ContestantConfigUtils.addContestant(arenaName,player.getName(),player.getTransform(),player.getWorld().getName());
-							
-							GeneralArenaListeners.AN(arenaName);
-							
-							player.setLocationAndRotation(LobbyConfigUtils.getLobbySpawnLocation(arenaName), LobbyConfigUtils.getLobbySpawnLocationRotation(arenaName));
-							
 				            player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "]", 
 				                      TextColors.WHITE, " Left click on a Dread Zone NPC to choose a class. Right click on the Dread Zone NPC class for details. When you're ready, enter ", 
 				                      TextColors.DARK_RED, "/dzready"));
 							
-				              if ((numOfSpots - ContestantConfigUtils.getNumOfArenaContestants(arenaName) != 1) && (numOfSpots - ContestantConfigUtils.getNumOfArenaContestants(arenaName) != 0))
-				              {
-				                Sponge.getServer().getBroadcastChannel().send(Text.of(new Object[] { TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
-				                  TextColors.DARK_RED, player.getName(), TextColors.WHITE, " joined Dread Zone arena ", TextColors.DARK_RED, arenaName, TextColors.WHITE, "! ", 
-				                  TextColors.DARK_RED, Integer.valueOf(numOfSpots - ContestantConfigUtils.getNumOfArenaContestants(arenaName)), TextColors.WHITE, " spots left. To join, enter", 
-				                  TextColors.DARK_RED, " /dzjoin ", TextColors.DARK_RED, arenaName }));
+				              if ((numOfSpots - ContestantConfigUtils.getNumOfArenaContestants(arenaName) != 1) && (numOfSpots - ContestantConfigUtils.getNumOfArenaContestants(arenaName) != 0)){
+				                  Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
+				                		  TextColors.DARK_RED, player.getName(), TextColors.WHITE, " joined Dread Zone arena ", TextColors.DARK_RED, arenaName, TextColors.WHITE, "! ", 
+				                		  TextColors.DARK_RED, (numOfSpots - ContestantConfigUtils.getNumOfArenaContestants(arenaName)), TextColors.WHITE, " spots left. To join, enter", 
+				                		  TextColors.DARK_RED, " /dzjoin ", TextColors.DARK_RED, arenaName));
+				                
+				                return CommandResult.success();
+				              }
+				              if (numOfSpots - ContestantConfigUtils.getNumOfArenaContestants(arenaName) == 1){
+				            	  
+				                  Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
+				                		  TextColors.DARK_RED, player.getName(), TextColors.WHITE, " joined Dread Zone arena ", TextColors.DARK_RED, arenaName, TextColors.WHITE, "! ", 
+				                		  TextColors.DARK_RED, 1, TextColors.WHITE, " spot left! To join, enter", 
+				                		  TextColors.DARK_RED, " /dzjoin ", TextColors.DARK_RED, arenaName));
 				                
 				                return CommandResult.success();
 				              }

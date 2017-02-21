@@ -10,7 +10,7 @@ public class RightClickModeConfigUtils {
 	
 	private static Configurable RCMConfig = RightClickModeFileConfig.getConfig();
 	
-	//add user and mode--
+	//add user and mode
 	public static void addToList(String Username, String mode)
 	{
 		if(isUserInConfig(Username)){
@@ -20,31 +20,31 @@ public class RightClickModeConfigUtils {
 		UnversalConfigs.saveConfig(RCMConfig);
 	}
 	
-	//remove a specific user in database--
+	//remove a specific user in database
 	public static void deleteUsernameInList(Object Username)
 	{
 		UnversalConfigs.removeChild(RCMConfig, new Object[] {"Users"}, getUserConfigName(Username));
 	}
 	
-	//get all users in database--
+	//get all users in database
 	public static Set<Object> getUsersInDatabase()
 	{
 		return UnversalConfigs.getConfig(RCMConfig).getNode("Users").getChildrenMap().keySet();
 	}
-	
-	//get a specific user's mode in the database--
+
+	//get a specific user's mode in the database
 	public static String getUserMode(String Username){
 		
 		return UnversalConfigs.getConfig(RCMConfig).getNode("Users", Username).getString();
 	}
 	
-	//is the user in the database--
+	//is the user in the database
 	public static boolean isUserInConfig(Object Username)
 	{
 		return getUserConfigName(Username) != null;
 	}
 	
-	//look through the database to find a specific user--
+	//look through the database to find a specific user
 	public static String getUserConfigName(Object player)
 	{
 		Set<Object> Users = getUsersInDatabase();

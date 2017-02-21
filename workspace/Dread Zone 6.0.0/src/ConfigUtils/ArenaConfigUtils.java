@@ -261,7 +261,7 @@ public class ArenaConfigUtils {
 			return true;
 		}
 		return false;
-	}
+	} 
 	
 	public static String getUserArenaNameFromLocation(Location<World> location){
 		
@@ -270,6 +270,10 @@ public class ArenaConfigUtils {
 		for(Object arena: arenas){
 			
 			if(LobbyConfigUtils.isUserinLobby(location, arena.toString())){
+				
+				return arena.toString();
+			}
+			if(ArenaConfigUtils.isUserinArena(location, arena.toString())){
 				
 				return arena.toString();
 			}

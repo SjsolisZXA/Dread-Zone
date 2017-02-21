@@ -16,7 +16,7 @@ import ConfigUtils.TDMConfigUtils;
 
 public class TeamDeathmatchTimer implements Consumer<Task> {
 	
-    int seconds = 10;
+    static int seconds = 10;
     
     static List<Player> lPlayers = Lists.newArrayList();
     
@@ -34,17 +34,17 @@ public class TeamDeathmatchTimer implements Consumer<Task> {
 
     public TeamDeathmatchTimer(List<Player> players, Text teamAName, Text teamBName, List<Player> teamAContestants, List<Player> teamBContestants) {
     	
-        this.TAN = teamAName;
+    	TAN = teamAName;
         
-        this.TBN = teamBName;
+        TBN = teamBName;
         
-        this.TAC = teamAContestants;
+        TAC = teamAContestants;
         
-        this.TBC = teamBContestants;
+        TBC = teamBContestants;
         
         for (Player p : players) {
         	
-            p.sendTitle(this.subT);
+            p.sendTitle(subT);
             
             lPlayers.add(p);
         }
@@ -58,15 +58,16 @@ public class TeamDeathmatchTimer implements Consumer<Task> {
     @Override
     public void accept(Task task) {
     	
-        TOF = true;
+    	TOF = true;
         
         for (Player player : lPlayers) {
         	
-            player.sendMessage(ChatTypes.ACTION_BAR, Text.of(TextColors.YELLOW, this.seconds));
+            player.sendMessage(ChatTypes.ACTION_BAR, Text.of(TextColors.YELLOW, seconds));
         }
+        
         seconds--;
         
-        if (this.seconds < 1) {
+        if (seconds < 1) {
         	
             TDMConfigUtils.setUpTDMGUI(TAC, TAN);
             

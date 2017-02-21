@@ -30,6 +30,7 @@ import ConfigUtils.ClassConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
+@SuppressWarnings("unused")
 public class DZNPCListener {
 	
 	//Right click on a DZ NPC to see class details
@@ -94,17 +95,18 @@ public class DZNPCListener {
 					
 					String className = classN.toPlain();
 					
-			          if (!ContestantConfigUtils.isUserAnArenaContestant(arenaName, className)){
-					
+					if(ClassConfigUtils.doesClassExist(arenaName, className)){  
+						
 						player.getInventory().clear();
 						
 						List<ItemStack> items = ClassConfigUtils.getClassItems(arenaName, className);
 						
 						ClassConfigUtils.offerClass(player, items);
 						
-						player.sendMessage(ChatTypes.ACTION_BAR, Text.of(className, " class selectd!"));
+						player.sendMessage(ChatTypes.ACTION_BAR, Text.of(className, " class selected!"));
 						
 						return;
+						
 					}
 				}
 	        }
@@ -130,17 +132,17 @@ public class DZNPCListener {
 		}
 	}
 	
-    @Listener
+    /**@Listener
     public void onPlayerNearDZNPC(MoveEntityEvent event, @First Player player) {
     	
         if (ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation()) != null && 
         		ContestantConfigUtils.isUserAnArenaContestant(ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation()), player.getName())) {
         	
-            Entity nearestDZNPC = this.getClosestDZNPC(player);
+            Entity nearestDZNPC = getClosestDZNPC(player);
             
             Living NDZNPC = (Living)nearestDZNPC;
             
-            Entity nearestPlayer = this.getClosestDZNPC(nearestDZNPC);
+            Entity nearestPlayer = getClosestDZNPC(nearestDZNPC);
             
             double x = nearestPlayer.getLocation().add(0, 0, 2).getX();
             
@@ -183,5 +185,5 @@ public class DZNPCListener {
             closestDistance = distance;
         }
         return closest;
-    }
+    }*/
 }

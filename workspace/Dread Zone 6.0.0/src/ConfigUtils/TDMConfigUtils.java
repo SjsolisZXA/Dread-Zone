@@ -64,7 +64,7 @@ public class TDMConfigUtils {
         		TeamDeathmatchTimer(contestants, teamAName, teamBName, teamAContestants, teamBContestants)).submit(Main.dreadzone);
     }
 
-    private static synchronized void teleportPlayersToArena(Object arenaName, List<Player> teamContestants, String teamName) {
+    private static void teleportPlayersToArena(Object arenaName, List<Player> teamContestants, String teamName) {
     	
         Set<Object> arenaTeamSpawnNames = ArenaConfigUtils.getArenaTeamSpawnpoints(arenaName, teamName);
         
@@ -82,17 +82,19 @@ public class TDMConfigUtils {
     	
         for (Player player : teamContestants) {
         	
-        	//sets up team name tag below username display name
-            Scoreboard teamTagName = Scoreboard.builder().build();
+        	//sets up a scoreboard
+
+            Scoreboard scoreboard = Scoreboard.builder().build();
             
-            Objective teamTagNameObjective = Objective.builder().name("Team").displayName(Text.of(teamName)).criterion(Criteria.DUMMY).build();
+            //sets up team name tag below username display name
             
-            teamTagName.addObjective(teamTagNameObjective);
+            Objective teamTagNameObjective = Objective.builder().name(teamName.toPlain()).displayName(Text.of(teamName)).criterion(Criteria.DUMMY).build();
             
-            teamTagName.updateDisplaySlot(teamTagNameObjective, DisplaySlots.BELOW_NAME);
+            scoreboard.addObjective(teamTagNameObjective);
+            
+            scoreboard.updateDisplaySlot(teamTagNameObjective, DisplaySlots.BELOW_NAME);
             
             //sets up kills death scoreboard
-            Scoreboard scoreboard = Scoreboard.builder().build();
             
             Objective objective = Objective.builder().name("Stats").displayName(Text.of((String.valueOf(player.getName()) + " Stats"))).criterion(Criteria.DUMMY).build();
             
@@ -113,9 +115,9 @@ public class TDMConfigUtils {
                 player.getTabList().removeEntry(playerOnline.getUniqueId());
                 }
             }
-             
+            
           //sets up boss bar team point count
-            player.getTabList().getEntry(player.getUniqueId()).get().setDisplayName(Text.of(player.getName()));// come back and change this once we get team color
+            //player.getTabList().getEntry(player.getUniqueId()).get().setDisplayName(Text.of(player.getName()));// come back and change this once we get team color
             
             Text text1 = Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "]");
             
@@ -180,7 +182,7 @@ public class TDMConfigUtils {
         	
             Text randomTeam = TDMConfigUtils.getRandomTeam();
             
-            if (randomTeam == teamA){
+            if (randomTeam != teamA){
             	
             	return randomTeam;
             }
@@ -198,11 +200,11 @@ public class TDMConfigUtils {
         
         int i = 0;
         
-        for (Text obj : teams) {
+        for (Text team : teams) {
         	
             if (i == item) {
             	
-                return obj;
+                return team;
             }
             i++;
         }

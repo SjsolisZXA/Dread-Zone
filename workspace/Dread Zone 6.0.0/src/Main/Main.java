@@ -53,6 +53,7 @@ import Listeners.GeneralArenaListeners;
 import Listeners.MobCreateImpact;
 import Listeners.NodeListener;
 import Listeners.RightClickMode;
+import Listeners.TDMListeners;
 import Modes.TDM;
 import Reset.ResetMobCreate;
 import Reset.ResetNodes;
@@ -340,6 +341,7 @@ public class Main {
 		game.getCommandManager().register(this, moveLobbyCmd, "dzmlobby");
 		game.getCommandManager().register(this, addArenaSpawnsCmd, "dzasp");
 		
+		game.getEventManager().registerListeners(this, new TDMListeners());
 		game.getEventManager().registerListeners(this, new DZNPCListener());
 		game.getEventManager().registerListeners(this, new NodeListener());
 		game.getEventManager().registerListeners(this, new GeneralArenaListeners());
