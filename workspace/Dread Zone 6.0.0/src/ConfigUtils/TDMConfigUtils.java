@@ -165,7 +165,7 @@ public class TDMConfigUtils {
         	
             for (Player player : Sponge.getServer().getOnlinePlayers()) {
             	
-                if (!player.getName().toString().equals(objectContestant.toString())){
+                if (player.getName().toString().equals(objectContestant.toString())){
                 	
                 	newListPlayers.add(player);
                 }

@@ -11,10 +11,12 @@ import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
+import org.spongepowered.api.event.entity.projectile.LaunchProjectileEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
+import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
@@ -253,7 +255,7 @@ public class GeneralArenaListeners {
     
     
     //Abstract listeners
-    /**
+    
     //prevents contestants from consuming potions in lobbies
     @Listener
     public void onPlayerConsumption(UseItemStackEvent.Start event) {//needs cause event location and if the cause if by a contestnat//FIX
@@ -267,5 +269,5 @@ public class GeneralArenaListeners {
     public void onPotionThrow(LaunchProjectileEvent event) {//needs cause event location and if the cause if by a contestnat//FIX
     
         event.setCancelled(true);
-    }**/
+    }
 }

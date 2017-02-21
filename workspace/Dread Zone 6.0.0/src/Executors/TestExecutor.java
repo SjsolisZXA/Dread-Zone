@@ -1,5 +1,6 @@
 package Executors;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.spongepowered.api.command.CommandResult;
@@ -10,6 +11,8 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
+
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ClassConfigUtils;
 import ConfigUtils.TDMConfigUtils;
@@ -20,9 +23,14 @@ public class TestExecutor implements CommandExecutor {
     	
         Player player = (Player)src;
         
-        player.sendMessage(Text.of(TDMConfigUtils.getRandomTeam().toPlain()));
-        player.sendMessage(Text.of(TDMConfigUtils.getRandomTeam().toPlainSingle()));
-        player.sendMessage(Text.of(TDMConfigUtils.getRandomTeam().toString()));
+        List<Player> contestants = TDMConfigUtils.convertObjectContestantsToPlayers("bud");
+        
+        for(Player contestantName: contestants){
+        
+        	player.sendMessage(Text.of(TextColors.AQUA,contestantName.getName()));
+        
+        }
+        
     	
     	/**for(Player player: Sponge.getServer().getOnlinePlayers()){
         
