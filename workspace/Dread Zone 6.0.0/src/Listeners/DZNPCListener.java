@@ -3,8 +3,6 @@ package Listeners;
 import java.util.List;
 import java.util.Optional;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.Cause;
@@ -23,22 +21,19 @@ import org.spongepowered.api.text.chat.ChatTypes;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
 
-import com.flowpowered.math.vector.Vector3d;
-
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ClassConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
-@SuppressWarnings("unused")
 public class DZNPCListener {
 	
 	//Right click on a DZ NPC to see class details
 	@Listener
 	public void onPlayerInteractBlock(InteractEntityEvent.Secondary.MainHand event, @First Player player) throws ObjectMappingException{
 		
-	    if (ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation()) != null)
-	    {
+	    if (ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation()) != null){
+	    	
 			String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation());
 	    	
 		    if (ContestantConfigUtils.isUserAnArenaContestant(arenaName, player.getName())){
@@ -51,7 +46,7 @@ public class DZNPCListener {
 					
 					String className = classN.toPlain();
 					
-			        if (!ContestantConfigUtils.isUserAnArenaContestant(arenaName, className)){
+					if(ClassConfigUtils.doesClassExist(arenaName, className)){ 
 				
 						Inventory inventory = Inventory.builder().of(InventoryArchetypes.CHEST).property(InventoryDimension.PROPERTY_NAME, new InventoryDimension(9, 1))
 								.property(InventoryTitle.PROPERTY_NAME, InventoryTitle.of(Text.builder(className+" Class").color(TextColors.DARK_RED).style(TextStyles.NONE).build()))
@@ -131,59 +126,4 @@ public class DZNPCListener {
 			}
 		}
 	}
-	
-    /**@Listener
-    public void onPlayerNearDZNPC(MoveEntityEvent event, @First Player player) {
-    	
-        if (ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation()) != null && 
-        		ContestantConfigUtils.isUserAnArenaContestant(ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation()), player.getName())) {
-        	
-            Entity nearestDZNPC = getClosestDZNPC(player);
-            
-            Living NDZNPC = (Living)nearestDZNPC;
-            
-            Entity nearestPlayer = getClosestDZNPC(nearestDZNPC);
-            
-            double x = nearestPlayer.getLocation().add(0, 0, 2).getX();
-            
-            double y = nearestPlayer.getLocation().getY();
-            
-            double z = nearestPlayer.getLocation().getZ();
-            
-            Vector3d V3D = new Vector3d(x, y, z);
-            
-    		Optional<Text> NDZNPCN = event.getTargetEntity().get(Keys.DISPLAY_NAME);
-    		
-    		if(NDZNPCN.isPresent()&&ClassConfigUtils.doesClassExist(ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation()), NDZNPCN.toString())){
-            
-    			NDZNPC.setHeadRotation(V3D);
-    		}
-        }
-    }
-
-    public Entity getClosestDZNPC(Entity player) {
-    	
-        Entity closest = null;
-        
-        double closestDistance = 0;
-        
-        for (Entity entity : (player.getLocation().getExtent()).getEntities()) {
-        	
-            if (entity == player){
-            	
-            	continue;
-            }
-            	
-            double distance = entity.getLocation().getPosition().distance(player.getLocation().getPosition());
-            
-            if (closest != null && distance >= closestDistance) {
-            	
-            	continue;
-            }
-            closest = entity;
-            
-            closestDistance = distance;
-        }
-        return closest;
-    }*/
 }
