@@ -1,6 +1,5 @@
-package Setters;
+package Add;
 
-import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -12,24 +11,30 @@ import org.spongepowered.api.text.format.TextColors;
 import ConfigUtils.RightClickModeConfigUtils;
 import Listeners.RightClickMode;
 
-public class SetNode implements CommandExecutor {
+
+public class AddLightningRod implements CommandExecutor {
+	
 	@Override
-	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException{
+	public CommandResult execute(CommandSource src, CommandContext args){
 		if(!(src instanceof Player)){
-			src.sendMessage(Text.of(TextColors.RED, "This is a user command only."));
+			
+			src.sendMessage(Text.of(TextColors.RED, "Console already decides where lightning hits."));
+			
 			return CommandResult.success();
+			
 		}
+		
 		Player player = (Player)src;
-		
+				
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-				TextColors.WHITE, "Right click where you want to create a node."));	
+				TextColors.WHITE,"Right click on where you want lightning to hit."));
 		
-		RightClickModeConfigUtils.addToList(player.getName(),"N");
+		RightClickModeConfigUtils.addToList(player.getName(),"LM");
 		
-		String nodeName = args.<String> getOne("node name").get();
+		String targetName = args.<String> getOne("target name").get();
 		
-		RightClickMode.SN(nodeName);
-	    
+		RightClickMode.SLRLTN(targetName);
+
 		return CommandResult.success();
 	}
 }

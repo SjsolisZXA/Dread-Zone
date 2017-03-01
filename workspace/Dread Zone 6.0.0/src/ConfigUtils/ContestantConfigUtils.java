@@ -172,8 +172,10 @@ public class ContestantConfigUtils {
 	}
 	
     /**public static void savePlayerInventory(String arenaName, Player player) throws ObjectMappingException {
+    	
+    	Inventory inventory = player.getInventory();
         
-    	List<ItemStack> inventory = Lists.newArrayList();
+    	/**List<ItemStack> inventory = Lists.newArrayList();
         
     	player.getInventory().slots().forEach(slot -> {
     		
@@ -185,7 +187,9 @@ public class ContestantConfigUtils {
             }
         });
     	
-        UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants", player.getName(), "Inventory").setValue(TypeToken.of(Lists.class), inventory);
+    	Main.Main.configurationLoader.getDefaultOptions().getSerializers().registerType(TypeToken.of(Inventory.class), TypeSerializer<Inventory>,inventory);
+    	
+        UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants", player.getName(), "Inventory").setValue(TypeToken.of(Inventory.class), inventory);
         UnversalConfigs.saveConfig(ArenaConfig);
     }*/
 }

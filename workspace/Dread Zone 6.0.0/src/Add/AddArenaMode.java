@@ -1,4 +1,4 @@
-package Setters;
+package Add;
 
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -12,7 +12,7 @@ import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.RightClickModeConfigUtils;
 import Modes.TDM;
 
-public class SetArenaMode implements CommandExecutor{
+public class AddArenaMode implements CommandExecutor{
 	
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args){
@@ -55,6 +55,11 @@ public class SetArenaMode implements CommandExecutor{
 					TextColors.WHITE,"Stand where you want players from Team A to spawn in the arena and enter ",TextColors.DARK_RED,"/dzasp SPAWN_NAME"));
 	
 			return CommandResult.success();
+		}
+		
+		if(mode.toUpperCase().equals("DZPAB")){
+			
+			RightClickModeConfigUtils.addToList(player.getName(), mode.toUpperCase());
 		}
 		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 

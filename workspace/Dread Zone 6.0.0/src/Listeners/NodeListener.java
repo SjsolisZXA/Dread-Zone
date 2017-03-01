@@ -14,8 +14,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
-import org.spongepowered.api.event.filter.cause.First;
+import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -27,11 +26,12 @@ import ConfigFiles.Configurable;
 import ConfigFiles.NodeFileConfig;
 import ConfigFiles.UnversalConfigs;
 import ConfigUtils.NodeConfigUtils;
+import Main.Main;
 
 public class NodeListener {
 	
     @Listener
-    public void whenPlayerStepsOnNode(ChangeBlockEvent.Modify event,@First Player player) {
+    public void whenPlayerStepsOnNode(ChangeBlockEvent.Modify event,@Root Player player) {
     	
     	Configurable nodeConfig = NodeFileConfig.getConfig();
     	
@@ -79,26 +79,26 @@ public class NodeListener {
 				    		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 				    			"Node captured by the Red Team."));
 				    		
-						    plocation.add(-1,-1,3).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//front glass
-						    plocation.add(0,-1,3).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
-						    plocation.add(1,-1,3).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
+						    plocation.add(-1,-1,3).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());//front glass
+						    plocation.add(0,-1,3).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());
+						    plocation.add(1,-1,3).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());
 						    
-						    plocation.add(-1,-1,-3).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//back glass
-						    plocation.add(0,-1,-3).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
-						    plocation.add(1,-1,-3).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
+						    plocation.add(-1,-1,-3).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());//back glass
+						    plocation.add(0,-1,-3).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());
+						    plocation.add(1,-1,-3).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());
 						    
-						    plocation.add(-3,-1,1).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//left glass
-						    plocation.add(-3,-1,0).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
-						    plocation.add(-3,-1,-1).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
+						    plocation.add(-3,-1,1).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());//left glass
+						    plocation.add(-3,-1,0).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());
+						    plocation.add(-3,-1,-1).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());
 						    
-						    plocation.add(3,-1,1).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//right glass
-						    plocation.add(3,-1,0).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
-						    plocation.add(3,-1,-1).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
+						    plocation.add(3,-1,1).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());//right glass
+						    plocation.add(3,-1,0).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());
+						    plocation.add(3,-1,-1).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());
 						    
-						    plocation.add(-2,-1,2).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//left top
-						    plocation.add(-2,-1,-2).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//left bottom
-						    plocation.add(2,-1,2).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//right top
-						    plocation.add(2,-1,-2).setBlock(stainedGlassR,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//left bottom
+						    plocation.add(-2,-1,2).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());//left top
+						    plocation.add(-2,-1,-2).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());//left bottom
+						    plocation.add(2,-1,2).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());//right top
+						    plocation.add(2,-1,-2).setBlock(stainedGlassR,Cause.source(Main.getPluginContainer()).build());//left bottom
 						    
 						    UnversalConfigs.getConfig(nodeConfig).getNode("Nodes", node, "Team").setValue("Red");
 						    UnversalConfigs.saveConfig(nodeConfig);		
@@ -110,26 +110,26 @@ public class NodeListener {
 				    		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 					    			TextColors.DARK_BLUE,"Node captured by the Blue Team."));
 					    
-						    plocation.add(-1,-1,3).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//front glass
-						    plocation.add(0,-1,3).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
-						    plocation.add(1,-1,3).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
+						    plocation.add(-1,-1,3).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//front glass
+						    plocation.add(0,-1,3).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
+						    plocation.add(1,-1,3).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
 						    
-						    plocation.add(-1,-1,-3).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//back glass
-						    plocation.add(0,-1,-3).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
-						    plocation.add(1,-1,-3).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
+						    plocation.add(-1,-1,-3).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//back glass
+						    plocation.add(0,-1,-3).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
+						    plocation.add(1,-1,-3).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
 						    
-						    plocation.add(-3,-1,1).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//left glass
-						    plocation.add(-3,-1,0).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
-						    plocation.add(-3,-1,-1).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
+						    plocation.add(-3,-1,1).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//left glass
+						    plocation.add(-3,-1,0).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
+						    plocation.add(-3,-1,-1).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
 						    
-						    plocation.add(3,-1,1).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//right glass
-						    plocation.add(3,-1,0).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
-						    plocation.add(3,-1,-1).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));
+						    plocation.add(3,-1,1).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//right glass
+						    plocation.add(3,-1,0).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
+						    plocation.add(3,-1,-1).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
 						    
-						    plocation.add(-2,-1,2).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//left top
-						    plocation.add(-2,-1,-2).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//left bottom
-						    plocation.add(2,-1,2).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//right top
-						    plocation.add(2,-1,-2).setBlock(stainedGlassB,Cause.of(NamedCause.owner(Main.Main.dreadzone)));//left bottom
+						    plocation.add(-2,-1,2).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//left top
+						    plocation.add(-2,-1,-2).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//left bottom
+						    plocation.add(2,-1,2).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//right top
+						    plocation.add(2,-1,-2).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//left bottom
 						    
 						    UnversalConfigs.getConfig(nodeConfig).getNode("Nodes", node, "Team").setValue("Blue");
 						    UnversalConfigs.saveConfig(nodeConfig);	

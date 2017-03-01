@@ -107,7 +107,7 @@ public class JoinArena implements CommandExecutor {
 					if((mode.toUpperCase().equals("NC"))){
 						
 						player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-								TextColors.WHITE,"Dread Zone Node Capture mode is currently not available, yet."));
+								TextColors.WHITE,"Dread Zone Node Capture mode is unavailable, for now."));
 						
 						return CommandResult.success();
 					}

@@ -50,7 +50,7 @@ public class DZNPCListener {
 				
 						Inventory inventory = Inventory.builder().of(InventoryArchetypes.CHEST).property(InventoryDimension.PROPERTY_NAME, new InventoryDimension(9, 1))
 								.property(InventoryTitle.PROPERTY_NAME, InventoryTitle.of(Text.builder(className+" Class").color(TextColors.DARK_RED).style(TextStyles.NONE).build()))
-								.build(Main.Main.dreadzone);
+								.build(Main.Main.Dreadzone);
 						
 						List<ItemStack> items = ClassConfigUtils.getClassItems(arenaName, className);
 						
@@ -63,7 +63,7 @@ public class DZNPCListener {
 							x++;
 						}
 						
-						player.openInventory(inventory, Cause.of(NamedCause.owner(Main.Main.dreadzone)));
+						player.openInventory(inventory, Cause.of(NamedCause.owner(Main.Main.Dreadzone)));
 						
 						return;
 			        }
@@ -120,9 +120,14 @@ public class DZNPCListener {
 			
 			String className = classN.toPlain();
 			
-			if(ClassConfigUtils.doesClassExist(ArenaConfigUtils.getUserArenaNameFromLocation(event.getTargetEntity().getLocation()), className)){
+			if(ArenaConfigUtils.getUserArenaNameFromLocation(event.getTargetEntity().getLocation())!=null){
 				
-				event.setCancelled(true);;
+				String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(event.getTargetEntity().getLocation());
+			
+				if(ClassConfigUtils.doesClassExist(arenaName, className)){
+					
+					event.setCancelled(true);
+				}
 			}
 		}
 	}

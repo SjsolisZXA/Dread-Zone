@@ -1,8 +1,8 @@
 package Executors;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -15,35 +15,27 @@ import org.spongepowered.api.text.format.TextColors;
 
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ClassConfigUtils;
-import ConfigUtils.TDMConfigUtils;
 
-public class TestExecutor implements CommandExecutor {
+public class TestExecutor0 implements CommandExecutor {
 	
     public CommandResult execute(CommandSource src, CommandContext args) {
     	
-        Player player = (Player)src;
-        
-        List<Player> contestants = TDMConfigUtils.convertObjectContestantsToPlayers("bud");
-        
-        for(Player contestantName: contestants){
-        
-        	player.sendMessage(Text.of(TextColors.AQUA,contestantName.getName()));
-        
-        }
-        
+        //Player player = (Player)src;     
     	
-    	/**for(Player player: Sponge.getServer().getOnlinePlayers()){
+    	Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.BLUE,"Test child 0"));
+    	 
+    	//NodeBlockTracker.restoreArenaTerrain();
+    	
+        /**Scoreboard teamTagName = Scoreboard.builder().build();
         
-	        Scoreboard teamTagName = Scoreboard.builder().build();
-	        
-	        Objective teamTagNameObjective = Objective.builder().name("Team").displayName(Text.of(TDMConfigUtils.getRandomTeam())).criterion(Criteria.DUMMY).build();
-	        
-	        teamTagName.addObjective(teamTagNameObjective);
-	        
-	        teamTagName.updateDisplaySlot(teamTagNameObjective, DisplaySlots.BELOW_NAME);
-	        
-	        player.setScoreboard(teamTagName);
-    	}*/
+        Objective teamTagNameObjective = Objective.builder().name("Team").displayName(Text.of(TDMConfigUtils.getRandomTeam())).criterion(Criteria.DUMMY).build();
+        
+        teamTagName.addObjective(teamTagNameObjective);
+        
+        teamTagName.updateDisplaySlot(teamTagNameObjective, DisplaySlots.BELOW_NAME);
+        
+        player.setScoreboard(teamTagName);*/
+
         
         //crate test scoreboard
         /**Scoreboard scoreboard = Scoreboard.builder().build();

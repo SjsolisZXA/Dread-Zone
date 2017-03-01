@@ -1,5 +1,6 @@
-package Setters;
+package Add;
 
+import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -11,28 +12,24 @@ import org.spongepowered.api.text.format.TextColors;
 import ConfigUtils.RightClickModeConfigUtils;
 import Listeners.RightClickMode;
 
-public class SetMobCrateLocation implements CommandExecutor {
-	
+public class AddNode implements CommandExecutor {
 	@Override
-	public CommandResult execute(CommandSource src, CommandContext args){
-		
+	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException{
 		if(!(src instanceof Player)){
-			src.sendMessage(Text.of(TextColors.RED, "Console already decides where mobs spawn."));
+			src.sendMessage(Text.of(TextColors.RED, "This is a user command only."));
 			return CommandResult.success();
 		}
-		
 		Player player = (Player)src;
-				
+		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-				TextColors.WHITE,"Right click on where you want a mob create to drop."));
-
-		RightClickModeConfigUtils.addToList(player.getName(),"MC");
+				TextColors.WHITE, "Right click where you want to create a node."));	
 		
-		String groupName = args.<String> getOne("group name").get();
-		String targetName = args.<String> getOne("target name").get();
+		RightClickModeConfigUtils.addToList(player.getName(),"N");
 		
-		RightClickMode.SMCL(groupName, targetName);
+		String nodeName = args.<String> getOne("node name").get();
 		
+		RightClickMode.SN(nodeName);
+	    
 		return CommandResult.success();
-	}	
+	}
 }

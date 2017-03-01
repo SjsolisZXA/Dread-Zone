@@ -13,7 +13,7 @@ import ConfigFiles.Configurable;
 
 public class ArenaConfigUtils {
 	
-	private static Configurable ArenaConfig = ArenaFileConfig.getConfig();
+	public static Configurable ArenaConfig = ArenaFileConfig.getConfig();
 	
 	//corner 1 of the arena
 	public static void setArenap1(Location<World> blockLocation, String worldName, String arenaName){

@@ -60,8 +60,12 @@ public class TDMConfigUtils {
         
         TDMConfigUtils.teleportPlayersToArena(arenaName, teamBContestants, "Team B Spawnpoints");
         
+        Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.AQUA,teamAContestants));
+        
+        Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_GREEN,teamBContestants));
+        
         Sponge.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).delay(1, TimeUnit.SECONDS).execute(new 
-        		TeamDeathmatchTimer(contestants, teamAName, teamBName, teamAContestants, teamBContestants)).submit(Main.dreadzone);
+        		TeamDeathmatchTimer(contestants, teamAName, teamBName, teamAContestants, teamBContestants)).submit(Main.Dreadzone);
     }
 
     private static void teleportPlayersToArena(Object arenaName, List<Player> teamContestants, String teamName) {
@@ -108,15 +112,20 @@ public class TDMConfigUtils {
             
             player.setScoreboard(scoreboard);
             
-            for (Player playerOnline : Sponge.getServer().getOnlinePlayers()) {
+            //sets up colored tab list team names
+            /**for (Player playerOnline : Sponge.getServer().getOnlinePlayers()) {
             	
-                if (ContestantConfigUtils.isUserAnArenaContestant(ArenaConfigUtils.getUserArenaNameFromLocation(playerOnline.getLocation()), player.getName())){
-                	
-                player.getTabList().removeEntry(playerOnline.getUniqueId());
-                }
-            }
+            	if(ArenaConfigUtils.getUserArenaNameFromLocation(playerOnline.getLocation())!=null){
+            		
+            		String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(playerOnline.getLocation());
+            	
+	                if (ContestantConfigUtils.isUserAnArenaContestant(arenaName, player.getName())){
+	                	
+	                	player.getTabList().removeEntry(playerOnline.getUniqueId());
+	                }
+            	}
+            }**/
             
-          //sets up boss bar team point count
             //player.getTabList().getEntry(player.getUniqueId()).get().setDisplayName(Text.of(player.getName()));// come back and change this once we get team color
             
             Text text1 = Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "]");
@@ -125,6 +134,7 @@ public class TDMConfigUtils {
             
             player.getTabList().setHeaderAndFooter(text1, text2);
             
+            //sets up boss bar team point count
             ServerBossBar teamA = ServerBossBar.builder().name(Text.of(teamAName)).percent(0.0f).color(BossBarColors.GREEN).overlay(BossBarOverlays.PROGRESS).build();
             
             ServerBossBar teamB = ServerBossBar.builder().name(Text.of(teamBName)).percent(0.0f).color(BossBarColors.RED).overlay(BossBarOverlays.PROGRESS).build();

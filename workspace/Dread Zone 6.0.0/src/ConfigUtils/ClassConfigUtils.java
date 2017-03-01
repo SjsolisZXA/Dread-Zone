@@ -9,6 +9,8 @@ import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.equipment.EquipmentType;
+import org.spongepowered.api.item.inventory.equipment.EquipmentTypes;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.Direction;
@@ -80,6 +82,37 @@ public class ClassConfigUtils {
 		for(ItemStack item: list){
 			
 			player.getInventory().offer(item);
+		}
+	}
+	
+	public static void offerClass1(Player player, List<ItemStack> items){
+		
+		player.getInventory().clear();
+
+		for(ItemStack item: items){
+			
+			if(item instanceof EquipmentType){
+				
+				if(item.equals(EquipmentTypes.HEADWEAR)){
+					
+					player.equip(EquipmentTypes.HEADWEAR, item);
+					
+				}else if(item.equals(EquipmentTypes.CHESTPLATE)){
+					
+					player.equip(EquipmentTypes.CHESTPLATE, item);
+					
+				}else if(item.equals(EquipmentTypes.LEGGINGS)){
+					
+					player.equip(EquipmentTypes.LEGGINGS, item);
+					
+				}else if(item.equals(EquipmentTypes.BOOTS)){
+					
+					player.equip(EquipmentTypes.BOOTS, item);
+				}
+			}else{
+				
+				player.getInventory().offer(item);
+			}
 		}
 	}
 	
