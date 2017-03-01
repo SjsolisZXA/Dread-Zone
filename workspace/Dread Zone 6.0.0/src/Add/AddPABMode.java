@@ -9,10 +9,8 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import ConfigUtils.ArenaConfigUtils;
-import ConfigUtils.RightClickModeConfigUtils;
-import Modes.TDM;
 
-public class AddArenaMode implements CommandExecutor{
+public class AddPABMode implements CommandExecutor{
 	
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args){
@@ -36,35 +34,15 @@ public class AddArenaMode implements CommandExecutor{
 			return CommandResult.success();
 		}
 		
-		String mode = args.<String> getOne("mode").get();
-				
-		if(mode.toUpperCase().equals("TDM")){
-
-			//the user is not actually going to be in a right click mode, but this will help the user set player spawn points
-			RightClickModeConfigUtils.addToList(player.getName(), mode.toUpperCase());
-
-			int nOMPT = args.<Integer> getOne("number of players per team").get();//numberOfMemebrsPerTeam
-			
-			ArenaConfigUtils.setIntCurrent(arenaName, 0);
-			
-			ArenaConfigUtils.setIntGoal(arenaName, nOMPT*2);
-			
-			TDM.SATS(arenaName);
-			
-			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-					TextColors.WHITE,"Stand where you want players from Team A to spawn in the arena and enter ",TextColors.DARK_RED,"/dzasp SPAWN_NAME"));
-	
-			return CommandResult.success();
-		}
+		//RightClickModeConfigUtils.addToList(player.getName(), "PAB");
 		
-		if(mode.toUpperCase().equals("DZPAB")){
-			
-			RightClickModeConfigUtils.addToList(player.getName(), mode.toUpperCase());
-		}
+		//PAB.passedArguments(arenaName,player);
 		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-				TextColors.WHITE,"The mode specifed is not avaialable!"));
+				TextColors.WHITE,"To create a mobcrate, enter ",TextColors.DARK_RED,"/dz amc MOBCRATE_GROUP MOBCRATE_NAME"));
 		
+		ArenaConfigUtils.addMode(arenaName, "PAB");
+
 		return CommandResult.success();
 	}
 }

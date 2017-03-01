@@ -63,6 +63,8 @@ public class AddClassNPC implements CommandExecutor{
 												TextColors.DARK_RED,"/adzci ",arenaName," CLASS_NAME",TextColors.WHITE,"."));
 								
 								RightClickModeConfigUtils.deleteUsernameInList(player.getName());
+								
+								ArenaConfigUtils.addMode(arenaName,"TDM");
 							}
 							
 						} catch (ObjectMappingException e) {

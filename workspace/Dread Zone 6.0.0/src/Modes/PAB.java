@@ -11,7 +11,7 @@ import org.spongepowered.api.text.format.TextColors;
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.RightClickModeConfigUtils;
 
-public class TDM implements CommandExecutor{
+public class PAB implements CommandExecutor{
 	
 	static String arenaN;
 	static Player player;
@@ -91,7 +91,7 @@ public class TDM implements CommandExecutor{
 		return CommandResult.success();
 	}
 
-	public static void SATS(String arenaName, Player p) {
+	public static void passedArguments(String arenaName, Player p) {
 		
 		arenaN = arenaName;
 		player = p;

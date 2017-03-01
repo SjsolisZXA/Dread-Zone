@@ -280,5 +280,34 @@ public class ArenaConfigUtils {
 		}
 		return null;
 	}
+
+	public static void addMode(String arenaName, String mode) {
+		
+		if(getArenaModes(arenaName)!=null){
+			
+			UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "modes", mode).setValue("");
+			UnversalConfigs.saveConfig(ArenaConfig);
+		}
+	}
+
+	public static boolean doesArenaHaveMode(String arenaName, String mode) {
+
+		Set<Object> arenaModes = getArenaModes(arenaName);
+		
+		for(Object m: arenaModes){
+			
+			if(m.toString().equals(mode)){
+				
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	private static Set<Object> getArenaModes(String arenaName) {
+
+		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "modes").getChildrenMap().keySet();
+	}
 }
 
