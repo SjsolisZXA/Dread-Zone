@@ -9,6 +9,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import ConfigUtils.ArenaConfigUtils;
+import ConfigUtils.RightClickModeConfigUtils;
 
 public class AddPABMode implements CommandExecutor{
 	
@@ -34,12 +35,10 @@ public class AddPABMode implements CommandExecutor{
 			return CommandResult.success();
 		}
 		
-		//RightClickModeConfigUtils.addToList(player.getName(), "PAB");
+		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+				TextColors.WHITE,"First, set Point A by standing where you want players to spawn and enter ",TextColors.DARK_RED, "/dz PA"));
 		
-		//PAB.passedArguments(arenaName,player);
-		
-		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-				TextColors.WHITE,"To create a mobcrate, enter ",TextColors.DARK_RED,"/dz amc MOBCRATE_GROUP MOBCRATE_NAME"));
+		RightClickModeConfigUtils.addToList(player.getName(), "PA");
 		
 		ArenaConfigUtils.addMode(arenaName, "PAB");
 

@@ -46,16 +46,16 @@ import Executors.JoinArena;
 import Executors.LeaveArena;
 import Executors.MoveArenaLobby;
 import Executors.Ready;
-import Executors.TestExecutor0;
-import Executors.TestExecutor1;
 import Listeners.MobCreatePlayerDetector;
 import Listeners.NodeBlockTracker;
 import Listeners.DZNPCListener;
 import Listeners.GeneralArenaListeners;
 import Listeners.MobCreateImpact;
 import Listeners.NodeListener;
+import Listeners.PBDetector;
 import Listeners.RightClickMode;
 import Listeners.TDMListeners;
+import Modes.PAB;
 import Modes.TDM;
 import Reset.ResetMobCreate;
 import Reset.ResetNodes;
@@ -63,6 +63,8 @@ import Utils.AutomatedLightningTimer;
 import Utils.LoadConfig;
 import Setters.SetArena;
 import Setters.SetLobbySpawn;
+import Test.TestExecutor0;
+import Test.TestExecutor1;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 
@@ -240,6 +242,10 @@ public class Main {
 				.build();
 		
 		
+		CommandSpec PABCmd = CommandSpec.builder()
+				.description(Text.of("Set PAB point A for an arena."))
+				.executor(new PAB())
+				.build();
 		
 		CommandSpec addMobCrateCmd = CommandSpec.builder()
 				.description(Text.of("Add a mob crate dropper."))
@@ -329,20 +335,23 @@ public class Main {
 				.child(classListCmd, "classList","cl")
 				.child(setDZLSACmd, "setLobbySpawn","slp")
 				.child(moveLobbyCmd, "moveLobby","ml")
+				.child(PABCmd, "PointA","PA")
 				.executor(new DZCMD())
 				.build();
 		
 		CommandSpec testChildCmd0 = CommandSpec.builder()
-				.description(Text.of("Test method."))
+				.description(Text.of("Test child method."))
 				.executor(new TestExecutor0())
 				.build();
 		CommandSpec testChildCmd1 = CommandSpec.builder()
 				.description(Text.of("Test child method."))
+				.arguments(GenericArguments.optional(GenericArguments.string(Text.of("optionalTestArguments"))))
 				.executor(new TestExecutor1())
 				.build();
 		CommandSpec testCmd = CommandSpec.builder()
 				.description(Text.of("Test method."))
-				.child(testChildCmd0,"child0").child(testChildCmd1, "child1")
+				.child(testChildCmd0,"child0")
+				.child(testChildCmd1, "child1")
 				.build();
 	    
 	    game.getCommandManager().register(this, testCmd, "test");
@@ -357,6 +366,7 @@ public class Main {
 		game.getEventManager().registerListeners(this, new MobCreatePlayerDetector());
 		game.getEventManager().registerListeners(this, new RightClickMode());
 		game.getEventManager().registerListeners(this, new NodeBlockTracker());		
+		game.getEventManager().registerListeners(this, new PBDetector());	
 		
 	}
 	

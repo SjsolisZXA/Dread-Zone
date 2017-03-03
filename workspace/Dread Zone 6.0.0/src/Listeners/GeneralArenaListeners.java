@@ -98,13 +98,16 @@ public class GeneralArenaListeners {
     public void playerCommand(SendCommandEvent commandEvent, @First Player player) {//WORKS
     	
     	String command = commandEvent.getCommand();
+    	
+    	String arguments = commandEvent.getArguments();
     
     	if(ContestantConfigUtils.isUserAnArenaContestant(AN, player.getName())&&
-    			!command.equals("ldzarena")&&!command.equals("test")&&!command.equals("dzreload")&&!command.equals("dzready")){
+    			!command.equals("dz")&& !(arguments.equals("ready")|| arguments.equals("reload") || arguments.equals("leave")) && !command.equals("test")){
+    			
     		
     		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-					TextColors.WHITE,"Commands are not allowed in Dread Zone other than ", TextColors.DARK_RED, "/ldzarena", 
-					TextColors.WHITE, " and ", TextColors.DARK_RED, "/dzready"));
+					TextColors.WHITE,"Commands are not allowed in Dread Zone other than ", TextColors.DARK_RED, "/dz leave", 
+					TextColors.WHITE, " and ", TextColors.DARK_RED, "/dz ready"));
     		
     		commandEvent.setCancelled(true);
     	}

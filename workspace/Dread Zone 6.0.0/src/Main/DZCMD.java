@@ -38,6 +38,9 @@ public class DZCMD implements CommandExecutor {
 		contents.add(Text.builder().color(TextColors.DARK_RED).onClick(TextActions.runCommand("/dz join")).append(Text.of("/dz join",TextColors.WHITE," Join a Dread Zone Arena.")).build());
 		
 		contents.add(Text.builder().color(TextColors.DARK_RED).onClick(TextActions.runCommand("/dz alr"))
+				.append(Text.of("/dz PA",TextColors.WHITE," or ",TextColors.DARK_RED, "/dz PointA",TextColors.WHITE," Set PAB point A for an arena.")).build());
+		
+		contents.add(Text.builder().color(TextColors.DARK_RED).onClick(TextActions.runCommand("/dz alr"))
 				.append(Text.of("/dz alr",TextColors.WHITE," or ",TextColors.DARK_RED, "/dz addLightningRod",TextColors.WHITE," Add a lightning rod target.")).build());
 		
 		contents.add(Text.builder().color(TextColors.DARK_RED).onClick(TextActions.runCommand("/dz acnpc"))

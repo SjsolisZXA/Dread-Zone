@@ -12,6 +12,7 @@ import ConfigFiles.NodeFileConfig;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 
 public class NodeConfigUtils {
+	
 	private static Configurable nodeConfig = NodeFileConfig.getConfig();
 	
 	public static void setNode(Location<World> blockLocation, String worldName, String nodeName)

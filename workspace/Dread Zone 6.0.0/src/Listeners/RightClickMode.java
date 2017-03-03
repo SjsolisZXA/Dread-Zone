@@ -18,6 +18,7 @@ import ConfigUtils.LightningConfigUtils;
 import ConfigUtils.LobbyConfigUtils;
 import ConfigUtils.MobCreateConfigUtils;
 import ConfigUtils.NodeConfigUtils;
+import ConfigUtils.PABConfigUtils;
 import ConfigUtils.RightClickModeConfigUtils;
 import Utils.AutomatedLightningTimer;
 import Utils.NodeUtils;
@@ -29,6 +30,7 @@ public class RightClickMode {
 	static String SMCLTN;
 	static String NN;
 	static String SAAN;
+	static String PBAN;
 	
 	@Inject
 	Game game;
@@ -54,6 +56,11 @@ public class RightClickMode {
 		SAAN = arenaName;
 	}
 	
+	public static void PBAN(String arenaName) {
+		
+		PBAN = arenaName;
+	}
+	
 	@Listener
 	public void onPlayerInteractBlock(InteractBlockEvent.Secondary.MainHand event, @First Player player){
 		
@@ -61,6 +68,20 @@ public class RightClickMode {
 			
 			Location<World> blockLocation = event.getTargetBlock().getLocation().get().add(0,1,0);
 			
+			if (RightClickModeConfigUtils.getUserMode(player.getName().toString()).equals("PB")){
+				
+				PABConfigUtils.declarePB(blockLocation.add(0,-1,0),PBAN);
+				
+				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+						TextColors.WHITE,"Success! Contestants that enter the glass circle will have completed the Dread Zone challange, "
+								+ "but you need to set up obstacles! To create a mob crate drop off locations, enter ",TextColors.DARK_RED,
+						"/dz amc MOBCRATE_GROUP MOBCRATE_NAME",TextColors.WHITE," for as many crates that you'd like."));
+				
+				RightClickModeConfigUtils.deleteUsernameInList(player.getName());
+				
+				return;
+			}
+
 			//check for Lightning Rod Mode
 			if (RightClickModeConfigUtils.getUserMode(player.getName().toString()).equals("LM")){
 				
@@ -187,7 +208,7 @@ public class RightClickMode {
 				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 						TextColors.WHITE,"Success, ",TextColors.DARK_RED, SAAN,"'s ",TextColors.WHITE, "lobby created! To set ",
 						TextColors.DARK_RED, SAAN,"'s ",TextColors.WHITE,"lobby spawn area, stand where you want players to spawn "
-								+ "and enter ",TextColors.DARK_RED,"/cdzlsa ",SAAN));
+								+ "and enter ",TextColors.DARK_RED,"/dz slp ",SAAN));
 				
 				return;
 			}

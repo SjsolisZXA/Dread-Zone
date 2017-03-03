@@ -9,91 +9,62 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import ConfigUtils.ArenaConfigUtils;
+import ConfigUtils.PABConfigUtils;
 import ConfigUtils.RightClickModeConfigUtils;
+import Listeners.RightClickMode;
 
 public class PAB implements CommandExecutor{
-	
-	static String arenaN;
-	static Player player;
 	
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args){
 		
-		if(RightClickModeConfigUtils.isUserInConfig(player.getName())&&RightClickModeConfigUtils.getUserMode(player.getName()).equals("TDM")){
-				
-			if(ArenaConfigUtils.isUserinArena(player.getLocation(), arenaN)){
+		if(!(src instanceof Player)){
 			
-				if((int)ArenaConfigUtils.getArenaDataInt(arenaN, "SASP_C")<(int)ArenaConfigUtils.getArenaDataInt(arenaN, "SASP_G")){
-					
-					String spawnName = args.<String> getOne("spawn name").get();
-					
-					if(ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaN, "Team A Spawnpoints")<(int)ArenaConfigUtils.getArenaDataInt(arenaN, "SASP_G")/2){
-						
-						ArenaConfigUtils.addArenaSpawn(arenaN, "Team A Spawnpoints",spawnName ,player.getTransform());
-						
-						ArenaConfigUtils.setIntCurrent(arenaN, (int)ArenaConfigUtils.getArenaDataInt(arenaN, "SASP_C")+1);
-						
-						player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-								TextColors.WHITE,"Spawnpont ",TextColors.DARK_RED,spawnName,TextColors.WHITE," for Team A set!"));
-						
-						if((int)ArenaConfigUtils.getArenaDataInt(arenaN, "SASP_C")==(int)ArenaConfigUtils.getArenaDataInt(arenaN, "SASP_G")/2){
-							
-							player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-									TextColors.WHITE, "Player spawnpoints for set for Team A! Now stand were you want the spawnpoints for "
-											+ "Team B to be at in the arena and enter the same command."));
-						}
-						
-						return CommandResult.success();
-					}
-					
-					if(ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaN, "Team B Spawnpoints")<(int)ArenaConfigUtils.getArenaDataInt(arenaN, "SASP_G")/2){
-						
-						ArenaConfigUtils.addArenaSpawn(arenaN, "Team B Spawnpoints",spawnName ,player.getTransform());
-						
-						player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-								TextColors.WHITE,"Spawnpont ",TextColors.DARK_RED,spawnName,TextColors.WHITE," for Team B set!"));
-					}
-					
-					ArenaConfigUtils.setIntCurrent(arenaN, (int)ArenaConfigUtils.getArenaDataInt(arenaN, "SASP_C")+1);
-					
-					if((int)ArenaConfigUtils.getArenaDataInt(arenaN, "SASP_C")==(int)ArenaConfigUtils.getArenaDataInt(arenaN, "SASP_G")){
-						
-						RightClickModeConfigUtils.deleteUsernameInList(player.getName());
-						
-						ArenaConfigUtils.removeArenaChild(arenaN, "SASP_C");
-						
-						ArenaConfigUtils.removeArenaChild(arenaN, "SASP_G");
-						
-						RightClickModeConfigUtils.addToList(player.getName(),"AAC");
-						
-						player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-								TextColors.WHITE,"Arena spawnponts set! You'll now need to set ",TextColors.DARK_RED,arenaN+"'s",
-								TextColors.WHITE," 5 Classes players can choose from. To do so, enter ",TextColors.DARK_RED,"/adzc ",arenaN," CLASS_NAME NUMBER_OF_CLASS_ITEMS"));
-						
-						return CommandResult.success();
-					}
-					
-					return CommandResult.success();
-				}
+			src.sendMessage(Text.of(TextColors.RED, "This is a user comand only!"));
 			
-				return CommandResult.success();
-			}
-	
-			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-					TextColors.WHITE, "You need to be inside the arena to set a spawnpoint!"));
-		
 			return CommandResult.success();
 		}
 		
-		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-				TextColors.WHITE, "You are not in a Dread Zone arena mode creation state!"));
+		Player player = (Player)src;
+		
+		if (RightClickModeConfigUtils.getUserMode(player.getName().toString()).equals("PA")){
+			
+			if(ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation())!=null){
+				
+				String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation());
+				
+				if(ArenaConfigUtils.doesArenaHaveMode(arenaName, "PAB")){
+					
+					PABConfigUtils.setPointA(player.getTransform(), arenaName);
+					
+					RightClickMode.PBAN(arenaName);
+					
+					player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+							TextColors.WHITE,"Success! Now right click on a block to be Point B. Players that arrive to this "
+									+ "location will have had completed the Dread Zone Challange."));
+					
+					RightClickModeConfigUtils.deleteUsernameInList(player.getName());
+					
+					RightClickModeConfigUtils.addToList(player.getName(), "PB");
+					
+					return CommandResult.success();
+				}
+				
+				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+						TextColors.WHITE,"This arena has not had the PAB mode implemented!"));
+				
+				return CommandResult.success();
+			}
+			
+			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE,"You must be in a Dread Zone arena to execute this command!"));
+			
+			return CommandResult.success();
+		}
+		
+		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+				TextColors.WHITE,"You must be in PAB mode to execute this command!"));
 		
 		return CommandResult.success();
-	}
-
-	public static void passedArguments(String arenaName, Player p) {
-		
-		arenaN = arenaName;
-		player = p;
 	}
 }

@@ -285,7 +285,7 @@ public class ArenaConfigUtils {
 		
 		if(getArenaModes(arenaName)!=null){
 			
-			UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "modes", mode).setValue("");
+			UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Modes", mode).setValue("");
 			UnversalConfigs.saveConfig(ArenaConfig);
 		}
 	}
@@ -307,7 +307,7 @@ public class ArenaConfigUtils {
 
 	private static Set<Object> getArenaModes(String arenaName) {
 
-		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "modes").getChildrenMap().keySet();
+		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Modes").getChildrenMap().keySet();
 	}
 }
 

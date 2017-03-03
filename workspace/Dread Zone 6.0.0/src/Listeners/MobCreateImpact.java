@@ -23,14 +23,21 @@ import com.flowpowered.math.vector.Vector3i;
 
 import Utils.EntitySpawner;
 
-@SuppressWarnings("unused")
 public class MobCreateImpact {
     @Listener
-    public void onEndPortalImpact(ChangeBlockEvent.Place event,@First Player player,@Root FallingBlock fallingblock) {
+    public void onMobCrateImpact(ChangeBlockEvent.Place event,@First Player player,@Root FallingBlock fallingblock) {
+    	
     	for (Transaction<BlockSnapshot> transaction : event.getTransactions()) {
+    		
 			BlockSnapshot block = transaction.getFinal();
+			
 			BlockType type = block.getState().getType();
+			
+			player.sendMessage(Text.of("Transaction"));
+			
 			if (type.equals(BlockTypes.CRAFTING_TABLE)){
+				
+				player.sendMessage(Text.of("Crafting Table"));
 				
 				Vector3i landLocation = block.getPosition();
 				Location<World> LL = new Location<>(player.getWorld(),landLocation.toDouble());
@@ -40,9 +47,13 @@ public class MobCreateImpact {
 				player.playSound(SoundTypes.ENTITY_FIREWORK_BLAST, SLL, 2);
 				player.playSound(SoundTypes.ENTITY_FIREWORK_BLAST_FAR, SLL, 2);
 				
+				player.sendMessage(Text.of("Play Sound"));
+				
 				player.spawnParticles(ParticleEffect.builder().type(ParticleTypes.EXPLOSION).build(), SLL);
 				player.spawnParticles(ParticleEffect.builder().type(ParticleTypes.HUGE_EXPLOSION).build(), SLL);
 				player.spawnParticles(ParticleEffect.builder().type(ParticleTypes.LARGE_EXPLOSION).build(), SLL);
+				
+				player.sendMessage(Text.of("particle"));
 				
 				EntitySpawner.spawnEntity(LL, EntityTypes.SKELETON);
 				EntitySpawner.spawnEntity(LL, EntityTypes.BLAZE);
@@ -51,8 +62,8 @@ public class MobCreateImpact {
 				EntitySpawner.spawnEntity(LL, EntityTypes.SILVERFISH);
 				EntitySpawner.spawnEntity(LL, EntityTypes.SPIDER);
 				
-				/**player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-						TextColors.WHITE,"Mob create spawned!"));**/
+				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
+						TextColors.WHITE,"Mob create spawned!"));
 				
 				event.setCancelled(true);
 				return;
