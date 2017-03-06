@@ -41,6 +41,7 @@ import Delete.DeleteMobCrate;
 import Delete.DeleteNode;
 import Executors.ViewArenas;
 import Executors.ViewClasses;
+import Executors.ViewModes;
 import Executors.ReloadExecutor;
 import Executors.JoinArena;
 import Executors.LeaveArena;
@@ -52,9 +53,9 @@ import Listeners.DZNPCListener;
 import Listeners.GeneralArenaListeners;
 import Listeners.MobCreateImpact;
 import Listeners.NodeListener;
+import Listeners.PABListeners;
 import Listeners.PBDetector;
 import Listeners.RightClickMode;
-import Listeners.TDMListeners;
 import Modes.PAB;
 import Modes.TDM;
 import Reset.ResetMobCreate;
@@ -149,12 +150,12 @@ public class Main {
 				.build();
 		
 		CommandSpec arenaListCmd = CommandSpec.builder()
-				.description(Text.of("Gets all of the Dread Zone arenas."))
+				.description(Text.of("Gets a list of all the Dread Zone arenas."))
 				.executor(new ViewArenas())
 				.build();
 		
 		CommandSpec classListCmd = CommandSpec.builder()
-				.description(Text.of("Gets all of the classes for a specified arena."))
+				.description(Text.of("Gets a list of all the classes for a specified arena."))
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))))
 				.executor(new ViewClasses())
 				.build();
@@ -281,12 +282,15 @@ public class Main {
 				.executor(new SetArena())
 				.build();
 		
-		
-		
+		CommandSpec arenaModes = CommandSpec.builder()
+				.description(Text.of("Get a list of all of the avaliable modes for a specified arena."))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
+				.executor(new ViewModes())
+				.build();
 
 		CommandSpec joinCmd = CommandSpec.builder()
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))),
-						GenericArguments.string(Text.of("mode")))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))),
+						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("mode")))))
 				.executor(new JoinArena())
 				.build();	
 		
@@ -336,6 +340,7 @@ public class Main {
 				.child(setDZLSACmd, "setLobbySpawn","slp")
 				.child(moveLobbyCmd, "moveLobby","ml")
 				.child(PABCmd, "PointA","PA")
+				.child(arenaModes, "arenaModes", "am")
 				.executor(new DZCMD())
 				.build();
 		
@@ -345,7 +350,7 @@ public class Main {
 				.build();
 		CommandSpec testChildCmd1 = CommandSpec.builder()
 				.description(Text.of("Test child method."))
-				.arguments(GenericArguments.optional(GenericArguments.string(Text.of("optionalTestArguments"))))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("optionalTestArguments")))))
 				.executor(new TestExecutor1())
 				.build();
 		CommandSpec testCmd = CommandSpec.builder()
@@ -358,7 +363,7 @@ public class Main {
 	    game.getCommandManager().register(this, dreadZoneCmd,"dz");
 
 		
-		game.getEventManager().registerListeners(this, new TDMListeners());
+		//game.getEventManager().registerListeners(this, new TDMListeners());
 		game.getEventManager().registerListeners(this, new DZNPCListener());
 		game.getEventManager().registerListeners(this, new NodeListener());
 		game.getEventManager().registerListeners(this, new GeneralArenaListeners());
@@ -367,7 +372,7 @@ public class Main {
 		game.getEventManager().registerListeners(this, new RightClickMode());
 		game.getEventManager().registerListeners(this, new NodeBlockTracker());		
 		game.getEventManager().registerListeners(this, new PBDetector());	
-		
+		game.getEventManager().registerListeners(this, new PABListeners());	
 	}
 	
 	@Listener

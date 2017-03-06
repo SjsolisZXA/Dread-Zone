@@ -305,9 +305,28 @@ public class ArenaConfigUtils {
 		return false;
 	}
 
-	private static Set<Object> getArenaModes(String arenaName) {
+	public static Set<Object> getArenaModes(String arenaName) {
 
 		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Modes").getChildrenMap().keySet();
+	}
+	
+	public static int getNumOfArenaModes(String arenaName){
+		
+		int n = 0;
+		
+		Set<Object> arenaModes = getArenaModes(arenaName);
+		
+		for(@SuppressWarnings("unused") Object mode: arenaModes){
+			
+			n++;
+		}
+		
+		return n;
+	}
+	
+	public static String getArenaStatus(String arenaName){
+		
+		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Status").getString();
 	}
 }
 

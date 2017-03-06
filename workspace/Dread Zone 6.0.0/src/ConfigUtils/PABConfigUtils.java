@@ -1,14 +1,22 @@
 package ConfigUtils;
 
+import java.util.List;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.Transform;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.scoreboard.Scoreboard;
+import org.spongepowered.api.scoreboard.critieria.Criteria;
+import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
+import org.spongepowered.api.scoreboard.objective.Objective;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import com.flowpowered.math.vector.Vector3d;
-
 import ConfigFiles.ArenaFileConfig;
 import ConfigFiles.Configurable;
 import ConfigFiles.UnversalConfigs;
@@ -78,5 +86,73 @@ public class PABConfigUtils {
 
 		return new Location<World>(world, x, y, z);
 	}
+	
+	public static Location<World> getPABALocation(String arenaName) {
 
+		CommentedConfigurationNode pointANode = UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "PAB", "Point A", "Spawn Location");
+		
+		String worldName = UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "World").getString();
+		
+		World world = Sponge.getServer().getWorld(worldName).orElse(null);
+		
+		int x = pointANode.getNode("X").getInt();
+		int y = pointANode.getNode("Y").getInt();
+		int z = pointANode.getNode("Z").getInt();
+
+		return new Location<World>(world, x, y, z);
+	}
+	
+	public static Vector3d getPABARotation(String arenaName) {
+
+		CommentedConfigurationNode pointARotationNode = UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "PAB", "Point A", "Spawn Location","Rotation");
+		
+		int x = pointARotationNode.getNode("X").getInt();
+		int y = pointARotationNode.getNode("Y").getInt();
+		int z = pointARotationNode.getNode("Z").getInt();
+
+		return new Vector3d(x, y, z);
+	}
+
+	public static void beginPAB(String arenaName) {
+		
+		teletportContestantsToArena(arenaName);
+		
+		setupScoreboards(TDMConfigUtils.convertObjectContestantsToPlayers(arenaName));
+	}
+
+	private static void setupScoreboards(List<Player> contestants) {
+
+        Scoreboard scoreboard = Scoreboard.builder().build();
+        
+        for(Player player:contestants){
+        
+	        Objective objective = Objective.builder().name("Stats").displayName(Text.of(TextColors.DARK_RED,TextStyles.UNDERLINE,(String.valueOf(player.getName()) + " Kills"))).criterion(Criteria.DUMMY).build();
+	        
+	        scoreboard.addObjective(objective);
+	        
+	        scoreboard.updateDisplaySlot(objective, DisplaySlots.SIDEBAR);
+	        
+	        objective.getOrCreateScore(Text.of("Total Kills")).setScore(0);
+	        
+	        objective.getOrCreateScore(Text.of("Deaths")).setScore(0);
+	        
+	        player.setScoreboard(scoreboard);
+	        
+	        Text text1 = Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "]");
+	        
+	        Text text2 = Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Challange", TextColors.DARK_RED, "]");
+	        
+	        player.getTabList().setHeaderAndFooter(text1, text2);
+        }
+	}
+
+	private static void teletportContestantsToArena(String arenaName) {
+		
+		List<Player> contestants = TDMConfigUtils.convertObjectContestantsToPlayers(arenaName);
+		
+		for(Player contestant: contestants){
+			
+			contestant.setLocationAndRotation(getPABALocation(arenaName), getPABARotation(arenaName));
+		}
+	}
 }

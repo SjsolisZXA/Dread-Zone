@@ -50,16 +50,7 @@ public class TestExecutor0 implements CommandExecutor {
         
         objective.getOrCreateScore(Text.of("Deaths")).setScore(0);
         
-        player.setScoreboard(scoreboard);
-        
-        //interact with scoreboard
-        int score = (player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get()).getScore(Text.of("Kills")).get().getScore();
-        
-        player.sendMessage(Text.of(TextColors.GOLD, score));
-        
-        player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get().getScore(Text.of("Kills")).get().setScore(score + 1);
-        
-        player.sendMessage(Text.of(TextColors.GREEN, score));*/
+        player.setScoreboard(scoreboard);*/
         
         return CommandResult.success();
     }

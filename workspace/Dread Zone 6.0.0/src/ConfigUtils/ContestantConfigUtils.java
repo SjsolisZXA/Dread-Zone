@@ -1,24 +1,31 @@
 package ConfigUtils;
 
+import java.util.List;
 import java.util.Set;
 
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.entity.Transform;
+import org.spongepowered.api.entity.living.player.gamemode.GameMode;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.google.common.collect.Lists;
+import com.google.common.reflect.TypeToken;
+
 import ConfigFiles.ArenaFileConfig;
 import ConfigFiles.Configurable;
 import ConfigFiles.UnversalConfigs;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 public class ContestantConfigUtils {
 
 	private static Configurable ArenaConfig = ArenaFileConfig.getConfig();
 	
 	//adds a contestant to the arena roster
-	public static void addContestant(String arenaName, String userName, Transform<World> location, String worldName) {
+	public static void addContestant(String arenaName, String userName, Transform<World> location, String worldName, GameMode playerGamemode, Integer foodLevel) throws ObjectMappingException {
 
 		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants",userName,"X").setValue(location.getLocation().getBlockX());
 		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants",userName,"Y").setValue(location.getLocation().getBlockY());
@@ -29,6 +36,10 @@ public class ContestantConfigUtils {
 		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants",userName,"Transform","X").setValue((int)location.getRotation().getX());
 		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants",userName,"Transform","Y").setValue((int)location.getRotation().getY());
 		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants",userName,"Transform","Z").setValue((int)location.getRotation().getZ());
+		
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants",userName,"Gamemode").setValue(TypeToken.of(GameMode.class), playerGamemode);
+		
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants",userName,"Foodlevel").setValue(foodLevel);
 		
 		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants", userName, "Ready").setValue(false);
 		
@@ -58,7 +69,7 @@ public class ContestantConfigUtils {
     }
 	
 	//removes a specific user from the arena roster
-	public static void removeContestant(Object arenaName, String player) {
+	public static void removeContestant(String arenaName, String player) {
 				
 		UnversalConfigs.removeChild(ArenaConfig, new Object[] {"Arena",arenaName,"Contestants"}, getContestant(arenaName,player));
 		
@@ -101,7 +112,7 @@ public class ContestantConfigUtils {
     }
 	
 	//checks to see if a specified user is a listed contestant in the arena roster
-	public static boolean isUserAnArenaContestant(Object arenaName, Object userName){
+	public static boolean isUserAnArenaContestant(String arenaName, String userName){
 		
 		Set<Object> contestants = getArenaContestants(arenaName);
 		
@@ -169,6 +180,54 @@ public class ContestantConfigUtils {
 		int tz = targePlayerTransform.getNode("Z").getInt();
 
 		return new Vector3d(tx, ty, tz);
+	}
+
+	public static GameMode fetchOriginalGamemode(String arenaName, String userName) throws ObjectMappingException {
+
+		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants",userName,"Gamemode").getValue(TypeToken.of(GameMode.class));
+	}
+	
+	public static Integer fetchOriginalFoodLevel(String arenaName, String userName){
+		
+		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants",userName,"Foodlevel").getInt();
+	}
+
+	public static void saveOriginalPotionEffects(List<PotionEffect> potionEffects, String arenaName, String userName) throws ObjectMappingException {
+	
+		int i = 1;
+		
+		for(PotionEffect potionEffect: potionEffects){
+			
+			UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants", userName, "Potion Effects","Effect "+i).setValue(TypeToken.of(PotionEffect.class),potionEffect);
+			
+			UnversalConfigs.saveConfig(ArenaConfig);
+			
+			i++;
+		}
+	}
+	
+	public static List<PotionEffect> fetchOriginalPotionEffects(String arenaName, String userName) throws ObjectMappingException{
+		
+		List<PotionEffect> potionEffects = Lists.newArrayList();
+		
+		CommentedConfigurationNode node = UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants", userName, "Potion Effects");
+		
+		int NOPE = getNumOfPotionEffects(arenaName,userName);
+		
+		for(int i = 1; i<= NOPE;i++){
+			
+			PotionEffect potionEffect = node.getNode("Effect "+i).getValue(TypeToken.of(PotionEffect.class));
+			
+			potionEffects.add(potionEffect);
+
+		}
+		
+		return potionEffects;
+	}
+
+	private static int getNumOfPotionEffects(String arenaName, String userName) {
+
+		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants", userName, "Potion Effects").getChildrenMap().keySet().size();
 	}
 	
     /**public static void savePlayerInventory(String arenaName, Player player) throws ObjectMappingException {

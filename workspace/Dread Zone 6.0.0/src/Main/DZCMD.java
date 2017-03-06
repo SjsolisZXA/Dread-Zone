@@ -89,16 +89,19 @@ public class DZCMD implements CommandExecutor {
 				.append(Text.of("/dz rnds",TextColors.WHITE," or ",TextColors.DARK_RED, "/dz resetNodes",TextColors.WHITE," Reset all capture nodes.")).build());
 		
 		contents.add(Text.builder().color(TextColors.DARK_RED).onClick(TextActions.runCommand("/dz al"))
-				.append(Text.of("/dz al",TextColors.WHITE," or ",TextColors.DARK_RED, "/dz arenaList",TextColors.WHITE," Gets all of the Dread Zone arenas.")).build());
+				.append(Text.of("/dz al",TextColors.WHITE," or ",TextColors.DARK_RED, "/dz arenaList",TextColors.WHITE," Gets a list of all the Dread Zone arenas")).build());
 		
 		contents.add(Text.builder().color(TextColors.DARK_RED).onClick(TextActions.runCommand("/dz cl"))
-				.append(Text.of("/dz cl",TextColors.WHITE," or ",TextColors.DARK_RED, "/dz classList",TextColors.WHITE," Gets all of the classes for a specified arena.")).build());
+				.append(Text.of("/dz cl",TextColors.WHITE," or ",TextColors.DARK_RED, "/dz classList",TextColors.WHITE," Gets a list of all the classes for a specified arena.")).build());
 		
 		contents.add(Text.builder().color(TextColors.DARK_RED).onClick(TextActions.runCommand("/dz slp"))
 				.append(Text.of("/dz slp",TextColors.WHITE," or ",TextColors.DARK_RED, "/dz setLobbySpawn",TextColors.WHITE," Set a Dread Zone's lobby spawn point.")).build());
 		
 		contents.add(Text.builder().color(TextColors.DARK_RED).onClick(TextActions.runCommand("/dz ml"))
 				.append(Text.of("/dz ml",TextColors.WHITE," or ",TextColors.DARK_RED, "/dz moveLobby",TextColors.WHITE," Re-create a specified Dread Zone arena lobby.")).build());
+		
+		contents.add(Text.builder().color(TextColors.DARK_RED).onClick(TextActions.runCommand("/dz am"))
+				.append(Text.of("/dz am",TextColors.WHITE," or ",TextColors.DARK_RED, "/dz arenaModes",TextColors.WHITE," Get a list of all of the avaliable modes for a specified arena.")).build());
 		
 		builder.title(Text.builder().color(TextColors.DARK_GRAY).append(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone Commands",TextColors.DARK_RED,"]")).build())
 		.contents(contents)

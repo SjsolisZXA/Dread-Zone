@@ -2,6 +2,7 @@ package Executors;
 
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
+import ConfigUtils.PABConfigUtils;
 import ConfigUtils.TDMConfigUtils;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -31,21 +32,42 @@ public class Ready implements CommandExecutor {
             
             if (ContestantConfigUtils.isUserAnArenaContestant(arenaName, player.getName())) {
             	
-                ContestantConfigUtils.isready(arenaName, player.getName());
-                
-                int numOfSpots = ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team A Spawnpoints") + ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team B Spawnpoints");
-                
-                if (ContestantConfigUtils.getNumOfReadyContestants(arenaName) < numOfSpots) {
+            	//TDM ready
+                if(ArenaConfigUtils.getArenaStatus(arenaName).equals("TDM")){
                 	
-                    player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", TextColors.WHITE, "Waiting on the other players..."));
+                    ContestantConfigUtils.isready(arenaName, player.getName());
                     
+                    int numOfSpots = ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team A Spawnpoints") + ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team B Spawnpoints");
+                    
+                    if (ContestantConfigUtils.getNumOfReadyContestants(arenaName) < numOfSpots) {
+                    	
+                        player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", TextColors.WHITE, "Waiting on the other players..."));
+                        
+                        return CommandResult.success();
+                    }
+                    if (ContestantConfigUtils.getNumOfReadyContestants(arenaName) == numOfSpots) {
+                    	
+                        TDMConfigUtils.beingTDM(arenaName);
+                    }
                     return CommandResult.success();
                 }
-                if (ContestantConfigUtils.getNumOfReadyContestants(arenaName) == numOfSpots) {
+                
+                //PAB ready
+                if(ArenaConfigUtils.getArenaStatus(arenaName).equals("PAB")){
                 	
-                    TDMConfigUtils.beingTDM(arenaName);
+                	ContestantConfigUtils.isready(arenaName, player.getName());
+                	
+                	if(ContestantConfigUtils.getNumOfArenaContestants(arenaName)==ContestantConfigUtils.getNumOfReadyContestants(arenaName)){
+                		
+                		PABConfigUtils.beginPAB(arenaName);
+                		
+                		return CommandResult.success();
+                	}
+                	
+                	player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", TextColors.WHITE, "Waiting on the other players..."));
+                	
+                	return CommandResult.success();
                 }
-                return CommandResult.success();
             }
             player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", TextColors.WHITE, "This a Dread Zone contestant command only!"));
             
