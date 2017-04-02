@@ -1,12 +1,18 @@
 package ConfigUtils;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.potion.PotionEffect;
+import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.Transform;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -69,7 +75,7 @@ public class ContestantConfigUtils {
     }
 	
 	//removes a specific user from the arena roster
-	public static void removeContestant(String arenaName, String player) {
+	public static void removeContestantFromList(String arenaName, String player) {
 				
 		UnversalConfigs.removeChild(ArenaConfig, new Object[] {"Arena",arenaName,"Contestants"}, getContestant(arenaName,player));
 		
@@ -228,6 +234,72 @@ public class ContestantConfigUtils {
 	private static int getNumOfPotionEffects(String arenaName, String userName) {
 
 		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants", userName, "Potion Effects").getChildrenMap().keySet().size();
+	}
+	
+	public static void removeContestant(String arenaName, Player player) {
+
+		player.getInventory().clear();
+		
+		//restore player location
+		player.setLocationAndRotation(returnContestant(arenaName.toString(), player.getName().toString()), 
+				returnContestantTransform(arenaName.toString(), player.getName().toString()));
+		
+		//restore original food level
+		player.offer(Keys.FOOD_LEVEL, fetchOriginalFoodLevel(arenaName.toString(), player.getName()));
+		
+		//restore game mode
+		try {
+			 
+			player.offer(player.getGameModeData().set(Keys.GAME_MODE,fetchOriginalGamemode(arenaName.toString(), player.getName().toString())));
+			
+		} catch (ObjectMappingException e1) {
+			
+			e1.printStackTrace();
+		}
+		
+		/**
+		//restore potion effects
+		try {
+			
+			player.offer(Keys.POTION_EFFECTS,ContestantConfigUtils.fetchOriginalPotionEffects(arenaName.toString(), player.getName()));
+			
+		} catch (ObjectMappingException e) {
+			
+			e.printStackTrace();
+		}*/
+		
+		ContestantConfigUtils.removeContestantFromList(arenaName.toString(),player.getName());
+		
+		//clean up NPCs if no one is left in the arena
+		if(ContestantConfigUtils.getArenaContestants(arenaName).isEmpty()){
+			
+			ArenaConfigUtils.setArenaStatus(arenaName, "Open");
+
+			Collection<Entity> DZNPCs = player.getWorld().getEntities();
+
+			Set<Object> NPCClasses = ClassConfigUtils.getArenaClasses(arenaName);
+			
+			for(Entity entity:DZNPCs){
+				
+				Optional<Text> NPC = entity.get(Keys.DISPLAY_NAME);
+				
+				if(NPC.isPresent()){
+					
+					Text classN = NPC.get();
+					
+					String className = classN.toPlain();
+					
+					for(Object CN: NPCClasses){
+						
+						if(CN.toString().equals(className.toString())
+								&&LobbyConfigUtils.isUserinLobby(entity.getLocation(), arenaName.toString())){
+							
+							entity.remove();
+						}
+					}
+				}
+			}
+		}
 	}
 	
     /**public static void savePlayerInventory(String arenaName, Player player) throws ObjectMappingException {

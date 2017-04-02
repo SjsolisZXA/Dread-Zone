@@ -6,13 +6,6 @@ import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.scoreboard.Scoreboard;
-import org.spongepowered.api.scoreboard.critieria.Criteria;
-import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
-import org.spongepowered.api.scoreboard.objective.Objective;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextStyles;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -21,6 +14,7 @@ import ConfigFiles.ArenaFileConfig;
 import ConfigFiles.Configurable;
 import ConfigFiles.UnversalConfigs;
 import Main.Main;
+import Utils.GUI;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 
 public class PABConfigUtils {
@@ -117,33 +111,7 @@ public class PABConfigUtils {
 		
 		teletportContestantsToArena(arenaName);
 		
-		setupScoreboards(TDMConfigUtils.convertObjectContestantsToPlayers(arenaName));
-	}
-
-	private static void setupScoreboards(List<Player> contestants) {
-
-        Scoreboard scoreboard = Scoreboard.builder().build();
-        
-        for(Player player:contestants){
-        
-	        Objective objective = Objective.builder().name("Stats").displayName(Text.of(TextColors.DARK_RED,TextStyles.UNDERLINE,(String.valueOf(player.getName()) + " Kills"))).criterion(Criteria.DUMMY).build();
-	        
-	        scoreboard.addObjective(objective);
-	        
-	        scoreboard.updateDisplaySlot(objective, DisplaySlots.SIDEBAR);
-	        
-	        objective.getOrCreateScore(Text.of("Total Kills")).setScore(0);
-	        
-	        objective.getOrCreateScore(Text.of("Deaths")).setScore(0);
-	        
-	        player.setScoreboard(scoreboard);
-	        
-	        Text text1 = Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "]");
-	        
-	        Text text2 = Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Challange", TextColors.DARK_RED, "]");
-	        
-	        player.getTabList().setHeaderAndFooter(text1, text2);
-        }
+		GUI.setupPABScoreboards(TDMConfigUtils.convertObjectContestantsToPlayers(arenaName));
 	}
 
 	private static void teletportContestantsToArena(String arenaName) {

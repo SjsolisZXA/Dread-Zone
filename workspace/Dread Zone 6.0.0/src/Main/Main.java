@@ -56,6 +56,7 @@ import Listeners.NodeListener;
 import Listeners.PABListeners;
 import Listeners.PBDetector;
 import Listeners.RightClickMode;
+import Listeners.TDMListeners;
 import Modes.PAB;
 import Modes.TDM;
 import Reset.ResetMobCreate;
@@ -66,6 +67,7 @@ import Setters.SetArena;
 import Setters.SetLobbySpawn;
 import Test.TestExecutor0;
 import Test.TestExecutor1;
+import Test.TestExecutor2;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 
@@ -344,26 +346,31 @@ public class Main {
 				.executor(new DZCMD())
 				.build();
 		
-		CommandSpec testChildCmd0 = CommandSpec.builder()
-				.description(Text.of("Test child method."))
-				.executor(new TestExecutor0())
+		CommandSpec testChildCmd2 = CommandSpec.builder()
+				.description(Text.of("Test child method 2."))
+				.executor(new TestExecutor2())
 				.build();
 		CommandSpec testChildCmd1 = CommandSpec.builder()
-				.description(Text.of("Test child method."))
-				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("optionalTestArguments")))))
+				.description(Text.of("Test child method 1."))
 				.executor(new TestExecutor1())
+				.build();
+		CommandSpec testChildCmd0 = CommandSpec.builder()
+				.description(Text.of("Test child method 0."))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("optionalTestArguments")))))
+				.executor(new TestExecutor0())
 				.build();
 		CommandSpec testCmd = CommandSpec.builder()
 				.description(Text.of("Test method."))
 				.child(testChildCmd0,"child0")
 				.child(testChildCmd1, "child1")
+				.child(testChildCmd2, "child2")
 				.build();
 	    
 	    game.getCommandManager().register(this, testCmd, "test");
 	    game.getCommandManager().register(this, dreadZoneCmd,"dz");
 
 		
-		//game.getEventManager().registerListeners(this, new TDMListeners());
+		game.getEventManager().registerListeners(this, new TDMListeners());
 		game.getEventManager().registerListeners(this, new DZNPCListener());
 		game.getEventManager().registerListeners(this, new NodeListener());
 		game.getEventManager().registerListeners(this, new GeneralArenaListeners());

@@ -18,6 +18,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import ConfigUtils.ArenaConfigUtils;
+import ConfigUtils.ClassConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.LobbyConfigUtils;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
@@ -77,7 +78,21 @@ public class JoinArena implements CommandExecutor {
 				                    ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team B Spawnpoints");
 							
 				            if (ContestantConfigUtils.getNumOfArenaContestants(arenaName) < numOfSpots){
-				            	
+
+				            	if(ArenaConfigUtils.getArenaData(arenaName, "Status").equals("Open")){
+				            	 							
+				            		ArenaConfigUtils.setArenaStatus(arenaName, "TDM");
+				            	 								
+	 								try {
+	 									
+										ClassConfigUtils.spawnArenaNPCs(player.getUniqueId(),arenaName);
+	 									
+	 								} catch (ObjectMappingException e) {
+											
+	 										e.printStackTrace();
+	 								}
+ 								}
+
 				            	join(player,arenaName);
 								
 					            player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "]", 

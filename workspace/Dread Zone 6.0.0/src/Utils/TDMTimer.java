@@ -12,9 +12,7 @@ import org.spongepowered.api.text.title.Title;
 
 import com.google.common.collect.Lists;
 
-import ConfigUtils.TDMConfigUtils;
-
-public class TeamDeathmatchTimer implements Consumer<Task> {
+public class TDMTimer implements Consumer<Task> {
 	
     static int seconds = 10;
     
@@ -32,7 +30,7 @@ public class TeamDeathmatchTimer implements Consumer<Task> {
     
     Title subT = Title.builder().subtitle(Text.of("Match Begins in:")).stay(230).build();
 
-    public TeamDeathmatchTimer(List<Player> players, Text teamAName, Text teamBName, List<Player> teamAContestants, List<Player> teamBContestants) {
+    public TDMTimer(List<Player> players, Text teamAName, Text teamBName, List<Player> teamAContestants, List<Player> teamBContestants) {
     	
     	TAN = teamAName;
         
@@ -69,9 +67,9 @@ public class TeamDeathmatchTimer implements Consumer<Task> {
         
         if (seconds < 1) {
         	
-            TDMConfigUtils.setUpTDMGUI(TAC, TAN);
+            GUI.setUpTDMGUI(TAC, TAN, TAN, TBN);
             
-            TDMConfigUtils.setUpTDMGUI(TBC, TBN);
+            GUI.setUpTDMGUI(TBC, TBN, TAN, TBN);
             
             TOF = false;
             

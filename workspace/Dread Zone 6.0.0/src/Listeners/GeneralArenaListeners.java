@@ -1,8 +1,6 @@
 package Listeners;
 
 import java.util.Optional;
-import java.util.Set;
-
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -12,11 +10,14 @@ import org.spongepowered.api.event.cause.entity.spawn.EntitySpawnCause;
 import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
+import org.spongepowered.api.event.entity.projectile.LaunchProjectileEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
+import org.spongepowered.api.event.item.inventory.UseItemStackEvent;
+import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
@@ -26,10 +27,10 @@ import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ClassConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.LobbyConfigUtils;
-import Utils.TeamDeathmatchTimer;
+import Utils.TDMTimer;
 
 public class GeneralArenaListeners {
-	
+	/**
 	//keeps Dread Zone contestants inside their arenas and corresponding lobbies
 	@Listener
 	public void onPlayerMove(MoveEntityEvent event, @Root Player player){
@@ -40,43 +41,43 @@ public class GeneralArenaListeners {
 			
 		    if(ContestantConfigUtils.isUserAnArenaContestant(arenaName, player.getName())){
 		    	
-		    	if(ArenaConfigUtils.isUserinArena(player.getLocation().add(1,0,0),arenaName)
-		    			||LobbyConfigUtils.isUserinLobby(player.getLocation().add(1,0,0), arenaName)){
+		    	if(!ArenaConfigUtils.isUserinArena(player.getLocation().add(1,0,0),arenaName)
+		    			||!LobbyConfigUtils.isUserinLobby(player.getLocation().add(1,0,0), arenaName)){
 		    		
 		    		player.setLocation(player.getLocation().add(1,0,0));
 		    		return;
 		    	}
 		    	
-		    	if(ArenaConfigUtils.isUserinArena(player.getLocation().add(-1,0,0),arenaName)
-		    			||LobbyConfigUtils.isUserinLobby(player.getLocation().add(-1,0,0), arenaName)){
+		    	if(!ArenaConfigUtils.isUserinArena(player.getLocation().add(-1,0,0),arenaName)
+		    			||!LobbyConfigUtils.isUserinLobby(player.getLocation().add(-1,0,0), arenaName)){
 		    		
 		    		player.setLocation(player.getLocation().add(-1,0,0));
 		    		return;
 		    	}
 		    	
-		    	if(ArenaConfigUtils.isUserinArena(player.getLocation().add(0,0,1),arenaName)
-		    			||LobbyConfigUtils.isUserinLobby(player.getLocation().add(0,0,1), arenaName)){
+		    	if(!ArenaConfigUtils.isUserinArena(player.getLocation().add(0,0,1),arenaName)
+		    			||!LobbyConfigUtils.isUserinLobby(player.getLocation().add(0,0,1), arenaName)){
 		    		
 		    		player.setLocation(player.getLocation().add(0,0,1));
 		    		return;
 		    	}
 		    	
-		    	if(ArenaConfigUtils.isUserinArena(player.getLocation().add(0,0,-1),arenaName)
-		    			||LobbyConfigUtils.isUserinLobby(player.getLocation().add(0,0,-1), arenaName)){
+		    	if(!ArenaConfigUtils.isUserinArena(player.getLocation().add(0,0,-1),arenaName)
+		    			||!LobbyConfigUtils.isUserinLobby(player.getLocation().add(0,0,-1), arenaName)){
 		    		
 		    		player.setLocation(player.getLocation().add(0,0,-1));
 		    		return;
 		    	}
 		    	
-		    	if(ArenaConfigUtils.isUserinArena(player.getLocation().add(0,-1,0),arenaName)
-		    			||LobbyConfigUtils.isUserinLobby(player.getLocation().add(0,-1,0), arenaName)){
+		    	if(!ArenaConfigUtils.isUserinArena(player.getLocation().add(0,-1,0),arenaName)
+		    			||!LobbyConfigUtils.isUserinLobby(player.getLocation().add(0,-1,0), arenaName)){
 		    		
 		    		player.setLocation(player.getLocation().add(0,-1,0));
 		    		return;
 		    	}
 		    	
-		    	if(ArenaConfigUtils.isUserinArena(player.getLocation().add(0,1,0),arenaName)
-		    			||LobbyConfigUtils.isUserinLobby(player.getLocation().add(0,1,0), arenaName)){
+		    	if(!ArenaConfigUtils.isUserinArena(player.getLocation().add(0,1,0),arenaName)
+		    			||!LobbyConfigUtils.isUserinLobby(player.getLocation().add(0,1,0), arenaName)){
 		    		
 		    		player.setLocation(player.getLocation().add(0,1,0));
 		    		return;
@@ -88,9 +89,10 @@ public class GeneralArenaListeners {
 	    
 	    for(Object arena: arenas){
 	    	
-	    	if(ContestantConfigUtils.isUserAnArenaContestant(arena.toString(), player.getName())){
+	    	if(ContestantConfigUtils.isUserAnArenaContestant(arena.toString(), player.getName())&&
+	    			ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation()).equals(null)){
 	    		
-		    	ContestantConfigUtils.removeContestant(arena.toString(), player.getName());
+		    	ContestantConfigUtils.removeContestant(arena.toString(), player);
 		    	
 		    	player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 						TextColors.WHITE,"Thanks for playing!"));
@@ -98,7 +100,7 @@ public class GeneralArenaListeners {
 		    	return;
 	    	}
 	    }
-	}
+	}*/
 	
 	//prevents contestants from executing any commands
     @Listener
@@ -203,7 +205,7 @@ public class GeneralArenaListeners {
     	
 	        if (ContestantConfigUtils.isUserAnArenaContestant(arenaName, player.getName())) {
 	        	
-	            event.setCancelled(TeamDeathmatchTimer.isFreezingPlayers());
+	            event.setCancelled(TDMTimer.isFreezingPlayers());
 	        }
     	}
     }    
@@ -222,16 +224,6 @@ public class GeneralArenaListeners {
         	
     	        if (LobbyConfigUtils.isUserinLobby(eventLocation, arenaName)|| 
     	        		ArenaConfigUtils.isUserinArena(eventLocation, arenaName)) {
-    	        	
-    	        	/**boolean playerCause = event.getCause().first(Player.class).isPresent();
-    	            
-    	            if (playerCause) {
-    	            	
-    	                Player player = event.getCause().first(Player.class).get();
-    	                
-			              player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
-			                      TextColors.WHITE, "You can't break a Dread Zone arena or it's lobby!"));
-    	            }*/
     	        	    	           
     	        	event.setCancelled(true);
     	        }
@@ -277,14 +269,29 @@ public class GeneralArenaListeners {
 		       	}
 	    	}
 		}
-    }
-
+    }  
     
+    //removes a contestant from an arena on disconnect
+    @Listener
+    public void onContestantLogOut(ClientConnectionEvent.Disconnect event){
+    	
+    	Player player = (Player)event.getTargetEntity();
+    	
+    	if(ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation())!=null){
+    		
+    		String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation());
+    		
+    		if(ContestantConfigUtils.isUserAnArenaContestant(arenaName, player.getName())){
+    			
+    			ContestantConfigUtils.removeContestant(arenaName, player);
+    		}
+    	}
+    }
 
     
     
     //Abstract listeners
-    /**
+    
     //prevents contestants from consuming potions in lobbies
     @Listener
     public void onPlayerConsumption(UseItemStackEvent.Start event, @Root Player player) {//needs cause event location and if the cause if by a contestnat//FIX
@@ -298,5 +305,5 @@ public class GeneralArenaListeners {
     public void onPotionThrow(LaunchProjectileEvent event,@Root Player player) {//needs cause event location and if the cause if by a contestnat//FIX
     
         event.setCancelled(true);
-    }*/
+    }
 }

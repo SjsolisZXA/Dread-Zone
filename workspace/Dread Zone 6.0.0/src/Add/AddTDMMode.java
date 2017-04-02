@@ -10,6 +10,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.RightClickModeConfigUtils;
+import ConfigUtils.TDMConfigUtils;
 import Modes.TDM;
 
 public class AddTDMMode implements CommandExecutor{
@@ -46,6 +47,8 @@ public class AddTDMMode implements CommandExecutor{
 		ArenaConfigUtils.setIntGoal(arenaName, nOMPT*2);
 		
 		TDM.SATS(arenaName,player);
+		
+		TDMConfigUtils.setPointWin(arenaName, 40);
 		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 				TextColors.WHITE,"Stand where you want players from Team A to spawn in the arena and enter ",TextColors.DARK_RED,"/dzasp SPAWN_NAME"));
