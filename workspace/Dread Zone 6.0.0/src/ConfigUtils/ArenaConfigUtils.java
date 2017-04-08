@@ -2,9 +2,12 @@ package ConfigUtils;
 
 import java.util.Set;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
+
+import com.flowpowered.math.vector.Vector3d;
 
 import ConfigFiles.UnversalConfigs;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -328,5 +331,62 @@ public class ArenaConfigUtils {
 		
 		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Status").getString();
 	}
+	
+	public static void setCreditsLocation(String arenaName, Transform<World> location){
+		
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Credits Location", "X").setValue(location.getLocation().getBlockX());
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Credits Location", "Y").setValue(location.getLocation().getBlockY());
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Credits Location", "Z").setValue(location.getLocation().getBlockZ());
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Credits Location", "Transform", "X").setValue(((int)location.getRotation().getX()));
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Credits Location", "Transform", "Y").setValue(((int)location.getRotation().getY()));
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Credits Location", "Transform", "Z").setValue(((int)location.getRotation().getZ()));
+
+		UnversalConfigs.saveConfig(ArenaConfig);
+	}
+	
+    public static Location<World> getCreditsLocation(String arenaName) {
+    	
+        CommentedConfigurationNode targetNode = UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Credits Location");
+        String targetPlayerWorldName = UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "World").getString();
+        World world = Sponge.getServer().getWorld(targetPlayerWorldName).orElse(null);
+    
+        int x = targetNode.getNode("X").getInt();
+        int y = targetNode.getNode("Y").getInt();
+        int z = targetNode.getNode("Z").getInt();
+        
+        return new Location<World>(world, x, y, z);
+    }
+	
+    public static Vector3d getCreditsLocationTransform(String arenaName) {
+    	
+        CommentedConfigurationNode targetNode = UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Credits Location", "Transform");
+        
+        int tx = targetNode.getNode("X").getInt();
+        int ty = targetNode.getNode("Y").getInt();
+        int tz = targetNode.getNode("Z").getInt();
+        
+        return new Vector3d(tx, ty, tz);
+    }
+    
+    public static void setCreditsMode(String arenaName, Boolean bool){
+    	
+    	Set<Object> contestants = ContestantConfigUtils.getArenaContestants(arenaName);
+    	
+    	for(Object contestant: contestants){
+    		
+    		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants", contestant, "Credits Mode").setValue(bool);
+
+    		UnversalConfigs.saveConfig(ArenaConfig);
+    	}
+    }
+    
+    public static Object getCreditMode(String arenaName, String playerName){
+    	
+    	if(UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants", playerName, "Credits Mode")==null){
+    		
+    		return null;
+    	}
+    	return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants", playerName, "Credits Mode").getBoolean();
+    }
 }
 

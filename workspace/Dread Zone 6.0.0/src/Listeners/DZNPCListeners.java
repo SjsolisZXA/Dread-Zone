@@ -26,7 +26,7 @@ import ConfigUtils.ClassConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
-public class DZNPCListener {
+public class DZNPCListeners {
 	
 	//Right click on a DZ NPC to see class details
 	@Listener

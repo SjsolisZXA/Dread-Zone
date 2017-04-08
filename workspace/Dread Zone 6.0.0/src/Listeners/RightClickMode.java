@@ -1,6 +1,5 @@
 package Listeners;
 
-import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -10,8 +9,6 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-
-import com.google.inject.Inject;
 
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.LightningConfigUtils;
@@ -31,9 +28,6 @@ public class RightClickMode {
 	static String NN;
 	static String SAAN;
 	static String PBAN;
-	
-	@Inject
-	Game game;
 	
 	public static void SLRLTN(String targetName) {
 		

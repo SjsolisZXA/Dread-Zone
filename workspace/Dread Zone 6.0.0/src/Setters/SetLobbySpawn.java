@@ -47,7 +47,7 @@ public class SetLobbySpawn implements CommandExecutor{
 		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 				TextColors.WHITE,"Sucess, ",TextColors.DARK_RED,arenaName+"Lobby",TextColors.WHITE," spawn point set! "
-						+ "Although the arena and lobby have been created, you must create idividual modes for your arenas. "
+						+ "Although the arena and lobby have been created, you must add at least one Dread Zone arena mode. "
 						+ "To do so, enter ",TextColors.DARK_RED,"/cdzam ",arenaName," MODE NUMBER_OF_PLAYERS_PER_TEAM"));
 
 		return CommandResult.success();

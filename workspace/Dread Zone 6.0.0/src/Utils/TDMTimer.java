@@ -14,31 +14,33 @@ import com.google.common.collect.Lists;
 
 public class TDMTimer implements Consumer<Task> {
 	
-    static int seconds = 10;
+    int S;
     
-    static List<Player> lPlayers = Lists.newArrayList();
+    List<Player> lPlayers = Lists.newArrayList();
     
-    Text TAN;
+    Text TEAM_A_NAME;
+    Text TEAM_B_NAME;
     
-    Text TBN;
-    
-    List<Player> TAC;
-    
-    List<Player> TBC;
+    List<Player> TEAM_A_CONTESTANTS;
+    List<Player> TEAM_B_CONTESTANTS;
     
     static Boolean TOF = false;
     
-    Title subT = Title.builder().subtitle(Text.of("Match Begins in:")).stay(230).build();
+    String ARENA_NAME;
+    
+    Title subT = Title.builder().subtitle(Text.of("Match Begins in:")).stay(200).build();
 
-    public TDMTimer(List<Player> players, Text teamAName, Text teamBName, List<Player> teamAContestants, List<Player> teamBContestants) {
+    public TDMTimer(String arenaName, List<Player> players, Text teamAName, Text teamBName, List<Player> teamAContestants, List<Player> teamBContestants, int seconds) {
     	
-    	TAN = teamAName;
+    	this.TEAM_A_NAME = teamAName;
+        this.TEAM_B_NAME = teamBName;
         
-        TBN = teamBName;
+        this.TEAM_A_CONTESTANTS = teamAContestants;
+        this.TEAM_B_CONTESTANTS = teamBContestants;
         
-        TAC = teamAContestants;
+        this.ARENA_NAME = arenaName;
         
-        TBC = teamBContestants;
+        this.S = seconds;
         
         for (Player p : players) {
         	
@@ -60,20 +62,20 @@ public class TDMTimer implements Consumer<Task> {
         
         for (Player player : lPlayers) {
         	
-            player.sendMessage(ChatTypes.ACTION_BAR, Text.of(TextColors.YELLOW, seconds));
+            player.sendMessage(ChatTypes.ACTION_BAR, Text.of(TextColors.YELLOW, S));
         }
         
-        seconds--;
+        S--;
         
-        if (seconds < 1) {
+        if (S < 0) {
         	
-            GUI.setUpTDMGUI(TAC, TAN, TAN, TBN);
-            
-            GUI.setUpTDMGUI(TBC, TBN, TAN, TBN);
-            
             TOF = false;
             
             task.cancel();
+        	        	
+            GUI.setUpTDMGUI(ARENA_NAME, TEAM_A_CONTESTANTS, TEAM_B_CONTESTANTS, TEAM_A_NAME, TEAM_A_NAME, TEAM_B_NAME);
+            GUI.setUpTDMGUI(ARENA_NAME, TEAM_B_CONTESTANTS, TEAM_A_CONTESTANTS, TEAM_B_NAME, TEAM_A_NAME, TEAM_B_NAME);
+
         }
     }
 }

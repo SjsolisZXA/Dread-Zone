@@ -61,7 +61,7 @@ public class TDMConfigUtils {
         teleportPlayersToArena(arenaName, teamBContestants, "Team B Spawnpoints");
         
         Sponge.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).delay(1, TimeUnit.SECONDS).execute(new 
-        		TDMTimer(contestants, teamAName, teamBName, teamAContestants, teamBContestants)).submit(Main.Dreadzone);
+        		TDMTimer(arenaName, contestants, teamAName, teamBName, teamAContestants, teamBContestants, 10)).submit(Main.Dreadzone);
     }
     
     private static void teleportPlayersToArena(Object arenaName, List<Player> teamContestants, String teamName) {

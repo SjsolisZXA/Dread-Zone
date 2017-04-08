@@ -1,8 +1,5 @@
 package Test;
 
-import org.spongepowered.api.boss.BossBarColors;
-import org.spongepowered.api.boss.BossBarOverlays;
-import org.spongepowered.api.boss.ServerBossBar;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -10,7 +7,6 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
-
 import ConfigUtils.TDMConfigUtils;
 
 public class TestExecutor2 implements CommandExecutor {
@@ -20,16 +16,9 @@ public class TestExecutor2 implements CommandExecutor {
 		
 		Player player = (Player)src;
 		
-		ServerBossBar team = ServerBossBar.builder()
-				.name(Text.of(TDMConfigUtils.getRandomTeam()))
-				.percent(0)
-				.color(BossBarColors.GREEN)
-				.overlay(BossBarOverlays.PROGRESS)
-				/*.createFog(true)*/
-				.darkenSky(true)
-				.build();
-		
-		team.addPlayer(player);
+        Text team1 = TDMConfigUtils.getRandomTeam();
+        
+        player.getTabList().getEntry(player.getUniqueId()).get().setDisplayName(Text.of(team1+" "+player.getName()));
 		
 		return CommandResult.success();
 	}

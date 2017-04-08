@@ -1,7 +1,12 @@
 package Listeners;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.living.monster.Monster;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
@@ -22,11 +27,12 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ClassConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.LobbyConfigUtils;
+import ConfigUtils.RightClickModeConfigUtils;
+import ConfigUtils.TDMConfigUtils;
 import Utils.TDMTimer;
 
 public class GeneralArenaListeners {
@@ -212,23 +218,84 @@ public class GeneralArenaListeners {
     
     //prevents anyone from destroying blocks inside the Dread Zone arena and lobby
     @Listener
-    public void onDestroyBlock(ChangeBlockEvent.Break event) {
+    public void onBlockDestroy(ChangeBlockEvent.Break event, @Root Entity entity) {
     	
-        event.getTransactions().stream().forEach((trans) -> {
-            	
-            Location<World> eventLocation = trans.getOriginal().getLocation().get();
-                
-        	if(ArenaConfigUtils.getUserArenaNameFromLocation(eventLocation) != null){
-        		
-        		String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(eventLocation);
-        	
-    	        if (LobbyConfigUtils.isUserinLobby(eventLocation, arenaName)|| 
-    	        		ArenaConfigUtils.isUserinArena(eventLocation, arenaName)) {
-    	        	    	           
-    	        	event.setCancelled(true);
-    	        }
-        	}
-        });
+    	if(entity instanceof Player){
+    		
+    		Player player = (Player)entity;
+    	
+	        event.getTransactions().stream().forEach((trans) -> {
+	            	
+	            Location<World> eventLocation = trans.getOriginal().getLocation().get();
+	                
+	        	if(ArenaConfigUtils.getUserArenaNameFromLocation(eventLocation) != null){
+	        		
+	        		String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(eventLocation);
+	
+	    	        if (LobbyConfigUtils.isUserinLobby(eventLocation, arenaName)|| 
+	    	        		ArenaConfigUtils.isUserinArena(eventLocation, arenaName)) {
+	    	        	    	
+	    	        	if(!RightClickModeConfigUtils.isUserInConfig(player.getName())){
+
+	    	        		event.setCancelled(true);
+	    	        		return;
+	    	        	}
+	    	        	if(RightClickModeConfigUtils.isUserInConfig(player.getName())&&
+	    	        		!RightClickModeConfigUtils.getUserMode(player.getName()).equals("EA - "+arenaName)){
+	        	
+	    	        		event.setCancelled(true);
+	    	        		return;
+	        			}
+	    	        }
+	        	}
+	        });
+    	}
+    	
+    	if((entity instanceof Monster)){
+    		
+    		event.setCancelled(true);
+    	}
+    }
+    
+    //prevents anyone from placing blocks inside the Dread Zone arena and lobby
+    @Listener
+    public void onBlockPlace(ChangeBlockEvent.Place event, @Root Entity entity) {
+    	
+    	if(entity instanceof Player){
+    		
+    		Player player = (Player)entity;
+    	
+	        event.getTransactions().stream().forEach((trans) -> {
+	            	
+	            Location<World> eventLocation = trans.getOriginal().getLocation().get();
+	                
+	        	if(ArenaConfigUtils.getUserArenaNameFromLocation(eventLocation) != null){
+	        		
+	        		String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(eventLocation);
+	
+	    	        if (LobbyConfigUtils.isUserinLobby(eventLocation, arenaName)|| 
+	    	        		ArenaConfigUtils.isUserinArena(eventLocation, arenaName)) {
+	    	        	    	
+	    	        	if(!RightClickModeConfigUtils.isUserInConfig(player.getName())){
+
+	    	        		event.setCancelled(true);
+	    	        		return;
+	    	        	}
+	    	        	if(RightClickModeConfigUtils.isUserInConfig(player.getName())&&
+	    	        		!RightClickModeConfigUtils.getUserMode(player.getName()).equals("EA - "+arenaName)){
+	        	
+	    	        		event.setCancelled(true);
+	    	        		return;
+	        			}
+	    	        }
+	        	}
+	        });
+    	}
+    	
+    	if((entity instanceof Monster)){
+    		
+    		event.setCancelled(true);
+    	}
     }
     
     //prevents contestants from dropping items in lobbies and prevents non-contestants from dropping items in arenas
@@ -287,7 +354,46 @@ public class GeneralArenaListeners {
     		}
     	}
     }
-
+    
+    //meant to prevent contestant's tab list from getting bigger when players join the server
+    @Listener
+    public void onuserLogIn(ClientConnectionEvent.Join event){
+    	
+    	Set<Object> arenas = ArenaConfigUtils.getArenas();
+    	
+    	Player JP = (Player)event.getTargetEntity();
+    	
+    	for(Object arena: arenas){
+    		
+    		List<Player> contestants = TDMConfigUtils.convertObjectContestantsToPlayers(arena.toString());
+    		
+    		for(Player player: contestants){
+    			
+    			player.getTabList().removeEntry(JP.getUniqueId());
+    		}
+    	}
+    }
+    
+    //prevents any contestant from moving while credits are being shown
+    @Listener
+    public void onPlayerMoveDuringCredits(MoveEntityEvent event, @Root Player player) {
+    	
+    	if(ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation())!=null){
+    		
+    		String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation());
+    		
+    		if(ContestantConfigUtils.isUserAnArenaContestant(arenaName, player.getName())){
+    			
+    			if(ArenaConfigUtils.getCreditMode(arenaName, player.getName())!=null){
+    				
+        			if(ArenaConfigUtils.getCreditMode(arenaName, player.getName()).equals(true)){
+        				
+        				event.setCancelled(true);
+        			}
+    			}
+    		}
+    	}
+    }
     
     
     //Abstract listeners

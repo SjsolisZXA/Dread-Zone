@@ -1,5 +1,7 @@
 package Add;
 
+import java.util.Optional;
+
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -32,15 +34,27 @@ public class AddTDMMode implements CommandExecutor{
 		if(!ArenaConfigUtils.isArenaInConfig(arenaName)){
 			
 			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-					TextColors.WHITE,"The Dread Zone arena specified does not exists!"));
+					TextColors.WHITE,"The Dread Zone arena specified does not exists! "
+							+ "To get a list of Dread Zone arenas, enter ",TextColors.DARK_RED,"/dz al",TextColors.WHITE,"."));
 			
 			return CommandResult.success();
 		}
 
+		Optional<Integer> ONOMPT = args.<Integer> getOne("number of players per team");//numberOfMemebrsPerTeam
+		
+		if(!ONOMPT.isPresent()){
+			
+            src.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
+                    TextColors.WHITE, "Invalid usage! Usage: ",TextColors.DARK_RED,"/dz aam ARENA_NAME",TextColors.WHITE,
+                    ". To get a list of Dread Zone arenas, enter ",TextColors.DARK_RED,"/dz al",TextColors.WHITE,"."));
+            
+            return CommandResult.success();
+		}
+		
 		//the user is not actually going to be in a right click mode, but this will help the user set player spawn points
 		RightClickModeConfigUtils.addToList(player.getName(), "TDM");
-
-		int nOMPT = args.<Integer> getOne("number of players per team").get();//numberOfMemebrsPerTeam
+		
+		int nOMPT = args.<Integer> getOne("number of players per team").get();
 		
 		ArenaConfigUtils.setIntCurrent(arenaName, 0);
 		

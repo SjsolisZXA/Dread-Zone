@@ -1,22 +1,37 @@
 package Listeners;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.boss.ServerBossBar;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
+import org.spongepowered.api.data.manipulator.mutable.entity.GameModeData;
 import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
+import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
+import org.spongepowered.api.scoreboard.Score;
 import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.title.Title;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.TDMConfigUtils;
+import Main.Main;
+import Utils.CreditsTimer;
+import Utils.GUI;
 
 public class TDMListeners {
     
@@ -58,9 +73,7 @@ public class TDMListeners {
 			                        
 			                        //if the damage source player is not a contestant, cancel it
 			                        if(!ContestantConfigUtils.isUserAnArenaContestant(arenaName, killer.getName())){
-			                        	
-			                        	//Sponge.getServer().getBroadcastChannel().send(Text.of("Attacker is not a contestant"));
-			                        	
+
 			                        	event.setCancelled(true);
 			                        	
 			                        	return;
@@ -71,58 +84,101 @@ public class TDMListeners {
 				                	//if the damage target player is not a contestant, cancel it
 				                	if(!ContestantConfigUtils.isUserAnArenaContestant(arenaName, player.getName())){
 				                		
-				                		//Sponge.getServer().getBroadcastChannel().send(Text.of("Target is not a contestant"));
-				                		
 				                		event.setCancelled(true);
 				                		
 				                		return;
 				                	}
 				                	
-				                    int deathScore = player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get().getScore(Text.of("Deaths")).get().getScore();
-				
-				                    player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get().getScore(Text.of("Deaths")).get().setScore(deathScore + 1);
-				                    
-				                    int killScore = killer.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get().getScore(Text.of("Kills")).get().getScore();
-				    				
-				                    killer.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get().getScore(Text.of("Kills")).get().setScore(killScore + 1);
-				                                
+				                	//update death score
+				                	Score VSCB = player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get().getScore(Text.of("Deaths")).get();
+				                    int deathScore = VSCB.getScore();
+				                    VSCB.setScore(deathScore + 1);
+
+				                    //update kill score
+				                    Score KSCB = killer.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get().getScore(Text.of("Kills")).get();
+				                    int killScore = KSCB.getScore();
+				                    KSCB.setScore(killScore + 1);
+				                      
+				                    //restore health level
 			            			HealthData maxHealth = player.getHealthData().set(Keys.HEALTH, player.get(Keys.MAX_HEALTH).get());
-			            			
 			            			player.offer(maxHealth);
 			            			
+			            			//restore food level
+			            			FoodData maxFood = player.getFoodData().set(Keys.FOOD_LEVEL, 20);
+			            			player.offer(maxFood);
+
+			            			//restore clean slate potion effects
+			            			Optional<List<PotionEffect>> potions = player.get(Keys.POTION_EFFECTS);
 			            			
-			            			
-			            			/*Objective killerTeam = killer.getScoreboard().getObjective(DisplaySlots.BELOW_NAME).get();
-			            			
-			            			Objective victomTeam = player.getScoreboard().getObjective(DisplaySlots.BELOW_NAME).get();
-			            			
-			            			
-			            			
-			            			
-			                        ServerBossBar teamA = ServerBossBar.builder().name(Text.of(killerTeam)).percent(0.0f).color(BossBarColors.GREEN).overlay(BossBarOverlays.PROGRESS).build();
-			                        
-			                        ServerBossBar teamB = ServerBossBar.builder().name(Text.of(victomTeam)).percent(0.0f).color(BossBarColors.RED).overlay(BossBarOverlays.PROGRESS).build();
-			                        
-			                        teamA.addPlayer(player);
-			                        
-			                        teamB.addPlayer(player);
-			            			
-			            			
-			            			Set<Object> contestants = ContestantConfigUtils.getArenaContestants(arenaName);
-			            			
-			            			for(Object contestant:contestants){
+			            			if(potions.isPresent()){
 			            				
-			            				for(Player p: Sponge.getServer().getOnlinePlayers()){
-			            					
-			            					if(contestant.toString().equals(p.getName())){
-			            						
-			            						//ServerBossBar teamBar = teamBar.get(p.getUniqueId());
-			            					}
-			            				}
-			            			}*/
+			            				List<PotionEffect> potionEffects = potions.get();
+			            				potionEffects.clear(); 
+			            				player.offer(Keys.POTION_EFFECTS, potionEffects);
+			            			}
 			            			
+			            			//update score bar
+			            			Text killerTeam = killer.getScoreboard().getObjective(DisplaySlots.BELOW_NAME).get().getDisplayName();
+			            					
+			            			List<Player> contestants = TDMConfigUtils.convertObjectContestantsToPlayers(arenaName);
+			            			
+			            			//Sponge.getServer().getBroadcastChannel().send(Text.of("Killer Team: ",killerTeam));
+		            				
+		            				Map<String,ServerBossBar> b1 = GUI.bTeamBars.get(arenaName);
+		            				Map<String,ServerBossBar> b0 = GUI.aTeamBars.get(arenaName);
+		            				int MaxPoints = TDMConfigUtils.getPointWin(arenaName);
+	            					Title MT = Title.builder().subtitle(Text.of(killerTeam, TextColors.WHITE," WINS!")).stay(60).build();
+	
+			            			for(Player contestant: contestants){
+			            							            				
+			            				ServerBossBar aBar = b0.get(contestant.getName());
+			            				ServerBossBar bBar = b1.get(contestant.getName());
+			            				
+			            				if(aBar.getName().equals(killerTeam)){
+			            					
+				            				float TAMatchKills = aBar.getPercent()*MaxPoints;
+				            				float TANPercent = (1+TAMatchKills)/MaxPoints;
+				            				aBar.setPercent(TANPercent);
+			            				}
+			            				
+			            				if(bBar.getName().equals(killerTeam)){
+				            				
+				            				float TBMatchKills = bBar.getPercent()*MaxPoints;
+				            				float TBNPercent = (1+TBMatchKills)/MaxPoints;
+				            				bBar.setPercent(TBNPercent);
+			            				}
+			            				
+			            				if(aBar.getPercent()==1||bBar.getPercent()==1){
+			            					
+			            					GUI.removeGUI(contestant, aBar, bBar, MT);
+			            					
+			            					GameModeData gm = contestant.getGameModeData().set(Keys.GAME_MODE, GameModes.SPECTATOR);
+			            					contestant.offer(gm);
+			            					
+			            		    		contestant.setLocationAndRotation(ArenaConfigUtils.getCreditsLocation(arenaName), 
+			            		    				ArenaConfigUtils.getCreditsLocationTransform(arenaName));
+			            				}
+			            			}
+			            			          			
+			            			if(b0.get(contestants.get(0).getName()).getPercent()==1||b1.get(contestants.get(0).getName()).getPercent()==1){
+			            				
+			            				ArenaConfigUtils.setCreditsMode(arenaName, true);
+			            				
+				            	        Sponge.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).delay(1, TimeUnit.SECONDS).execute(new 
+				            	        		CreditsTimer(arenaName, contestants, 10)).submit(Main.Dreadzone);
+				            	        
+			            				Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ",
+		            							TextColors.WHITE,"Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," has re-opened! To join, enter: ",
+		            							TextColors.DARK_RED,"/dz join ",arenaName," ARENA_MODE",TextColors.WHITE,"."));
+				            	        
+				            	        event.setCancelled(true);
+				            	        
+				            	        return;
+
+			            			}
+			            				
 			            			TDMConfigUtils.respawnContestant(arenaName, player);
-		                			
+
 		                			event.setCancelled(true);
 		                		}
 		                	}

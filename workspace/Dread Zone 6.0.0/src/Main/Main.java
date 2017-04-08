@@ -25,6 +25,7 @@ import com.google.inject.Inject;
 
 import Add.AddPABMode;
 import Add.AddTDMMode;
+import Add.AAM;
 import Add.AddClass;
 import Add.AddClassItem;
 import Add.AddClassNPC;
@@ -43,13 +44,14 @@ import Executors.ViewArenas;
 import Executors.ViewClasses;
 import Executors.ViewModes;
 import Executors.ReloadExecutor;
+import Executors.EditArena;
 import Executors.JoinArena;
 import Executors.LeaveArena;
 import Executors.MoveArenaLobby;
 import Executors.Ready;
 import Listeners.MobCreatePlayerDetector;
 import Listeners.NodeBlockTracker;
-import Listeners.DZNPCListener;
+import Listeners.DZNPCListeners;
 import Listeners.GeneralArenaListeners;
 import Listeners.MobCreateImpact;
 import Listeners.NodeListener;
@@ -64,6 +66,7 @@ import Reset.ResetNodes;
 import Utils.AutomatedLightningTimer;
 import Utils.LoadConfig;
 import Setters.SetArena;
+import Setters.SetCreditsLocation;
 import Setters.SetLobbySpawn;
 import Test.TestExecutor0;
 import Test.TestExecutor1;
@@ -228,7 +231,7 @@ public class Main {
 		
 		CommandSpec TDMMode = CommandSpec.builder()
 				.description(Text.of("Add TDM mode for an arena."))
-				.arguments(GenericArguments.integer(Text.of("number of players per team")))
+				.arguments(GenericArguments.optional(GenericArguments.integer(Text.of("number of players per team"))))
 				.executor(new AddTDMMode())
 				.build();
 		
@@ -239,7 +242,8 @@ public class Main {
 		
 		CommandSpec addArenaModeCmd = CommandSpec.builder()
 				.description(Text.of("Add an arena Mode."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
+				.executor(new AAM())
 				.child(TDMMode, "TDM")
 				.child(PABMode, "PAB")
 				.build();
@@ -295,6 +299,14 @@ public class Main {
 						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("mode")))))
 				.executor(new JoinArena())
 				.build();	
+		CommandSpec editArena = CommandSpec.builder()
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
+				.executor(new EditArena())
+				.build();	
+		CommandSpec setCreditsLocation = CommandSpec.builder()
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
+				.executor(new SetCreditsLocation())
+				.build();
 		
 		
 		
@@ -343,6 +355,8 @@ public class Main {
 				.child(moveLobbyCmd, "moveLobby","ml")
 				.child(PABCmd, "PointA","PA")
 				.child(arenaModes, "arenaModes", "am")
+				.child(editArena, "editArena", "ea")
+				.child(setCreditsLocation, "setCreditsLocation", "scl")
 				.executor(new DZCMD())
 				.build();
 		
@@ -371,7 +385,7 @@ public class Main {
 
 		
 		game.getEventManager().registerListeners(this, new TDMListeners());
-		game.getEventManager().registerListeners(this, new DZNPCListener());
+		game.getEventManager().registerListeners(this, new DZNPCListeners());
 		game.getEventManager().registerListeners(this, new NodeListener());
 		game.getEventManager().registerListeners(this, new GeneralArenaListeners());
 		game.getEventManager().registerListeners(this, new MobCreateImpact());

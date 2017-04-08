@@ -1,5 +1,6 @@
 package Executors;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.spongepowered.api.Sponge;
@@ -9,8 +10,10 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
 import org.spongepowered.api.data.manipulator.mutable.entity.GameModeData;
 import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
+import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
@@ -187,7 +190,7 @@ public class JoinArena implements CommandExecutor {
 	}
 	
 	public static void join(Player player, String arenaName){
-		/**
+		
     	//get player's potion effects
 		Optional<List<PotionEffect>> potions = player.get(Keys.POTION_EFFECTS);
 		
@@ -195,19 +198,19 @@ public class JoinArena implements CommandExecutor {
 			
 			List<PotionEffect> potionEffects = potions.get();
 			
-			try {
+			//try {
 				
-				ContestantConfigUtils.saveOriginalPotionEffects(potionEffects,arenaName,player.getName());
+				//ContestantConfigUtils.saveOriginalPotionEffects(potionEffects,arenaName,player.getName());
 				
 				potionEffects.clear(); 
 				
 				player.offer(Keys.POTION_EFFECTS, potionEffects);
 				
-			} catch (ObjectMappingException e2) {
+			//} catch (ObjectMappingException e2) {
 				
-				e2.printStackTrace();
-			}
-		}*/
+				//e2.printStackTrace();
+			//}
+		}
 		
         //get and save original gamemode
         GameMode playerGamemode = player.get(Keys.GAME_MODE).get();
@@ -232,12 +235,14 @@ public class JoinArena implements CommandExecutor {
 		
 		//max out the contestant's health
 		HealthData maxHealth = player.getHealthData().set(Keys.HEALTH, player.get(Keys.MAX_HEALTH).get());
-		
 		player.offer(maxHealth);
+		
+		//max out food level
+		FoodData maxFood = player.getFoodData().set(Keys.FOOD_LEVEL, 20);
+		player.offer(maxFood);
 		
 		//set survival mode     			
 		GameModeData survivalGamemode = player.getGameModeData().set(Keys.GAME_MODE, GameModes.SURVIVAL);
-		
 		player.offer(survivalGamemode);
 	}
 }

@@ -37,15 +37,23 @@ public class Ready implements CommandExecutor {
                 	
                     ContestantConfigUtils.isready(arenaName, player.getName());
                     
-                    int numOfSpots = ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team A Spawnpoints") + ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team B Spawnpoints");
+                    int numOfASpots = ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team A Spawnpoints") + ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team B Spawnpoints");
                     
-                    if (ContestantConfigUtils.getNumOfReadyContestants(arenaName) < numOfSpots) {
+                    if (ContestantConfigUtils.getNumOfReadyContestants(arenaName) < numOfASpots) {
                     	
-                        player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", TextColors.WHITE, "Waiting on the other players..."));
+                    	if(ContestantConfigUtils.getNumOfArenaContestants(arenaName)!=numOfASpots){
+                    		
+                    		player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
+                            		TextColors.WHITE, "This arena needs more Dread Zone Contestants! Invite your friends."));
+                    		
+                    		return CommandResult.success();
+                    	}
+                        player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
+                        		TextColors.WHITE, "Waiting on the other players..."));
                         
                         return CommandResult.success();
                     }
-                    if (ContestantConfigUtils.getNumOfReadyContestants(arenaName) == numOfSpots) {
+                    if (ContestantConfigUtils.getNumOfReadyContestants(arenaName) == numOfASpots) {
                     	
                         TDMConfigUtils.beingTDM(arenaName);
                     }
