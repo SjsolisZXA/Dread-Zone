@@ -42,10 +42,10 @@ public class AddClassItem implements CommandExecutor{
 			if(ArenaConfigUtils.isArenaInConfig(arenaName)){
 				
 				if(ClassConfigUtils.doesClassExist(arenaName, className)){
-			
-					if(ClassConfigUtils.getNumOfNoneEmptyClassItems(arenaName, className)<ClassConfigUtils.getNumOfClassItems(arenaName, className)){
+					
+					if(ClassConfigUtils.getNumOfClassItems(arenaName, className)<36){
 						
-						ItemStack itemStack = (ItemStack)itemStackOptional.get();
+						ItemStack itemStack = itemStackOptional.get();
 						
 				        int quantity = itemStackOptional.get().getQuantity();
 	
@@ -67,32 +67,24 @@ public class AddClassItem implements CommandExecutor{
 						return CommandResult.success();
 					}
 					
-					try {
-						
-						player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-								TextColors.WHITE,"Class ",TextColors.DARK_RED,className,TextColors.WHITE," already has 4 items. "
-										+ "To remove an item from this class, hold one of these items: ",TextColors.DARK_RED,
-										ClassConfigUtils.getClassItems(arenaName, className),TextColors.WHITE," and enter ",
-										TextColors.DARK_RED,"/rdzci ARENA_NAME CLASS_NAME"));
-						
-					} catch (ObjectMappingException e) {
-						
-						e.printStackTrace();
-					}
-					
+					player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+							TextColors.WHITE,"Class ",TextColors.DARK_RED,className,TextColors.WHITE," has too many items! "
+									+ "To remove an item from this class, hold an existing class item and it's exact quantity and enter ",
+									TextColors.DARK_RED,"/dz rci ARENA_NAME CLASS_NAME"));
+				
 					return CommandResult.success();
 				}
 				
 				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 						TextColors.WHITE,"Class ",TextColors.DARK_RED,className,TextColors.WHITE," does not exists. To view a list of an arena's classes, enter ",
-						TextColors.DARK_RED,"/dzcl ARENA_NAME"));
+						TextColors.DARK_RED,"/dz cl ARENA_NAME"));
 				
 				return CommandResult.success();
 			}
 			
 			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 					TextColors.WHITE,"Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," does not exists! "
-							+ "To view a list of avaiable Dread Zone arenas, enter ",TextColors.DARK_RED,"/dzarenas",TextColors.WHITE,"!"));
+							+ "To view a list of avaiable Dread Zone arenas, enter ",TextColors.DARK_RED,"/dz al",TextColors.WHITE,"!"));
 			
 			return CommandResult.success();
 		}

@@ -2,7 +2,6 @@ package Delete;
 
 import java.util.Optional;
 
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -50,8 +49,6 @@ public class DeleteClassItem implements CommandExecutor {
 					try {
 
 						if(ClassConfigUtils.doesClassItemExist(arenaName, className, itemStack)!=null){//FIX
-							
-							Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.GOLD,"IF DCIE"));
 							
 							ClassConfigUtils.removeClassItem(arenaName, className, itemStack);
 						

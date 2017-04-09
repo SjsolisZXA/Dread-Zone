@@ -35,17 +35,7 @@ public class AddClass implements CommandExecutor{
 				
 				String className = args.<String> getOne("class name").get();
 				
-				int numOfItems = args.<Integer> getOne("number of class items").get();
-				
-		        if (numOfItems > 9){
-		        	
-			          player.sendMessage(Text.of( TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
-			            TextColors.WHITE, "A Dread Zone class can only have 9 or less items!"));
-			          
-			          return CommandResult.success();
-		        }
-				
-				ClassConfigUtils.addClass(arenaName, className, numOfItems);
+				ClassConfigUtils.addClass(arenaName, className);
 				
 				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 						TextColors.WHITE,"Class ",TextColors.DARK_RED,className,TextColors.WHITE," successfuly added to arena ",
@@ -77,7 +67,7 @@ public class AddClass implements CommandExecutor{
 								TextColors.WHITE,"Arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," now has 5 Classes, but you'll need to set the "
 										+ "spawnpoints of the Dread Zone Class NPCs. To add a DZC NPC, stand where you would like the NPC to appear in ",
 										TextColors.DARK_RED,arenaName+"'s",TextColors.WHITE," lobby, face the same direction as you want the NPC to face and enter: ",
-										TextColors.DARK_RED,"/adzcnpc CLASS_NAME"));
+										TextColors.DARK_RED,"/dz acnpc CLASS_NAME"));
 					}
 				}
 				
@@ -85,15 +75,15 @@ public class AddClass implements CommandExecutor{
 			}
 			
 			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-					arenaName,TextColors.WHITE," already has 5 classes. To remove a class, enter ",TextColors.DARK_RED,"/rdzc ARENA_NAME CLASS_NAME",
-					TextColors.WHITE,". To view the available classes for an arena, enter ",TextColors.DARK_RED,"/dzac ARENA_NAME"));
+					arenaName,TextColors.WHITE," already has 5 classes. To remove a class, enter ",TextColors.DARK_RED,"/dz rc ARENA_NAME CLASS_NAME",
+					TextColors.WHITE,". To view the available classes for an arena, enter ",TextColors.DARK_RED,"/dz cl ARENA_NAME"));
 			
 			return CommandResult.success();
 		}
 		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 				TextColors.WHITE,"Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," does not exists! "
-						+ "To view a list of avaiable Dread Zone arenas, enter ",TextColors.DARK_RED,"/dzarenas",TextColors.WHITE,"!"));
+						+ "To view a list of avaiable Dread Zone arenas, enter ",TextColors.DARK_RED,"/dz al",TextColors.WHITE,"!"));
 		
 		return CommandResult.success();
 		

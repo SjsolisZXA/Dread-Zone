@@ -264,8 +264,7 @@ public class Main {
 		CommandSpec addClassCmd = CommandSpec.builder()
 				.description(Text.of("Add an arena class."))
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))),
-						GenericArguments.string(Text.of("class name")),
-						GenericArguments.integer(Text.of("number of class items")))
+						GenericArguments.string(Text.of("class name")))
 				.executor(new AddClass())
 				.build();
 		

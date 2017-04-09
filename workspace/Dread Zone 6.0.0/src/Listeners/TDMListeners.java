@@ -17,7 +17,9 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
+import org.spongepowered.api.event.command.TabCompleteEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
+import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.scoreboard.Score;
 import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
 import org.spongepowered.api.text.Text;
@@ -187,5 +189,17 @@ public class TDMListeners {
 		        }
 	        }
     	}
+    }
+    
+    @Listener
+    public void contestantOpenTabWCM(TabCompleteEvent.Chat event, @Root Player player){
+    	
+    	player.sendMessage(Text.of(TextColors.AQUA,"Tab list was opened while text was in chat"));
+    }
+    
+    @Listener
+    public void contestantOpenTabWCO(TabCompleteEvent.Chat event, @Root Player player){
+    	
+    	player.sendMessage(Text.of(TextColors.DARK_PURPLE,"Tab list was opened while a command was in chat"));
     }
 }

@@ -11,8 +11,6 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.equipment.EquipmentType;
 import org.spongepowered.api.item.inventory.equipment.EquipmentTypes;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -35,19 +33,63 @@ public class ClassConfigUtils {
 	
 	public static void addItemToClass(Object arenaName, Object className, ItemStack itemStack) throws ObjectMappingException
 	{
-		int numOfItems = getNumOfClassItems(arenaName, className);
-
-		for(int i=1; i<=numOfItems; i++){
+		for(int i=1; i<=35; i++){
 			
 			ConfigurationNode targetNode = UnversalConfigs.getConfig(classConfig).getNode("Arena" , arenaName , "ArenaClasses" , className , "items", "item "+i);
 			
-			if(targetNode.getValue().equals("empty")){
-
-				UnversalConfigs.getConfig(classConfig).getNode("Arena" , arenaName , "ArenaClasses" , className , "items", "item "+i).setValue(TypeToken.of(ItemStack.class),itemStack);
+			if(!targetNode.isVirtual()){//if item number exists
 				
-				UnversalConfigs.saveConfig(classConfig);
+				if(targetNode.getValue().toString().equals("empty")){
+					
+					helperAddItem(arenaName.toString(), className.toString(), i, itemStack);
+					return;
+				}
 				
+				ItemStack item = targetNode.getValue(TypeToken.of(ItemStack.class));
+				
+				if(item.equalTo(itemStack)){
+					
+					return;
+				}
+			}
+			
+			if(targetNode.isVirtual()){//if item number does not exist
+				
+				helperAddItem(arenaName.toString(), className.toString(), i, itemStack);
 				return;
+			}
+		}
+	}
+	
+	static void helperAddItem(String arenaName, String className, int i, ItemStack itemStack) throws ObjectMappingException{
+		
+		UnversalConfigs.getConfig(classConfig).getNode("Arena" , arenaName , "ArenaClasses" , className , "items", "item "+i).setValue(TypeToken.of(ItemStack.class),itemStack);
+		
+		UnversalConfigs.saveConfig(classConfig);
+		
+		return;
+	}
+	
+	public static void removeClassItem(String arenaName, Object className, ItemStack itemStack) throws ObjectMappingException{
+		
+		ConfigurationNode targetClass = UnversalConfigs.getConfig(classConfig).getNode("Arena" , arenaName , "ArenaClasses" , className , "items");
+		
+		int numOfItems = getNumOfClassItems(arenaName, className);
+		
+		for(int i = 1; i<=numOfItems; i++){
+			
+			String itemTarget = targetClass.getNode("item "+i).getValue().toString();
+			
+			if(!itemTarget.equals("empty")){
+				
+				ItemStack item = targetClass.getNode("item "+i).getValue(TypeToken.of(ItemStack.class));
+				
+				if(item.equalTo(itemStack)||item.toString().equals(itemStack.toString())){
+					
+					UnversalConfigs.removeChild(classConfig, new Object[] {"Arena", arenaName, "ArenaClasses", className, "items"}, getClassItem(arenaName,className,"item "+i));
+					
+					return;
+				}
 			}
 		}
 	}
@@ -116,14 +158,11 @@ public class ClassConfigUtils {
 		}
 	}
 	
-	public static void addClass(String arenaName, String className, int numOfItems)
+	public static void addClass(String arenaName, String className)
 	{	
-		for(int i = 1; i<=numOfItems; i++){
-			
-			UnversalConfigs.getConfig(classConfig).getNode("Arena", arenaName ,"ArenaClasses",className, "items", "item "+i).setValue("empty");
-			
-			UnversalConfigs.saveConfig(classConfig);
-		}
+		UnversalConfigs.getConfig(classConfig).getNode("Arena", arenaName ,"ArenaClasses",className, "items", "item "+1).setValue("empty");
+		
+		UnversalConfigs.saveConfig(classConfig);
 	}
 	
 	public static int getNumOfClasses(Object arenaName){
@@ -182,32 +221,6 @@ public class ClassConfigUtils {
 		return null;
 	}
 	
-	public static void removeClassItem(String arenaName, Object className, ItemStack itemStack) throws ObjectMappingException{
-		
-		ConfigurationNode targetClass = UnversalConfigs.getConfig(classConfig).getNode("Arena" , arenaName , "ArenaClasses" , className , "items");
-		
-		int numOfItems = getNumOfClassItems(arenaName, className);
-		
-		for(int i = 1; i<=numOfItems; i++){
-			
-			String itemTarget = targetClass.getNode("item "+i).getValue().toString();
-			
-			if(!itemTarget.equals("empty")){
-				
-				ItemStack item = targetClass.getNode("item "+i).getValue(TypeToken.of(ItemStack.class));
-				
-				if(item.equalTo(itemStack)||item.toString().equals(itemStack.toString())){
-					
-					UnversalConfigs.removeChild(classConfig, new Object[] {"Arena", arenaName, "ArenaClasses", className, "items"}, getClassItem(arenaName,className,"item "+i));
-					
-					UnversalConfigs.getConfig(classConfig).getNode("Arena", arenaName ,"ArenaClasses",className, "items", "item "+i).setValue("empty");
-					
-					UnversalConfigs.saveConfig(classConfig);
-				}
-			}
-		}
-	}
-	
 	public static Set<Object> getArenaClasses(Object arenaName)
 	{
 		return UnversalConfigs.getConfig(classConfig).getNode("Arena", arenaName, "ArenaClasses").getChildrenMap().keySet();
@@ -227,11 +240,7 @@ public class ClassConfigUtils {
 		
 		List<ItemStack> items = getClassItems(arenaName, className);
 		
-		for(ItemStack item: items){			
-
-			Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.GREEN,item.equalTo(itemStack)));
-			
-			Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.BLUE,item.toString().equals(itemStack.toString())));
+		for(ItemStack item: items){
 			
 			if(item.equalTo(itemStack)||item.toString().equals(itemStack.toString())){
 				

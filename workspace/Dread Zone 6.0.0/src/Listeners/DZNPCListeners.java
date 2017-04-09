@@ -47,20 +47,52 @@ public class DZNPCListeners {
 					String className = classN.toPlain();
 					
 					if(ClassConfigUtils.doesClassExist(arenaName, className)){ 
+						
+						int dx = 9;
+						int dy = 0;
+						int numOfClassItmes = ClassConfigUtils.getNumOfClassItems(arenaName, className);
+						
+						if(numOfClassItmes<=9){
+							dy=1;
+						}
+						
+						if(numOfClassItmes>9&&numOfClassItmes<=18){
+							dy=2;
+						}
+						
+						if(numOfClassItmes>18&&numOfClassItmes<=36){
+							dy=3;
+						}
 				
-						Inventory inventory = Inventory.builder().of(InventoryArchetypes.CHEST).property(InventoryDimension.PROPERTY_NAME, new InventoryDimension(9, 1))
+						Inventory inventory = Inventory.builder().of(InventoryArchetypes.CHEST).property(InventoryDimension.PROPERTY_NAME, new InventoryDimension(dx, dy))
 								.property(InventoryTitle.PROPERTY_NAME, InventoryTitle.of(Text.builder(className+" Class").color(TextColors.DARK_RED).style(TextStyles.NONE).build()))
 								.build(Main.Main.Dreadzone);
 						
 						List<ItemStack> items = ClassConfigUtils.getClassItems(arenaName, className);
 						
-						int x = 0;
+						int curr = 0;
+						int a = 0;
+						int b = 0;
+						int c = 0;
 						
 						for(ItemStack itemStack: items){
+
+							if(curr<9){
 												
-							inventory.query(new SlotPos(x,0)).set(itemStack);
-							
-							x++;
+								inventory.query(new SlotPos(a,0)).set(itemStack);
+								a++;
+							}
+							if(curr>8 && curr<18){
+								
+								inventory.query(new SlotPos(b,1)).set(itemStack);
+								b++;
+							}
+							if(curr>17 && curr<36){
+								
+								inventory.query(new SlotPos(c,2)).set(itemStack);
+								c++;
+							}
+							curr++;
 						}
 						
 						player.openInventory(inventory, Cause.of(NamedCause.owner(Main.Main.Dreadzone)));
