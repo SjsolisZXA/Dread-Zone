@@ -2,10 +2,12 @@ package ConfigUtils;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.boss.ServerBossBar;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.entity.Entity;
@@ -23,6 +25,7 @@ import com.google.common.reflect.TypeToken;
 import ConfigFiles.ArenaFileConfig;
 import ConfigFiles.Configurable;
 import ConfigFiles.UnversalConfigs;
+import Utils.GUI;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
@@ -54,7 +57,7 @@ public class ContestantConfigUtils {
 	
     public static void isready(String arenaName, String userName) {
     	
-        UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants", userName, "Ready").setValue((Object)true);
+        UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants", userName, "Ready").setValue(true);
         
         UnversalConfigs.saveConfig(ArenaConfig);
     }
@@ -237,7 +240,16 @@ public class ContestantConfigUtils {
 	}
 	
 	public static void removeContestant(String arenaName, Player player) {
-
+		
+		if(GUI.aTeamBars.get(arenaName)!=null&&GUI.bTeamBars.get(arenaName)!=null){
+			
+			Map<String,ServerBossBar> b1 = GUI.bTeamBars.get(arenaName);
+			Map<String,ServerBossBar> b0 = GUI.aTeamBars.get(arenaName);
+			
+			b0.get(player.getName()).removePlayer(player);
+			b1.get(player.getName()).removePlayer(player);
+		}
+		
 		player.getInventory().clear();
 		
 		//restore player location
@@ -257,16 +269,16 @@ public class ContestantConfigUtils {
 			e1.printStackTrace();
 		}
 		
-		/**
+		
 		//restore potion effects
-		try {
+		/**try {
 			
 			player.offer(Keys.POTION_EFFECTS,ContestantConfigUtils.fetchOriginalPotionEffects(arenaName.toString(), player.getName()));
 			
 		} catch (ObjectMappingException e) {
 			
 			e.printStackTrace();
-		}*/
+		}**/
 		
 		ContestantConfigUtils.removeContestantFromList(arenaName.toString(),player.getName());
 		
@@ -274,6 +286,8 @@ public class ContestantConfigUtils {
 		if(ContestantConfigUtils.getArenaContestants(arenaName).isEmpty()){
 			
 			ArenaConfigUtils.setArenaStatus(arenaName, "Open");
+			
+			ArenaConfigUtils.setMatchStatus(arenaName, false);
 
 			Collection<Entity> DZNPCs = player.getWorld().getEntities();
 
@@ -301,26 +315,4 @@ public class ContestantConfigUtils {
 			}
 		}
 	}
-	
-    /**public static void savePlayerInventory(String arenaName, Player player) throws ObjectMappingException {
-    	
-    	Inventory inventory = player.getInventory();
-        
-    	/**List<ItemStack> inventory = Lists.newArrayList();
-        
-    	player.getInventory().slots().forEach(slot -> {
-    		
-            if (slot.peek().isPresent()) {
-            	
-                ItemStack stack = (ItemStack)slot.poll().get();
-                
-                inventory.add(stack);
-            }
-        });
-    	
-    	Main.Main.configurationLoader.getDefaultOptions().getSerializers().registerType(TypeToken.of(Inventory.class), TypeSerializer<Inventory>,inventory);
-    	
-        UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants", player.getName(), "Inventory").setValue(TypeToken.of(Inventory.class), inventory);
-        UnversalConfigs.saveConfig(ArenaConfig);
-    }*/
 }

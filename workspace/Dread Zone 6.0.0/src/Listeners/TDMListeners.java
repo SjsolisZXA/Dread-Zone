@@ -8,19 +8,13 @@ import java.util.concurrent.TimeUnit;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.boss.ServerBossBar;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
 import org.spongepowered.api.data.manipulator.mutable.entity.GameModeData;
-import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
-import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
-import org.spongepowered.api.event.command.TabCompleteEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
-import org.spongepowered.api.event.filter.cause.Root;
-import org.spongepowered.api.scoreboard.Score;
 import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -33,7 +27,9 @@ import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.TDMConfigUtils;
 import Main.Main;
 import Utils.CreditsTimer;
+import Utils.DZArenaUtils;
 import Utils.GUI;
+import Utils.ScoreBoardUtils;
 
 public class TDMListeners {
     
@@ -90,44 +86,20 @@ public class TDMListeners {
 				                		
 				                		return;
 				                	}
+
+				                	ScoreBoardUtils.addDeathScore(player);
+				                	ScoreBoardUtils.addKillScore(killer);
 				                	
-				                	//update death score
-				                	Score VSCB = player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get().getScore(Text.of("Deaths")).get();
-				                    int deathScore = VSCB.getScore();
-				                    VSCB.setScore(deathScore + 1);
-
-				                    //update kill score
-				                    Score KSCB = killer.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get().getScore(Text.of("Kills")).get();
-				                    int killScore = KSCB.getScore();
-				                    KSCB.setScore(killScore + 1);
-				                      
-				                    //restore health level
-			            			HealthData maxHealth = player.getHealthData().set(Keys.HEALTH, player.get(Keys.MAX_HEALTH).get());
-			            			player.offer(maxHealth);
-			            			
-			            			//restore food level
-			            			FoodData maxFood = player.getFoodData().set(Keys.FOOD_LEVEL, 20);
-			            			player.offer(maxFood);
-
-			            			//restore clean slate potion effects
-			            			Optional<List<PotionEffect>> potions = player.get(Keys.POTION_EFFECTS);
-			            			
-			            			if(potions.isPresent()){
-			            				
-			            				List<PotionEffect> potionEffects = potions.get();
-			            				potionEffects.clear(); 
-			            				player.offer(Keys.POTION_EFFECTS, potionEffects);
-			            			}
+				                	DZArenaUtils.restoreContestant(player);
 			            			
 			            			//update score bar
 			            			Text killerTeam = killer.getScoreboard().getObjective(DisplaySlots.BELOW_NAME).get().getDisplayName();
 			            					
 			            			List<Player> contestants = TDMConfigUtils.convertObjectContestantsToPlayers(arenaName);
-			            			
-			            			//Sponge.getServer().getBroadcastChannel().send(Text.of("Killer Team: ",killerTeam));
 		            				
 		            				Map<String,ServerBossBar> b1 = GUI.bTeamBars.get(arenaName);
 		            				Map<String,ServerBossBar> b0 = GUI.aTeamBars.get(arenaName);
+		            				
 		            				int MaxPoints = TDMConfigUtils.getPointWin(arenaName);
 	            					Title MT = Title.builder().subtitle(Text.of(killerTeam, TextColors.WHITE," WINS!")).stay(60).build();
 	
@@ -140,6 +112,7 @@ public class TDMListeners {
 			            					
 				            				float TAMatchKills = aBar.getPercent()*MaxPoints;
 				            				float TANPercent = (1+TAMatchKills)/MaxPoints;
+				            				
 				            				aBar.setPercent(TANPercent);
 			            				}
 			            				
@@ -147,6 +120,7 @@ public class TDMListeners {
 				            				
 				            				float TBMatchKills = bBar.getPercent()*MaxPoints;
 				            				float TBNPercent = (1+TBMatchKills)/MaxPoints;
+				            				
 				            				bBar.setPercent(TBNPercent);
 			            				}
 			            				
@@ -167,7 +141,7 @@ public class TDMListeners {
 			            				ArenaConfigUtils.setCreditsMode(arenaName, true);
 			            				
 				            	        Sponge.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).delay(1, TimeUnit.SECONDS).execute(new 
-				            	        		CreditsTimer(arenaName, contestants, 10)).submit(Main.Dreadzone);
+				            	        		CreditsTimer(arenaName, contestants, 5)).submit(Main.Dreadzone);
 				            	        
 			            				Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ",
 		            							TextColors.WHITE,"Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," has re-opened! To join, enter: ",
@@ -182,24 +156,44 @@ public class TDMListeners {
 			            			TDMConfigUtils.respawnContestant(arenaName, player);
 
 		                			event.setCancelled(true);
+		                			
+		                			return;
 		                		}
 		                	}
 		                }
 		        	}
 		        }
 	        }
+	        
+        	Entity damageTarget = event.getTargetEntity();
+        	
+	        Location<World> damageLocation = damageTarget.getLocation();
+	        
+	        //filters all damage events to only within arenas
+	        if(ArenaConfigUtils.getUserArenaNameFromLocation(damageLocation)!=null){
+	        	
+	        	String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(damageLocation);
+	        	
+	        	//filter arenas only with TDM modes
+	        	if(ArenaConfigUtils.getArenaStatus(arenaName).equals("TDM")){
+	        		
+	        		//filter out non player target entities
+	                if (damageTarget instanceof Player) {
+	                	
+	                	Player player = ((Player) damageTarget);
+	                	
+	                	ScoreBoardUtils.addDeathScore(player);
+	                	
+	                	DZArenaUtils.restoreContestant(player);
+	                	
+	                	TDMConfigUtils.respawnContestant(arenaName, player);
+	                	
+	                	event.setCancelled(true);
+	                	
+	                	return;
+	                }
+	        	}
+	        }
     	}
-    }
-    
-    @Listener
-    public void contestantOpenTabWCM(TabCompleteEvent.Chat event, @Root Player player){
-    	
-    	player.sendMessage(Text.of(TextColors.AQUA,"Tab list was opened while text was in chat"));
-    }
-    
-    @Listener
-    public void contestantOpenTabWCO(TabCompleteEvent.Chat event, @Root Player player){
-    	
-    	player.sendMessage(Text.of(TextColors.DARK_PURPLE,"Tab list was opened while a command was in chat"));
     }
 }

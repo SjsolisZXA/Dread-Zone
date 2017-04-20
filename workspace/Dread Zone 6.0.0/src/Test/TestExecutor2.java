@@ -5,9 +5,8 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
-import ConfigUtils.TDMConfigUtils;
 
 public class TestExecutor2 implements CommandExecutor {
 
@@ -16,9 +15,7 @@ public class TestExecutor2 implements CommandExecutor {
 		
 		Player player = (Player)src;
 		
-        Text team1 = TDMConfigUtils.getRandomTeam();
-        
-        player.getTabList().getEntry(player.getUniqueId()).get().setDisplayName(Text.of(team1+" "+player.getName()));
+    	player.playSound(SoundTypes.BLOCK_NOTE_SNARE, player.getLocation().getPosition(), 0.5);    	
 		
 		return CommandResult.success();
 	}

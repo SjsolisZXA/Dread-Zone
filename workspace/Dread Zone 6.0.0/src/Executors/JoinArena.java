@@ -198,18 +198,18 @@ public class JoinArena implements CommandExecutor {
 			
 			List<PotionEffect> potionEffects = potions.get();
 			
-			//try {
+			try {
 				
-				//ContestantConfigUtils.saveOriginalPotionEffects(potionEffects,arenaName,player.getName());
+				ContestantConfigUtils.saveOriginalPotionEffects(potionEffects,arenaName,player.getName());
 				
 				potionEffects.clear(); 
 				
 				player.offer(Keys.POTION_EFFECTS, potionEffects);
 				
-			//} catch (ObjectMappingException e2) {
+			} catch (ObjectMappingException e2) {
 				
-				//e2.printStackTrace();
-			//}
+				e2.printStackTrace();
+			}
 		}
 		
         //get and save original gamemode

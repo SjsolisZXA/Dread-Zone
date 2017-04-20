@@ -77,19 +77,16 @@ public class DZNPCListeners {
 						
 						for(ItemStack itemStack: items){
 
-							if(curr<9){
-												
+							if(curr<9){				
 								inventory.query(new SlotPos(a,0)).set(itemStack);
 								a++;
 							}
 							if(curr>8 && curr<18){
-								
 								inventory.query(new SlotPos(b,1)).set(itemStack);
 								b++;
 							}
 							if(curr>17 && curr<36){
-								
-								inventory.query(new SlotPos(c,2)).set(itemStack);
+								inventory.query(new SlotPos(c,1)).set(itemStack);
 								c++;
 							}
 							curr++;
@@ -133,7 +130,6 @@ public class DZNPCListeners {
 						player.sendMessage(ChatTypes.ACTION_BAR, Text.of(className, " class selected!"));
 						
 						return;
-						
 					}
 				}
 	        }

@@ -388,5 +388,21 @@ public class ArenaConfigUtils {
     	}
     	return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants", playerName, "Credits Mode").getBoolean();
     }
+    
+    public static void setMatchStatus(String arenaName, Boolean bool){
+    		
+		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Match Status").setValue(bool);
+
+		UnversalConfigs.saveConfig(ArenaConfig);
+    }
+    
+    public static Object getMatchStatus(String arenaName){
+    	
+    	if(UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Match Status")==null){
+    		
+    		return null;
+    	}
+		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Match Status").getValue();
+    }
 }
 

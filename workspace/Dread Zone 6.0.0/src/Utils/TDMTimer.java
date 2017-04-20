@@ -3,6 +3,7 @@ package Utils;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
@@ -63,6 +64,7 @@ public class TDMTimer implements Consumer<Task> {
         for (Player player : lPlayers) {
         	
             player.sendMessage(ChatTypes.ACTION_BAR, Text.of(TextColors.YELLOW, S));
+            player.playSound(SoundTypes.BLOCK_NOTE_PLING, player.getLocation().getPosition(), 1);
         }
         
         S--;
@@ -73,8 +75,8 @@ public class TDMTimer implements Consumer<Task> {
             
             task.cancel();
         	        	
-            GUI.setUpTDMGUI(ARENA_NAME, TEAM_A_CONTESTANTS, TEAM_B_CONTESTANTS, TEAM_A_NAME, TEAM_A_NAME, TEAM_B_NAME);
-            GUI.setUpTDMGUI(ARENA_NAME, TEAM_B_CONTESTANTS, TEAM_A_CONTESTANTS, TEAM_B_NAME, TEAM_A_NAME, TEAM_B_NAME);
+            GUI.setUpAllTDMGUI(ARENA_NAME, TEAM_A_CONTESTANTS, TEAM_B_CONTESTANTS, TEAM_A_NAME, TEAM_A_NAME, TEAM_B_NAME);
+            GUI.setUpAllTDMGUI(ARENA_NAME, TEAM_B_CONTESTANTS, TEAM_A_CONTESTANTS, TEAM_B_NAME, TEAM_A_NAME, TEAM_B_NAME);
 
         }
     }

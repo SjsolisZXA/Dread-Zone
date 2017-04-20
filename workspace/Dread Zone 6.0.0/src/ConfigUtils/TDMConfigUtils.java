@@ -32,7 +32,6 @@ public class TDMConfigUtils {
         Collections.shuffle(contestants);
         
         List<Player> teamAContestants = Lists.newArrayList();
-        
         List<Player> teamBContestants = Lists.newArrayList();
         
         int i = 0;
@@ -53,15 +52,13 @@ public class TDMConfigUtils {
         }
         
         Text teamAName = getRandomTeam();
-        
         Text teamBName = getRandomTeamB(teamAName);
         
         teleportPlayersToArena(arenaName, teamAContestants, "Team A Spawnpoints");
-        
         teleportPlayersToArena(arenaName, teamBContestants, "Team B Spawnpoints");
         
         Sponge.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).delay(1, TimeUnit.SECONDS).execute(new 
-        		TDMTimer(arenaName, contestants, teamAName, teamBName, teamAContestants, teamBContestants, 10)).submit(Main.Dreadzone);
+        		TDMTimer(arenaName, contestants, teamAName, teamBName, teamAContestants, teamBContestants, 3)).submit(Main.Dreadzone);
     }
     
     private static void teleportPlayersToArena(Object arenaName, List<Player> teamContestants, String teamName) {

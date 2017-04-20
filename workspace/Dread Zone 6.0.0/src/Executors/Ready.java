@@ -4,6 +4,8 @@ import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.PABConfigUtils;
 import ConfigUtils.TDMConfigUtils;
+import Utils.GUI;
+
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -37,7 +39,8 @@ public class Ready implements CommandExecutor {
                 	
                     ContestantConfigUtils.isready(arenaName, player.getName());
                     
-                    int numOfASpots = ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team A Spawnpoints") + ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team B Spawnpoints");
+                    int numOfASpots = ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team A Spawnpoints") + 
+                    		ArenaConfigUtils.getNumOfArenaTeamSpawnpoints(arenaName, "Team B Spawnpoints");
                     
                     if (ContestantConfigUtils.getNumOfReadyContestants(arenaName) < numOfASpots) {
                     	
@@ -54,10 +57,22 @@ public class Ready implements CommandExecutor {
                         return CommandResult.success();
                     }
                     if (ContestantConfigUtils.getNumOfReadyContestants(arenaName) == numOfASpots) {
-                    	
-                        TDMConfigUtils.beingTDM(arenaName);
+
+                    	if(ArenaConfigUtils.getMatchStatus(arenaName)==null||
+                    			ArenaConfigUtils.getMatchStatus(arenaName).equals(false)){
+                    		
+                    		TDMConfigUtils.beingTDM(arenaName);
+                    		
+                    		return CommandResult.success();
+                    	}
+                        if(ArenaConfigUtils.getMatchStatus(arenaName).equals(true)){
+
+                        	TDMConfigUtils.respawnContestant(arenaName, player);
+                        	GUI.setUpIndividualTDMGUI(arenaName, player);
+                        	
+                        	return CommandResult.success();
+                        }
                     }
-                    return CommandResult.success();
                 }
                 
                 //PAB ready

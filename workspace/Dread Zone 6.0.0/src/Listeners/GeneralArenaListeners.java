@@ -121,9 +121,8 @@ public class GeneralArenaListeners {
 	    	String arguments = commandEvent.getArguments();
 	    
 	    	if(ContestantConfigUtils.isUserAnArenaContestant(arenaName, player.getName())&&
-	    			!command.equals("dz")&& !(arguments.equals("ready")|| arguments.equals("reload") || arguments.equals("leave")) && !command.equals("test")){
+	    			!command.equals("dz")&& !(arguments.equals("ready")|| arguments.equals("leave"))){
 	    			
-	    		
 	    		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 						TextColors.WHITE,"Commands are not allowed in Dread Zone other than ", TextColors.DARK_RED, "/dz leave", 
 						TextColors.WHITE, " and ", TextColors.DARK_RED, "/dz ready"));
@@ -158,7 +157,7 @@ public class GeneralArenaListeners {
 			String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation());
     	
 	    	if(ContestantConfigUtils.isUserAnArenaContestant(arenaName, player.getName())&&
-	    			LobbyConfigUtils.isUserinLobby(player.getLocation(), arenaName)){
+	    			LobbyConfigUtils.isUserinLobby(player.getLocation(), arenaName)){//test after arena redo
 	    		
 	    		event.setCancelled(true);
 	    		
@@ -166,7 +165,7 @@ public class GeneralArenaListeners {
 	    	}
 	    	
 	    	if(!ContestantConfigUtils.isUserAnArenaContestant(arenaName, player.getName())&&
-	    			ArenaConfigUtils.isUserinArena(player.getLocation(), arenaName)){
+	    			ArenaConfigUtils.isUserinArena(player.getLocation(), arenaName)){//works
 	    		
 	    		event.setCancelled(true);
 	    		
@@ -179,11 +178,11 @@ public class GeneralArenaListeners {
     @Listener
     public void contestantAndNPCReceiveDamage(DamageEntityEvent event, @First EntityDamageSource source){//WORKS
     	
-    	Location<World> sourceLocation = source.getSource().getLocation();
+    	Location<World> damageTartgetLocation = event.getTargetEntity().getLocation();
     	
-    	if(ArenaConfigUtils.getUserArenaNameFromLocation(sourceLocation)!=null){
+    	if(ArenaConfigUtils.getUserArenaNameFromLocation(damageTartgetLocation)!=null){
     	
-	    	String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(sourceLocation);
+	    	String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(damageTartgetLocation);
 	    	
 	    	Optional<Text> userN = event.getTargetEntity().get(Keys.DISPLAY_NAME);
 	    	
@@ -191,7 +190,7 @@ public class GeneralArenaListeners {
 	    		
 	    		String userName = userN.get().toPlain();
 	    		
-		    	if(LobbyConfigUtils.isUserinLobby(sourceLocation, arenaName)&&
+		    	if(LobbyConfigUtils.isUserinLobby(damageTartgetLocation, arenaName)&&
 		    			(ContestantConfigUtils.isUserAnArenaContestant(arenaName, userName)||
 		    			ClassConfigUtils.doesClassExist(arenaName, userName))){
 		    		

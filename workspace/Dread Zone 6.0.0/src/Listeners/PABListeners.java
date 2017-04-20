@@ -1,12 +1,7 @@
 package Listeners;
 
-import java.util.List;
 import java.util.Optional;
 
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
-import org.spongepowered.api.data.manipulator.mutable.entity.HealthData;
-import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.monster.Monster;
@@ -25,6 +20,8 @@ import org.spongepowered.api.world.World;
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.PABConfigUtils;
+import Utils.DZArenaUtils;
+import Utils.ScoreBoardUtils;
 
 public class PABListeners {
 	
@@ -109,27 +106,9 @@ public class PABListeners {
 	                	
 	                	if(ContestantConfigUtils.isUserAnArenaContestant(arenaName, player.getName())){
 	                		
-		                    int score = player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get().getScore(Text.of("Deaths")).get().getScore();
-		
-		                    player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get().getScore(Text.of("Deaths")).get().setScore(score + 1);
+	                		ScoreBoardUtils.addDeathScore(player);
 		                    
-		                    //restore health level
-	            			HealthData maxHealth = player.getHealthData().set(Keys.HEALTH, player.get(Keys.MAX_HEALTH).get());
-	            			player.offer(maxHealth);
-	            			
-	            			//restore food level
-	            			FoodData maxFood = player.getFoodData().set(Keys.FOOD_LEVEL, 20);
-	            			player.offer(maxFood);
-	            			
-	            			//restore clean slate potion effects
-	            			Optional<List<PotionEffect>> potions = player.get(Keys.POTION_EFFECTS);
-	            			
-	            			if(potions.isPresent()){
-	            				
-	            				List<PotionEffect> potionEffects = potions.get();
-	            				potionEffects.clear(); 
-	            				player.offer(Keys.POTION_EFFECTS, potionEffects);
-	            			}
+		                    DZArenaUtils.restoreContestant(player);
 	            			
 	            			player.setLocationAndRotation(PABConfigUtils.getPABALocation(arenaName), PABConfigUtils.getPABARotation(arenaName));
 	            			
