@@ -11,6 +11,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import ConfigUtils.ArenaConfigUtils;
+import ConfigUtils.JumpPadConfigUtils;
 import ConfigUtils.LightningConfigUtils;
 import ConfigUtils.LobbyConfigUtils;
 import ConfigUtils.MobCreateConfigUtils;
@@ -18,6 +19,7 @@ import ConfigUtils.NodeConfigUtils;
 import ConfigUtils.PABConfigUtils;
 import ConfigUtils.RightClickModeConfigUtils;
 import Utils.AutomatedLightningTimer;
+import Utils.JumpPadUtils;
 import Utils.NodeUtils;
 
 public class RightClickMode {
@@ -26,6 +28,7 @@ public class RightClickMode {
 	static String SMCLGN;
 	static String SMCLTN;
 	static String NN;
+	static String PN;
 	static String SAAN;
 	static String PBAN;
 	
@@ -43,6 +46,11 @@ public class RightClickMode {
 	public static void SN(String nodeName) {
 
 		NN = nodeName;
+	}
+	
+	public static void PN(String padName) {
+
+		PN = padName;
 	}
 	
 	public static void SAAN(String arenaName) {
@@ -72,6 +80,24 @@ public class RightClickMode {
 						"/dz amc MOBCRATE_GROUP MOBCRATE_NAME",TextColors.WHITE," for as many crates that you'd like."));
 				
 				RightClickModeConfigUtils.deleteUsernameInList(player.getName());
+				
+				return;
+			}
+			
+			if(RightClickModeConfigUtils.getUserMode(player.getName().toString()).equals("AJP")){
+				
+				if(ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation())!=null){
+					
+					JumpPadConfigUtils.registerJumpPad(blockLocation, player.getWorld().getName(), PN);
+					JumpPadUtils.buildJumpPad(blockLocation);
+					
+					RightClickModeConfigUtils.deleteUsernameInList(player.getName());
+					
+					return;
+				}
+				
+				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+						TextColors.WHITE,"You must be inside a Dread Zone arena to execute this command!"));
 				
 				return;
 			}

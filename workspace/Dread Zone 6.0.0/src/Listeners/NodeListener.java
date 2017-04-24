@@ -59,7 +59,7 @@ public class NodeListener {
 			
 			Set<Object> nodes = NodeConfigUtils.getNodes();
 
-			//Goes through all of the registered nodes in the nodes configuraton file
+			//Goes through all of the registered nodes in the nodes configuration file
 			for(Object node: nodes){
 			
 				if(block.getLocation().get().equals(NodeConfigUtils.getNode(node.toString()))&&

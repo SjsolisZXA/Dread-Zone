@@ -39,7 +39,7 @@ public class RightClickModeConfigUtils {
 	}
 	
 	//is the user in the database
-	public static boolean isUserInConfig(Object Username)
+	public static boolean isUserInConfig(String Username)
 	{
 		return getUserConfigName(Username) != null;
 	}
@@ -52,6 +52,7 @@ public class RightClickModeConfigUtils {
 		for(Object User: Users){
 			
 			if(User.equals(player)){
+				
 				return User.toString();
 			}
 		}

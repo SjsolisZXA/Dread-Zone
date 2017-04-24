@@ -52,13 +52,14 @@ public class EditArena implements CommandExecutor {
 			}
 			
 			player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
-                    TextColors.WHITE,"It seems like you were doing something else before trying to edit an arena. Please finish that up and try again."));
+                    TextColors.WHITE,"It seems like you were doing something else before trying to edit an arena. "
+                    		+ "Please finish that up and try again."));
 			
 			return CommandResult.success();
 		}
 		
 		player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
-                TextColors.WHITE," Edit mode for Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," enabled!"));
+                TextColors.WHITE,"Edit mode for Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," enabled!"));
 
 		RightClickModeConfigUtils.addToList(player.getName(), "EA - "+arenaName);
 

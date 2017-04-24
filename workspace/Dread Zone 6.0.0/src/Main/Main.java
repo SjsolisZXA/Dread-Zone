@@ -32,6 +32,7 @@ import Add.AddClassNPC;
 import Add.AddLightningRod;
 import Add.AddMobCrate;
 import Add.AddNode;
+import Add.AddJumpPad;
 import ConfigUtils.LightningConfigUtils;
 import ConfigUtils.MobCreateConfigUtils;
 import ConfigUtils.NodeConfigUtils;
@@ -53,6 +54,7 @@ import Listeners.MobCreatePlayerDetector;
 import Listeners.NodeBlockTracker;
 import Listeners.DZNPCListeners;
 import Listeners.GeneralArenaListeners;
+import Listeners.JumpPadListener;
 import Listeners.MobCreateImpact;
 import Listeners.NodeListener;
 import Listeners.PABListeners;
@@ -196,6 +198,12 @@ public class Main {
 				.executor(new AddLightningRod())
 				.build();
 		
+		CommandSpec addJumpPadCmd = CommandSpec.builder()
+				.description(Text.of("Add a jump pad."))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("pad name")))))
+				.executor(new AddJumpPad())
+				.build();
+		
 		CommandSpec removeLightningRodCmd = CommandSpec.builder()
 				.description(Text.of("Remove a lightning rod target."))
 				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("target name"))))
@@ -335,6 +343,7 @@ public class Main {
 				.child(addLightningRodCmd, "addLightningRod","alr")
 				.child(addClassNPCCmd, "addClassNPC","acnpc")
 				.child(addClassCmd, "addClass","ac")
+				.child(addJumpPadCmd, "addJumpPad","ajp")
 				.child(addClassItemCmd, "addClassItem","aci")
 				.child(addArenaModeCmd, "addArenaMode","aam")
 				.child(addNodeCmd, "addNode","an")
@@ -393,6 +402,7 @@ public class Main {
 		game.getEventManager().registerListeners(this, new NodeBlockTracker());		
 		game.getEventManager().registerListeners(this, new PBDetector());	
 		game.getEventManager().registerListeners(this, new PABListeners());	
+		game.getEventManager().registerListeners(this, new JumpPadListener());
 	}
 	
 	@Listener

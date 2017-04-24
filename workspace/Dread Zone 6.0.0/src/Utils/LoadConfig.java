@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import ConfigFiles.ArenaFileConfig;
+import ConfigFiles.JumpPadFileConfig;
 import ConfigFiles.LightningFileConfig;
 import ConfigFiles.MobCrateFileConfig;
 import ConfigFiles.NodeFileConfig;
@@ -52,6 +53,7 @@ public class LoadConfig {
 		MobCrateFileConfig.getConfig().setup();
 		NodeFileConfig.getConfig().setup();
 		ArenaFileConfig.getConfig().setup();
+		JumpPadFileConfig.getConfig().setup();
 		
 		if (!Files.exists(configDir.resolve("Databases")))
 		{
