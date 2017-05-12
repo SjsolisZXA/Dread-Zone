@@ -25,7 +25,7 @@ import com.google.inject.Inject;
 
 import Add.AddPABMode;
 import Add.AddTDMMode;
-import Add.AAM;
+//import Add.AAM;
 import Add.AddClass;
 import Add.AddClassItem;
 import Add.AddClassNPC;
@@ -251,7 +251,7 @@ public class Main {
 		CommandSpec addArenaModeCmd = CommandSpec.builder()
 				.description(Text.of("Add an arena Mode."))
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
-				.executor(new AAM())
+				//.executor(new AAM())
 				.child(TDMMode, "TDM")
 				.child(PABMode, "PAB")
 				.build();
