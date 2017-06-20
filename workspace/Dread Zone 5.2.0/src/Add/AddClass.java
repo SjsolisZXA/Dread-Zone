@@ -1,5 +1,7 @@
 package Add;
 
+import java.util.Optional;
+
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -20,20 +22,32 @@ public class AddClass implements CommandExecutor{
 		
 		if(!(src instanceof Player)){
 			
-			src.sendMessage(Text.of(TextColors.RED, "This is a user command only!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE, "This is a user command only!"));
 			
 			return CommandResult.success();
 		}
 		
 		Player player = (Player)src;
 		
-		String arenaName = args.<String> getOne("arena name").get();
+		Optional<String> CN = args.<String> getOne("class name");
+		Optional<String> AN = args.<String> getOne("arena name");
+		
+		if(!AN.isPresent()||!CN.isPresent()){
+			
+			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE,"Invalid usage! Valid usage: ",TextColors.DARK_RED, "/dz ac CLASS_NAME ARENA_NAME",TextColors.WHITE,"."));
+			
+			return CommandResult.success();
+		}
+		
+		String arenaName = AN.get();
 		
 		if(ArenaConfigUtils.isArenaInConfig(arenaName)){
 		
 			if(ClassConfigUtils.getNumOfClasses(arenaName)<5){
 				
-				String className = args.<String> getOne("class name").get();
+				String className = CN.get();
 				
 				ClassConfigUtils.addClass(arenaName, className);
 				

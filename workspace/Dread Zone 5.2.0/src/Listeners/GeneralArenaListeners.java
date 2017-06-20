@@ -407,7 +407,7 @@ public class GeneralArenaListeners {
 	
     //prevents players from throwing potions in Lobbies
     @Listener
-    public void onPotionThrow(LaunchProjectileEvent event,@Root Player player) {//needs cause event location and if the cause if by a contestnat//FIX
+    public void onPotionThrow(LaunchProjectileEvent event, @Root Player player) {//needs cause event location and if the cause if by a contestnat//FIX
     
         event.setCancelled(true);
     }

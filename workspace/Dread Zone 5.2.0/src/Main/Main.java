@@ -25,7 +25,6 @@ import com.google.inject.Inject;
 
 import Add.AddPABMode;
 import Add.AddTDMMode;
-//import Add.AAM;
 import Add.AddClass;
 import Add.AddClassItem;
 import Add.AddClassNPC;
@@ -73,10 +72,11 @@ import Setters.SetLobbySpawn;
 import Test.TestExecutor0;
 import Test.TestExecutor1;
 import Test.TestExecutor2;
+
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 
-@Plugin(id = "dreadzone", name = "Dread Zone", version = "0.0.1")
+@Plugin(id = "dreadzone", name = "DreadZone", description = "This plugin adds minigames!", url = "http://salvadorzxa.com", version = "0.1.01")
 
 public class Main {
 	
@@ -91,6 +91,11 @@ public class Main {
 	@Inject
 	private Logger logger;
 	
+	public Logger getLogger()
+	{
+		return logger;
+	}
+	
 	@Inject
 	@ConfigDir(sharedRoot = false)
 	public Path configDir;
@@ -98,11 +103,8 @@ public class Main {
 	//Checks for existence of the configuration files
 	@Listener
 	public void onPreInitialization(GamePreInitializationEvent event){
-		
 		Dreadzone = this;
-		
 		LoadConfig.loadConfig(configDir);
-		
 		ReloadExecutor.configurationDirectory(configDir);
 	}
 
@@ -120,27 +122,25 @@ public class Main {
 	@Listener
 	public void onInit (GameInitializationEvent event){
 		
-		logger.info("Dread Zone loading...");
+		getLogger().info("Dread Zone loading...");
 		
 		try{
 			if(!configuration.exists()){
 				configuration.createNewFile();
 				configurationNode = configurationLoader.load();
-				configurationNode.setValue("This is a test");
-				configurationNode.getNode("test").setComment("Dread Zone Configuration.");
-				configurationNode.getNode("arenas", "bool").setValue(false);
-				configurationNode.getNode("rods", "string").setValue("Hello");
+				configurationNode.getNode("#").setComment("Dread Zone Configuration. Do not alter the configuration unless you know what you are going.");
+				configurationNode.getNode("Arenas", "Status").setValue(true).setComment("Set the status of the the Dread Zone arenas.");
+				configurationNode.getNode("Lightning Rods", "Status").setValue(true).setComment("Set the status of the Dread Zone Lightning Rods.");
 				configurationLoader.save(configurationNode);
 			}
 			configurationNode = configurationLoader.load();
 			
 		}catch(IOException exception){
 			
-			logger.warning("Error loading default configuration!"); 
+			getLogger().warning("Error loading default configuration!"); 
 		}
 		
 		if(!MobCreateConfigUtils.getTargets().isEmpty()){
-			
 			MobCreateConfigUtils.resetMobCreateBoolean();
 		}
 		
@@ -150,9 +150,9 @@ public class Main {
 	    	      .executor(new ReloadExecutor())
 	    	      .build();	
 	    
-		CommandSpec addArenaSpawnsCmd = CommandSpec.builder()
+		CommandSpec addArenaSpawnPointCmd = CommandSpec.builder()
 				.description(Text.of("Set arena team spawnpoints."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("spawn name"))))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("spawn name")))))
 				.executor(new TDM())
 				.build();
 		
@@ -163,27 +163,27 @@ public class Main {
 		
 		CommandSpec classListCmd = CommandSpec.builder()
 				.description(Text.of("Gets a list of all the classes for a specified arena."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new ViewClasses())
 				.build();
 		
 		CommandSpec addClassItemCmd = CommandSpec.builder()
 				.description(Text.of("Add an item in hand to an arena class."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))),
-						GenericArguments.string(Text.of("class name")))
+				.arguments(GenericArguments.optional(GenericArguments.string(Text.of("class name"))),
+						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new AddClassItem())
 				.build();
 		
 		CommandSpec removeClassItemCmd = CommandSpec.builder()
 				.description(Text.of("Remove a class item based on the exact item stack in hand."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))),
-						GenericArguments.string(Text.of("class name")))
+				.arguments(GenericArguments.optional(GenericArguments.string(Text.of("class name"))),
+						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new DeleteClassItem())
 				.build();	
 		
 		CommandSpec addClassNPCCmd = CommandSpec.builder()
 				.description(Text.of("Add a Dread Zone NPC Class spawnpoint."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("class name"))))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("class name")))))
 				.executor(new AddClassNPC())
 				.build();	
 		
@@ -194,7 +194,7 @@ public class Main {
 		
 		CommandSpec addLightningRodCmd = CommandSpec.builder()
 				.description(Text.of("Add a lightning rod target."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("target name"))))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("target name")))))
 				.executor(new AddLightningRod())
 				.build();
 		
@@ -206,32 +206,33 @@ public class Main {
 		
 		CommandSpec removeLightningRodCmd = CommandSpec.builder()
 				.description(Text.of("Remove a lightning rod target."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("target name"))))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("target name")))))
 				.executor(new DeleteLightningRod())
 				.build();
 		
-		CommandSpec setDZLSACmd = CommandSpec.builder()
+		CommandSpec setDZLSPmd = CommandSpec.builder()
 				.description(Text.of("Set a Dread Zone's lobby spawn point."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new SetLobbySpawn())
 				.build();
 		
 		CommandSpec moveLobbyCmd = CommandSpec.builder()
 				.description(Text.of("Re-create a specified Dread Zone arena lobby."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new MoveArenaLobby())
 				.build();
 		
+		@SuppressWarnings("unused")
 		CommandSpec removeNodeCmd = CommandSpec.builder()
 				.description(Text.of("Remove a capture node."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("node name"))))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("node name")))))
 				.executor(new DeleteNode())
 				.build();
 		
 		CommandSpec removeMobCreateCmd = CommandSpec.builder()
 				.description(Text.of("Remove a mob create."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("group name"))),
-						GenericArguments.string(Text.of("target name")))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("group name")))),
+						GenericArguments.optional(GenericArguments.string(Text.of("target name"))))
 				.executor(new DeleteMobCrate())
 				.build();
 		
@@ -239,19 +240,19 @@ public class Main {
 		
 		CommandSpec TDMMode = CommandSpec.builder()
 				.description(Text.of("Add TDM mode for an arena."))
-				.arguments(GenericArguments.optional(GenericArguments.integer(Text.of("number of players per team"))))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))),
+						GenericArguments.optional(GenericArguments.integer(Text.of("number of players per team"))))
 				.executor(new AddTDMMode())
 				.build();
 		
 		CommandSpec PABMode = CommandSpec.builder()
 				.description(Text.of("Add PAB mode for an arena."))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new AddPABMode())
 				.build();
 		
 		CommandSpec addArenaModeCmd = CommandSpec.builder()
 				.description(Text.of("Add an arena Mode."))
-				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
-				//.executor(new AAM())
 				.child(TDMMode, "TDM")
 				.child(PABMode, "PAB")
 				.build();
@@ -264,34 +265,35 @@ public class Main {
 		
 		CommandSpec addMobCrateCmd = CommandSpec.builder()
 				.description(Text.of("Add a mob crate dropper."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("group name"))),
-						GenericArguments.string(Text.of("mobcrate name")))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("group name")))),
+						GenericArguments.optional(GenericArguments.string(Text.of("mobcrate name"))))
 				.executor(new AddMobCrate())
 				.build();
 		
 		CommandSpec addClassCmd = CommandSpec.builder()
 				.description(Text.of("Add an arena class."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))),
-						GenericArguments.string(Text.of("class name")))
+				.arguments(GenericArguments.optional(GenericArguments.string(Text.of("class name"))),
+						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new AddClass())
 				.build();
 		
 		CommandSpec removeClassCmd = CommandSpec.builder()
 				.description(Text.of("Remove a class from an arena."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))),
-						GenericArguments.string(Text.of("class name")))
+				.arguments(GenericArguments.optional(GenericArguments.string(Text.of("class name"))),
+						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new DeleteClass())
 				.build();
 		
+		@SuppressWarnings("unused")
 		CommandSpec addNodeCmd = CommandSpec.builder()
 				.description(Text.of("Add a capture node."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("node name"))))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("node name")))))
 				.executor(new AddNode())
 				.build();
 		
 		CommandSpec createArenaCmd = CommandSpec.builder()
 				.description(Text.of("Create a Dread Zone arena."))
-				.arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name"))))
+				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new SetArena())
 				.build();
 		
@@ -307,10 +309,12 @@ public class Main {
 				.executor(new JoinArena())
 				.build();	
 		CommandSpec editArena = CommandSpec.builder()
+				.description(Text.of("Edit an arena."))
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new EditArena())
 				.build();	
 		CommandSpec setCreditsLocation = CommandSpec.builder()
+				.description(Text.of("Set the credits location of an arena."))
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new SetCreditsLocation())
 				.build();
@@ -323,6 +327,7 @@ public class Main {
 				.executor(new ResetMobCreate())
 				.build();	
 		
+		@SuppressWarnings("unused")
 		CommandSpec resetNodesCmd = CommandSpec.builder()
 				.description(Text.of("Reset all capture nodes."))
 				.executor(new ResetNodes())
@@ -336,35 +341,35 @@ public class Main {
 	    
 		CommandSpec dreadZoneCmd = CommandSpec.builder()
 				.description(Text.of("Dread Zone."))
-				.child(readyCmd, "ready")
-				.child(leaveArenaCmd, "leave")
-				.child(reloadCmd, "reload")
-				.child(joinCmd, "join")
-				.child(addLightningRodCmd, "addLightningRod","alr")
-				.child(addClassNPCCmd, "addClassNPC","acnpc")
-				.child(addClassCmd, "addClass","ac")
-				.child(addJumpPadCmd, "addJumpPad","ajp")
-				.child(addClassItemCmd, "addClassItem","aci")
-				.child(addArenaModeCmd, "addArenaMode","aam")
-				.child(addNodeCmd, "addNode","an")
-				.child(addMobCrateCmd, "addMobCrate","amc")
-				.child(addArenaSpawnsCmd, "addArenaSpawns","aas")
-				.child(createArenaCmd, "createArena","ca")
-				.child(removeClassItemCmd, "removeClassItem","rci")
-				.child(removeClassCmd, "removeClass","rc")
-				.child(removeLightningRodCmd, "removeLightningRod","rlr")
-				.child(removeNodeCmd, "removeNode","rn")
-				.child(removeMobCreateCmd,"removeMobCreate","rmc")
-				.child(resetMobCreatesCmd, "resetMobCrates","rmcs")
-				.child(resetNodesCmd, "resetNodes","rnds")
-				.child(arenaListCmd, "arenaList","al")
-				.child(classListCmd, "classList","cl")
-				.child(setDZLSACmd, "setLobbySpawn","slp")
-				.child(moveLobbyCmd, "moveLobby","ml")
-				.child(PABCmd, "PointA","PA")
-				.child(arenaModes, "arenaModes", "am")
-				.child(editArena, "editArena", "ea")
-				.child(setCreditsLocation, "setCreditsLocation", "scl")
+				.child(readyCmd, "ready")//
+				.child(leaveArenaCmd, "leave")//
+				.child(reloadCmd, "reload")//
+				.child(joinCmd, "join")//
+				.child(addLightningRodCmd, "addLightningRod","alr")//
+				.child(addClassNPCCmd, "addClassNPC","acnpc")//
+				.child(addClassCmd, "addClass","ac")//
+				.child(addJumpPadCmd, "addJumpPad","ajp")//
+				.child(addClassItemCmd, "addClassItem","aci")//
+				.child(addArenaModeCmd, "addArenaMode","aam")//
+				//.child(addNodeCmd, "addNode","an")//
+				.child(addMobCrateCmd, "addMobCrate","amc")//
+				.child(addArenaSpawnPointCmd, "addArenaSpawnPoint","aasp")//
+				.child(createArenaCmd, "createArena","ca")//
+				.child(removeClassItemCmd, "removeClassItem","rci")//
+				.child(removeClassCmd, "removeClass","rc")//
+				.child(removeLightningRodCmd, "removeLightningRod","rlr")//
+				//.child(removeNodeCmd, "removeNode","rn")//
+				.child(removeMobCreateCmd,"removeMobCreate","rmc")//
+				.child(resetMobCreatesCmd, "resetMobCrates","rmcs")//
+				//.child(resetNodesCmd, "resetNodes","rnds")//
+				.child(arenaListCmd, "arenaList","al")//
+				.child(classListCmd, "classList","cl")//
+				.child(setDZLSPmd, "setLobbySpawnPoint","slsp")//
+				.child(moveLobbyCmd, "moveLobby","ml")//
+				.child(PABCmd, "PointA","PA")//
+				.child(arenaModes, "arenaModes", "am")//
+				.child(editArena, "editArena", "ea")//
+				.child(setCreditsLocation, "setCreditsLocation", "scl")//
 				.executor(new DZCMD())
 				.build();
 		
@@ -381,6 +386,8 @@ public class Main {
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("optionalTestArguments")))))
 				.executor(new TestExecutor0())
 				.build();
+		
+		
 		CommandSpec testCmd = CommandSpec.builder()
 				.description(Text.of("Test method."))
 				.child(testChildCmd0,"child0")
@@ -437,7 +444,7 @@ public class Main {
 		
 		//MobCreateConfigUtils.resetMobCreateBoolean();
 		
-		logger.info("Dread Zone Plugin Stopped!");
+		getLogger().info("Dread Zone Plugin Stopped!");
 	}
 	
 	public Path getConfigDir()

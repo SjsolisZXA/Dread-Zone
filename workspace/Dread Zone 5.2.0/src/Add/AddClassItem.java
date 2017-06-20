@@ -24,17 +24,25 @@ public class AddClassItem implements CommandExecutor{
 		
 		if(!(src instanceof Player)){
 			
-			src.sendMessage(Text.of(TextColors.RED, "This is a user command only!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE, "This is a user command only!"));
+		}
+		
+		Player player = (Player)src;
+		Optional<String> CN = args.<String> getOne("class name");
+		Optional<String> AN = args.<String> getOne("arena name");
+				
+		if(!AN.isPresent()||!CN.isPresent()){
+			
+			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE,"Invalid usage! Valid usage: ",TextColors.DARK_RED, "/dz aci CLASS_NAME ARENA_NAME",TextColors.WHITE,"."));
 			
 			return CommandResult.success();
 		}
 		
-		Player player = (Player)src;
-		
-		String arenaName = args.<String> getOne("arena name").get();
-		
-		String className = args.<String> getOne("class name").get();
-		
+		String className = CN.get();
+		String arenaName = AN.get();
+				
 		Optional<ItemStack> itemStackOptional = player.getItemInHand(HandTypes.MAIN_HAND);
 		
 		if(itemStackOptional.isPresent()){

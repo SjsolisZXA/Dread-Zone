@@ -1,5 +1,7 @@
 package Add;
 
+import java.util.Optional;
+
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -19,12 +21,24 @@ public class AddMobCrate implements CommandExecutor {
 		
 		if(!(src instanceof Player)){
 			
-			src.sendMessage(Text.of(TextColors.RED, "Console already decides where mobs spawn."));
+			src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE, "Console already decides where mobs spawn."));
 			
 			return CommandResult.success();
 		}
 		
 		Player player = (Player)src;
+		
+		Optional<String> GN = args.<String> getOne("group name");
+		Optional<String> TN = args.<String> getOne("mobcrate name");
+		
+		if(!GN.isPresent()||!TN.isPresent()){
+			
+			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE,"Invalid usage! Valid usage: ",TextColors.DARK_RED, "/dz amc GROUP_NAME CRATE_NAME",TextColors.WHITE,"."));
+			
+			return CommandResult.success();
+		}
 		
 		if(ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation())!=null){
 			
@@ -37,9 +51,9 @@ public class AddMobCrate implements CommandExecutor {
 		
 				RightClickModeConfigUtils.addToList(player.getName(),"MC");
 				
-				String groupName = args.<String> getOne("group name").get();
-				String targetName = args.<String> getOne("mobcrate name").get();
-				
+				String groupName = GN.get();
+				String targetName = TN.get();
+							
 				RightClickMode.SMCL(groupName, targetName);
 			
 				return CommandResult.success();

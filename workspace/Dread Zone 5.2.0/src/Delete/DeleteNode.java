@@ -1,5 +1,7 @@
 package Delete;
 
+import java.util.Optional;
+
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -13,7 +15,17 @@ public class DeleteNode implements CommandExecutor {
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args){
 		
-		String nodeName = args.<String> getOne("node name").get();
+		Optional<String> NN = args.<String> getOne("node name");
+		
+		if(!NN.isPresent()){
+			
+			src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE,"Invalid usage! Valid usage: ",TextColors.DARK_RED, "/dz rn NODE_NAME",TextColors.WHITE,"."));
+			
+			return CommandResult.success();
+		}
+		
+		String nodeName = NN.get();
 		
 		if (NodeConfigUtils.isNodeInConfig(nodeName)){
 			

@@ -228,7 +228,7 @@ public class RightClickMode {
 				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 						TextColors.WHITE,"Success, ",TextColors.DARK_RED, SAAN,"'s ",TextColors.WHITE, "lobby created! To set ",
 						TextColors.DARK_RED, SAAN,"'s ",TextColors.WHITE,"lobby spawn area, stand where you want players to spawn "
-								+ "and enter ",TextColors.DARK_RED,"/dz slp ",SAAN));
+								+ "and enter: ",TextColors.DARK_RED,"/dz slsp ",SAAN,TextColors.WHITE,"."));
 				
 				return;
 			}

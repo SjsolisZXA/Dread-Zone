@@ -1,5 +1,7 @@
 package Add;
 
+import java.util.Optional;
+
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -18,14 +20,24 @@ public class AddPABMode implements CommandExecutor{
 		
 		if(!(src instanceof Player)){
 			
-			src.sendMessage(Text.of(TextColors.RED, "This is a user comand only!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE, "This is a user comand only!"));
 			
 			return CommandResult.success();
 		}
 		
-		String arenaName = args.<String> getOne("arena name").get();
-		
 		Player player = (Player)src;
+		Optional<String> AN = args.<String> getOne("arena name");
+		
+		if(!AN.isPresent()){
+			
+			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE,"Invalid usage! Valid usage: ",TextColors.DARK_RED, "/dz aam PAB ARENA_NAME",TextColors.WHITE,"."));
+			
+			return CommandResult.success();
+		}
+		
+		String arenaName = AN.get();
 		
 		if(!ArenaConfigUtils.isArenaInConfig(arenaName)){
 			

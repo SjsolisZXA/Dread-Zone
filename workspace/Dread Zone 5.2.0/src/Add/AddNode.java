@@ -1,5 +1,7 @@
 package Add;
 
+import java.util.Optional;
+
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -15,18 +17,32 @@ import Listeners.RightClickMode;
 public class AddNode implements CommandExecutor {
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException{
+		
 		if(!(src instanceof Player)){
-			src.sendMessage(Text.of(TextColors.RED, "This is a user command only."));
+			
+			src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE, "This is a user command only!"));
+			
 			return CommandResult.success();
 		}
+		
 		Player player = (Player)src;
+		Optional<String> NN = args.<String> getOne("node name");
+		
+		if(!NN.isPresent()){
+			
+			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE,"Invalid usage! Valid usage: ",TextColors.DARK_RED, "/dz an NODE_NAME",TextColors.WHITE,"."));
+			
+			return CommandResult.success();
+		}
+		
+		String nodeName = NN.get();
 		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 				TextColors.WHITE, "Right click where you want to create a node."));	
 		
 		RightClickModeConfigUtils.addToList(player.getName(),"N");
-		
-		String nodeName = args.<String> getOne("node name").get();
 		
 		RightClickMode.SN(nodeName);
 	    

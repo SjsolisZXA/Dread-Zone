@@ -22,14 +22,26 @@ public class AddTDMMode implements CommandExecutor{
 		
 		if(!(src instanceof Player)){
 			
-			src.sendMessage(Text.of(TextColors.RED, "This is a user comand only!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE, "This is a user comand only!"));
 			
 			return CommandResult.success();
 		}
 		
-		String arenaName = args.<String> getOne("arena name").get();
-		
 		Player player = (Player)src;
+		Optional<String> AN = args.<String> getOne("arena name");
+		Optional<Integer> ONOMPT = args.<Integer> getOne("number of players per team");
+		
+		if(!ONOMPT.isPresent()||!AN.isPresent()){
+			
+            src.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
+                    TextColors.WHITE, "Invalid usage! Usage: ",TextColors.DARK_RED,"/dz aam TDM ARENA_NAME NUM_OF_PLAYERS_PER_TEAM",TextColors.WHITE,
+                    ". To get a list of Dread Zone arenas, enter ",TextColors.DARK_RED,"/dz al",TextColors.WHITE,"."));
+            
+            return CommandResult.success();
+		}
+		
+		String arenaName = AN.get();
 		
 		if(!ArenaConfigUtils.isArenaInConfig(arenaName)){
 			
@@ -39,33 +51,18 @@ public class AddTDMMode implements CommandExecutor{
 			
 			return CommandResult.success();
 		}
-
-		Optional<Integer> ONOMPT = args.<Integer> getOne("number of players per team");//numberOfMemebrsPerTeam
 		
-		if(!ONOMPT.isPresent()){
-			
-            src.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
-                    TextColors.WHITE, "Invalid usage! Usage: ",TextColors.DARK_RED,"/dz aam ARENA_NAME",TextColors.WHITE,
-                    ". To get a list of Dread Zone arenas, enter ",TextColors.DARK_RED,"/dz al",TextColors.WHITE,"."));
-            
-            return CommandResult.success();
-		}
-		
-		//the user is not actually going to be in a right click mode, but this will help the user set player spawn points
 		RightClickModeConfigUtils.addToList(player.getName(), "TDM");
 		
-		int nOMPT = args.<Integer> getOne("number of players per team").get();
-		
+		int nOMPT = ONOMPT.get();
 		ArenaConfigUtils.setIntCurrent(arenaName, 0);
-		
 		ArenaConfigUtils.setIntGoal(arenaName, nOMPT*2);
-		
 		TDM.SATS(arenaName,player);
-		
 		TDMConfigUtils.setPointWin(arenaName, 40);
 		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-				TextColors.WHITE,"Stand where you want players from Team A to spawn in the arena and enter ",TextColors.DARK_RED,"/dzasp SPAWN_NAME"));
+				TextColors.WHITE,"Stand where you want players from ",TextColors.DARK_RED,"Team A",TextColors.WHITE," "
+						+ "to spawn in the arena and enter: ",TextColors.DARK_RED,"/dz aasp SPAWN_NAME",TextColors.WHITE,"."));
 	
 		return CommandResult.success();
 	}

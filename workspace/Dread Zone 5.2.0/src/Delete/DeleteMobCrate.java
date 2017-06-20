@@ -1,5 +1,7 @@
 package Delete;
 
+import java.util.Optional;
+
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -14,14 +16,29 @@ public class DeleteMobCrate implements CommandExecutor {
 	
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args){
+		
 		if(!(src instanceof Player)){
-			src.sendMessage(Text.of(TextColors.RED, "Console already decides where mobs should not spawn at."));
+			
+			src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE, "Console already decides where mobs should not spawn at."));
 			
 			return CommandResult.success();
 		}
 		
-		String groupName = args.<String> getOne("group name").get();
-		String targetName = args.<String> getOne("target name").get();
+		Player player = (Player)src;
+		Optional<String> GN = args.<String> getOne("group name");
+		Optional<String> TN = args.<String> getOne("target name");
+		
+		if(!GN.isPresent()||!TN.isPresent()){
+			
+			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE,"Invalid usage! Valid usage: ",TextColors.DARK_RED, "/dz rmc GROUP_NAME CRATE_NAME",TextColors.WHITE,"."));
+			
+			return CommandResult.success();
+		}
+		
+		String groupName = GN.get();
+		String targetName = TN.get();
 		
 		if (MobCreateConfigUtils.isTargetInConfig(groupName,targetName))
 		{

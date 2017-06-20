@@ -40,32 +40,31 @@ public class JoinArena implements CommandExecutor {
 		}
 		
 		Player player = (Player)src;
-		
 		Optional<String> AN = args.<String> getOne("arena name");
 		
 		if(!AN.isPresent()){
 			
             player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
-                    TextColors.WHITE, "Invalid usage! Usage: ",TextColors.DARK_RED,"/dz join ARENA_NAME MODE",TextColors.WHITE,
+                    TextColors.WHITE, "Invalid usage! Valid usage: ",TextColors.DARK_RED,"/dz join ARENA_NAME MODE",TextColors.WHITE,
                     ". To get a list of Dread Zone arenas, enter ",TextColors.DARK_RED,"/dz al",TextColors.WHITE,"."));
             
             return CommandResult.success();
 		}
 		
-		String arenaName = args.<String> getOne("arena name").get();
+		String arenaName = AN.get();
 		
 		Optional<String> M = args.<String> getOne("mode");
 		
 		if(!M.isPresent()){
 			
             player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
-                    TextColors.WHITE, "Invalid usage! Usage: ",TextColors.DARK_RED,"/dz join ARENA_NAME MODE",TextColors.WHITE,
+                    TextColors.WHITE, "Invalid usage! Valid usage: ",TextColors.DARK_RED,"/dz join ARENA_NAME MODE",TextColors.WHITE,
                     ". To get a list of available modes for a Dread Zone arena, enter ",TextColors.DARK_RED,"/dz am ARENA_NAME",TextColors.WHITE,"."));
             
             return CommandResult.success();
 		}
 		
-		String mode = args.<String> getOne("mode").get();
+		String mode = M.get();
 		
 		if(ArenaConfigUtils.isArenaInConfig(arenaName)){
 			
@@ -106,18 +105,18 @@ public class JoinArena implements CommandExecutor {
 					                  Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
 					                		  TextColors.DARK_RED, player.getName(), TextColors.WHITE, " joined Dread Zone arena ", TextColors.DARK_RED, arenaName, TextColors.WHITE, "! ", 
 					                		  TextColors.DARK_RED, (numOfSpots - ContestantConfigUtils.getNumOfArenaContestants(arenaName)), TextColors.WHITE, " spots left. To join, enter", 
-					                		  TextColors.DARK_RED, " /dz join ", TextColors.DARK_RED, arenaName));
+					                		  TextColors.DARK_RED, " /dz join ", TextColors.DARK_RED, arenaName,TextColors.WHITE," TDM."));
 					                
-					                return CommandResult.success();
+					                  return CommandResult.success();
 					              }
 					              if (numOfSpots - ContestantConfigUtils.getNumOfArenaContestants(arenaName) == 1){
 					            	  
 					                  Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
 					                		  TextColors.DARK_RED, player.getName(), TextColors.WHITE, " joined Dread Zone arena ", TextColors.DARK_RED, arenaName, TextColors.WHITE, "! ", 
 					                		  TextColors.DARK_RED, 1, TextColors.WHITE, " spot left! To join, enter", 
-					                		  TextColors.DARK_RED, " /dz join ", TextColors.DARK_RED, arenaName));
+					                		  TextColors.DARK_RED, " /dz join ", TextColors.DARK_RED, arenaName,TextColors.WHITE," TDM."));
 					                
-					                return CommandResult.success();
+					                  return CommandResult.success();
 					              }
 					              
 					              Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
@@ -129,22 +128,22 @@ public class JoinArena implements CommandExecutor {
 				            player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
 				                    TextColors.WHITE, "Sorry, Dread Zone arena ", TextColors.DARK_RED, arenaName, TextColors.WHITE, " is full."));
 				                  
-				                  return CommandResult.success();
+				            return CommandResult.success();
 						}
 						
 			            player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
 			                    TextColors.WHITE, "Sorry, Dread Zone arena ", TextColors.DARK_RED, arenaName, TextColors.WHITE, " does not have a TDM mode implemented."));
 			                  
-			                  return CommandResult.success();
+			            return CommandResult.success();
 					}
 					
-					if((mode.toUpperCase().equals("NC"))){
+					/**if((mode.toUpperCase().equals("NC"))){
 						
 						player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 								TextColors.WHITE,"Dread Zone Node Capture mode is unavailable, for now."));
 						
 						return CommandResult.success();
-					}
+					}*/
 					
 					if((mode.toUpperCase().equals("PAB"))){
 						
@@ -159,7 +158,29 @@ public class JoinArena implements CommandExecutor {
 			                      TextColors.WHITE, " Left click on a Dread Zone NPC to choose a class. Right click on the Dread Zone NPC class for details. When you're ready, enter ", 
 			                      TextColors.DARK_RED, "/dz ready"));
 						
-						return CommandResult.success();
+		                if ((ContestantConfigUtils.getNumOfArenaContestants(arenaName) < 10) && (10 - ContestantConfigUtils.getNumOfArenaContestants(arenaName) != 0)){
+		                	
+		                    Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
+		                		    TextColors.DARK_RED, player.getName(), TextColors.WHITE, " joined Dread Zone arena ", TextColors.DARK_RED, arenaName, TextColors.WHITE, "! ", 
+		                		    TextColors.DARK_RED, (10 - ContestantConfigUtils.getNumOfArenaContestants(arenaName)), TextColors.WHITE, " spots left. To join, enter: ", 
+		                		    TextColors.DARK_RED, "/dz join ", TextColors.DARK_RED, arenaName,TextColors.WHITE," PAB."));
+		                
+		                    return CommandResult.success();
+		                }
+		                if (ContestantConfigUtils.getNumOfArenaContestants(arenaName) == 1){
+		            	  
+		                    Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
+		                		    TextColors.DARK_RED, player.getName(), TextColors.WHITE, " joined Dread Zone arena ", TextColors.DARK_RED, arenaName, TextColors.WHITE, "! ", 
+		                		    TextColors.DARK_RED, 1, TextColors.WHITE, " spot left! To join, enter: ", 
+		                		    TextColors.DARK_RED, "/dz join ", TextColors.DARK_RED, arenaName,TextColors.WHITE," PAB."));
+		                
+		                    return CommandResult.success();
+		                }
+		              
+		                Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
+		                        TextColors.WHITE, "Dread Zone arena ", TextColors.DARK_RED, arenaName, TextColors.WHITE, " closed!"));
+		                    
+		                return CommandResult.success();
 					}
 					
 					player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
@@ -170,21 +191,21 @@ public class JoinArena implements CommandExecutor {
 				
 				player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 						TextColors.WHITE,"Dread Zone arena ",TextColors.DARK_RED,arenaName,
-						TextColors.WHITE," needs a lobby spawn. To set the lobby spawn, enter ",TextColors.DARK_RED,"/cdzlsa ",arenaName));
+						TextColors.WHITE," needs a lobby spawn. To set the lobby spawn, enter ",TextColors.DARK_RED,"/dz slsp ",arenaName,TextColors.WHITE,"!"));
 					
 				return CommandResult.success();
 			}
 			
 			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 					TextColors.WHITE,"Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," does not have a lobby! "
-							+ "To create ",TextColors.DARK_RED,arenaName,"'s",TextColors.WHITE," lobby, enter, ",TextColors.DARK_RED,"/dzmlobby ",arenaName));
+							+ "To create ",TextColors.DARK_RED,arenaName,"'s",TextColors.WHITE," lobby, enter, ",TextColors.DARK_RED,"/dz ml ",arenaName,TextColors.WHITE,"."));
 			
 			return CommandResult.success();
 		}
 		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 				TextColors.WHITE,"Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," does not exists! "
-						+ "To view a list of avaiable Dread Zone arenas, enter ",TextColors.DARK_RED,"/dzarenas"));
+						+ "To view a list of avaiable Dread Zone arenas, enter: ",TextColors.DARK_RED,"/dz al"));
 		
 		return CommandResult.success();
 	}

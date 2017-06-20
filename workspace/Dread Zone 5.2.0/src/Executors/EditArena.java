@@ -19,7 +19,8 @@ public class EditArena implements CommandExecutor {
 
 		if(!(src instanceof Player)){
 			
-			src.sendMessage(Text.of(TextColors.RED, "This is a user comand only!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE, "This is a user command only!"));
 			
 			return CommandResult.success();
 		}
@@ -37,7 +38,7 @@ public class EditArena implements CommandExecutor {
 			return CommandResult.success();
 		}
 		
-		String arenaName = args.<String> getOne("arena name").get();
+		String arenaName = AN.get();
 		
 		if(RightClickModeConfigUtils.isUserInConfig(player.getName())){
 			

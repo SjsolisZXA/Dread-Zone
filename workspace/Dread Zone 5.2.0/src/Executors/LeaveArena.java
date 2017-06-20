@@ -21,7 +21,8 @@ public class LeaveArena implements CommandExecutor {
 		
 		if(!(src instanceof Player)){
 			
-			src.sendMessage(Text.of(TextColors.RED, "This is a user command only!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE, "This is a user command only!"));
 			
 			return CommandResult.success();
 		}

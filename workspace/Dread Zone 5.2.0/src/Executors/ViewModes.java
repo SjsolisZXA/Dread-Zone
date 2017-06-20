@@ -23,7 +23,7 @@ public class ViewModes implements CommandExecutor {
 			
             src.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
                     TextColors.WHITE, "Invalid usage! Usage: ",TextColors.DARK_RED,"/dz am ARENA_NAME",TextColors.WHITE,
-                    ". To get a list of Dread Zone arenas, enter ",TextColors.DARK_RED,"/dz al",TextColors.WHITE,"."));
+                    ". To get a list of Dread Zone arenas, enter: ",TextColors.DARK_RED,"/dz al",TextColors.WHITE,"."));
             
             return CommandResult.success();
 		}

@@ -1,5 +1,7 @@
 package Add;
 
+import java.util.Optional;
+
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -22,12 +24,22 @@ public class AddClassNPC implements CommandExecutor{
 		
 		if(!(src instanceof Player)){
 			
-			src.sendMessage(Text.of(TextColors.RED, "This is a user command only!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE, "This is a user command only!"));
 			
 			return CommandResult.success();
 		}
 		
 		Player player = (Player)src;
+		Optional<String> CN = args.<String> getOne("class name");
+
+		if(!CN.isPresent()){
+			
+			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE,"Invalid usage! Valid usage: ",TextColors.DARK_RED, "/dz ac CLASS_NAME",TextColors.WHITE,"."));
+			
+			return CommandResult.success();
+		}
 		
 		if(ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation())!=null){
 		
@@ -35,7 +47,7 @@ public class AddClassNPC implements CommandExecutor{
 			
 			if (LobbyConfigUtils.isUserinLobby(player.getLocation(), arenaName)){
 			
-				String className = args.<String> getOne("class name").get();
+				String className = CN.get();
 				
 				if(ClassConfigUtils.doesClassExist(arenaName, className)){
 					

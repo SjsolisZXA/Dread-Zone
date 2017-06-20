@@ -1,5 +1,7 @@
 package Setters;
 
+import java.util.Optional;
+
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
@@ -24,8 +26,17 @@ public class SetLobbySpawn implements CommandExecutor{
 		}
 		
 		Player player = (Player)src;
+		Optional<String> AN = args.<String> getOne("arena name");
 		
-		String arenaName = args.<String> getOne("arena name").get();
+		if(!AN.isPresent()){
+			
+			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE,"Invalid usage! Valid usage: ",TextColors.DARK_RED, "/dz slsp ARENA_NAME",TextColors.WHITE,"."));
+			
+			return CommandResult.success();
+		}
+		
+		String arenaName = AN.get();
 		
 		if(!ArenaConfigUtils.isArenaInConfig(arenaName)){
 			
@@ -47,8 +58,14 @@ public class SetLobbySpawn implements CommandExecutor{
 		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 				TextColors.WHITE,"Sucess, ",TextColors.DARK_RED,arenaName+"Lobby",TextColors.WHITE," spawn point set! "
-						+ "Although the arena and lobby have been created, you must add at least one Dread Zone arena mode. "
-						+ "To do so, enter ",TextColors.DARK_RED,"/cdzam ",arenaName," MODE NUMBER_OF_PLAYERS_PER_TEAM"));
+						+ "You must add at least one of the following Dread Zone arena modes."));
+		
+		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
+				TextColors.WHITE,"To add a Team Deathmatch mode, enter: ",TextColors.DARK_RED,"/dz aam TDM ",arenaName," "
+						+ "NUMBER_OF_PLAYERS_PER_TEAM",TextColors.WHITE,"."));
+		
+		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
+				TextColors.WHITE,"To add a Point A Point B mode, enter: ",TextColors.DARK_RED,"/dz aam PAB ",arenaName,TextColors.WHITE,"."));
 
 		return CommandResult.success();
 	}

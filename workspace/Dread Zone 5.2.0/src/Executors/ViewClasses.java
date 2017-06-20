@@ -1,5 +1,7 @@
 package Executors;
 
+import java.util.Optional;
+
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -18,17 +20,30 @@ public class ViewClasses implements CommandExecutor {
 		
 		if(!(src instanceof Player)){
 			
-			src.sendMessage(Text.of(TextColors.RED, "This is a user command only!"));
+			src.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE, "This is a user command only!"));
 			
 			return CommandResult.success();
 		}
 			
+		Optional<String> AN = args.<String> getOne("arena name");
+		
 		Player player = (Player)src;
 		
-		String arenaName = args.<String> getOne("arena name").get();
+		if(!AN.isPresent()){
+			
+			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
+					TextColors.WHITE,"Invalid usage! Valid usage: ",TextColors.DARK_RED,"/dz cl ARENA_NAME.",
+					TextColors.WHITE,"To view a list of arenas, enter: ",TextColors.DARK_RED,"/dz al",TextColors.WHITE,"."));
+				
+			return CommandResult.success();
+		}
+		
+		String arenaName = AN.get();
 			
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-				TextColors.WHITE,"Dread Zone classes available for arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE,": ",TextColors.DARK_RED, ArenaConfigUtils.getArenaGrandchildren(arenaName,"ArenaClasses")));
+				TextColors.WHITE,"Dread Zone classes available for arena ",TextColors.DARK_RED,arenaName,
+				TextColors.WHITE,": ",TextColors.DARK_RED, ArenaConfigUtils.getArenaGrandchildren(arenaName,"ArenaClasses")));
 			
 		return CommandResult.success();
 	}
