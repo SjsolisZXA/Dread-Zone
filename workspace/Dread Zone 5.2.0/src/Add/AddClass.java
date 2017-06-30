@@ -78,10 +78,9 @@ public class AddClass implements CommandExecutor{
 					if(ClassConfigUtils.getNumOfClasses(arenaName)==5){
 						
 						player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-								TextColors.WHITE,"Arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," now has 5 Classes, but you'll need to set the "
-										+ "spawnpoints of the Dread Zone Class NPCs. To add a DZC NPC, stand where you would like the NPC to appear in ",
-										TextColors.DARK_RED,arenaName+"'s",TextColors.WHITE," lobby, face the same direction as you want the NPC to face and enter: ",
-										TextColors.DARK_RED,"/dz acnpc CLASS_NAME"));
+								TextColors.WHITE,"You'll now need to set the spawnpoints of the Dread Zone Class NPCs. To add a DZC NPC, stand "
+										+ "where you would like the NPC to appear in ", TextColors.DARK_RED,arenaName+"'s",TextColors.WHITE,
+										" lobby, and enter: ",TextColors.DARK_RED,"/dz acnpc CLASS_NAME"));
 					}
 				}
 				

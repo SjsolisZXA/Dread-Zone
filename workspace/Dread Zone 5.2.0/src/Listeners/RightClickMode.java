@@ -68,9 +68,9 @@ public class RightClickMode {
 		
 		if(RightClickModeConfigUtils.isUserInConfig(player.getName())){
 			
-			Location<World> blockLocation = event.getTargetBlock().getLocation().get().add(0,1,0);
-			
 			if (RightClickModeConfigUtils.getUserMode(player.getName().toString()).equals("PB")){
+				
+				Location<World> blockLocation = event.getTargetBlock().getLocation().get().add(0,1,0);
 				
 				PABConfigUtils.declarePB(blockLocation.add(0,-1,0),PBAN);
 				
@@ -87,6 +87,8 @@ public class RightClickMode {
 			if(RightClickModeConfigUtils.getUserMode(player.getName().toString()).equals("AJP")){
 				
 				if(ArenaConfigUtils.getUserArenaNameFromLocation(player.getLocation())!=null){
+					
+					Location<World> blockLocation = event.getTargetBlock().getLocation().get().add(0,1,0);
 					
 					JumpPadConfigUtils.registerJumpPad(blockLocation, player.getWorld().getName(), PN);
 					JumpPadUtils.buildJumpPad(blockLocation);
@@ -110,6 +112,8 @@ public class RightClickMode {
 				{
 					LightningConfigUtils.deleteTarget(SLRLTN);
 				}
+				
+				Location<World> blockLocation = event.getTargetBlock().getLocation().get().add(0,1,0);
 				
 				LightningConfigUtils.setTarget(blockLocation, player.getWorld().getName(), SLRLTN);
 				
@@ -136,6 +140,8 @@ public class RightClickMode {
 					MobCreateConfigUtils.deleteTarget(SMCLGN,SMCLTN);
 				}
 				
+				Location<World> blockLocation = event.getTargetBlock().getLocation().get().add(0,1,0);
+				
 				MobCreateConfigUtils.setTarget(blockLocation, player.getWorld().getName(), SMCLGN, SMCLTN);
 				
 				RightClickModeConfigUtils.deleteUsernameInList(player.getName());
@@ -157,6 +163,8 @@ public class RightClickMode {
 					NodeConfigUtils.deleteNode(NN);
 				}
 				
+				Location<World> blockLocation = event.getTargetBlock().getLocation().get().add(0,1,0);
+				
 				//configuration part of the node build
 				NodeConfigUtils.setNode(blockLocation, player.getWorld().getName(), NN);
 				
@@ -177,6 +185,8 @@ public class RightClickMode {
 			
 			//check for Arena Create Mode
 			if(RightClickModeConfigUtils.getUserMode(player.getName().toString()).equals("CA")){
+				
+				Location<World> blockLocation = event.getTargetBlock().getLocation().get().add(0,1,0);
 				
 				if(!(ArenaConfigUtils.isArenaInConfig(SAAN))){
 					
@@ -206,6 +216,8 @@ public class RightClickMode {
 			
 			//check for Lobby Create Mode
 			if(RightClickModeConfigUtils.getUserMode(player.getName().toString()).equals("CAL")){
+				
+				Location<World> blockLocation = event.getTargetBlock().getLocation().get().add(0,1,0);
 				
 				if(!(LobbyConfigUtils.isLobbyInConfig(SAAN, SAAN+"Lobby"))){
 					

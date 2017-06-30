@@ -52,6 +52,14 @@ public class AddTDMMode implements CommandExecutor{
 			return CommandResult.success();
 		}
 		
+		if(ArenaConfigUtils.doesArenaHaveMode(arenaName, "TDM")){
+			
+			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
+					TextColors.WHITE,"Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," already has TDM mode implemented!"));
+			
+			return CommandResult.success();
+		}
+		
 		RightClickModeConfigUtils.addToList(player.getName(), "TDM");
 		
 		int nOMPT = ONOMPT.get();

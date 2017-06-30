@@ -69,10 +69,9 @@ public class AddClassNPC implements CommandExecutor{
 							if(ClassConfigUtils.getNumOfSetNPCClasses(arenaName)==5){
 								
 								player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-										TextColors.WHITE,"Arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," has 5 Classes and its NPCs, but "
-												+ "you'll need to add items to ",TextColors.DARK_RED,arenaName+"'s",TextColors.WHITE," classes. To add an "
-														+ "item to a Class, hold the exact amount of an item that you would like to add, and enter ",
-												TextColors.DARK_RED,"/adzci ",arenaName," CLASS_NAME",TextColors.WHITE,"."));
+										TextColors.WHITE,"NPC spawn locations set, but you'll need to add items to each class. To add an "
+														+ "item to a Class, hold an item and it's exact amount that you would like to add, and enter ",
+												TextColors.DARK_RED,"/dz aci CLASS_NAME ",arenaName,TextColors.WHITE,"."));
 								
 								RightClickModeConfigUtils.deleteUsernameInList(player.getName());
 								

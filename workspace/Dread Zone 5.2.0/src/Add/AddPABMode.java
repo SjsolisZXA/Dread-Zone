@@ -47,6 +47,14 @@ public class AddPABMode implements CommandExecutor{
 			return CommandResult.success();
 		}
 		
+		if(ArenaConfigUtils.doesArenaHaveMode(arenaName, "PAB")){
+			
+			player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
+					TextColors.WHITE,"Dread Zone arena ",TextColors.DARK_RED,arenaName,TextColors.WHITE," already has PAB mode implemented!"));
+			
+			return CommandResult.success();
+		}
+		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
 				TextColors.WHITE,"First, set Point A by standing where you want contestants to spawn and enter ",TextColors.DARK_RED, "/dz PA"));
 		

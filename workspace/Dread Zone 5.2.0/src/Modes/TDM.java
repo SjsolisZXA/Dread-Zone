@@ -80,11 +80,11 @@ public class TDM implements CommandExecutor{
 							return CommandResult.success();
 						}
 						
-			            player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
-			                    TextColors.WHITE, "Invalid usage! Valid usage: ",TextColors.DARK_RED,"/dz aasp SPAWN_NAME",TextColors.WHITE,"."));
-						
 						return CommandResult.success();
 					}
+					
+		            player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
+		                    TextColors.WHITE, "Invalid usage! Valid usage: ",TextColors.DARK_RED,"/dz aasp SPAWN_NAME",TextColors.WHITE,"."));
 					
 					return CommandResult.success();
 				}

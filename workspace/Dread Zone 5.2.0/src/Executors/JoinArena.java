@@ -52,7 +52,6 @@ public class JoinArena implements CommandExecutor {
 		}
 		
 		String arenaName = AN.get();
-		
 		Optional<String> M = args.<String> getOne("mode");
 		
 		if(!M.isPresent()){
@@ -146,6 +145,14 @@ public class JoinArena implements CommandExecutor {
 					}*/
 					
 					if((mode.toUpperCase().equals("PAB"))){
+						
+						if(!ArenaConfigUtils.doesArenaHaveMode(arenaName, mode.toUpperCase())){
+							
+				            player.sendMessage(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ", 
+				                    TextColors.WHITE, "Sorry, Dread Zone arena ", TextColors.DARK_RED, arenaName, TextColors.WHITE, " does not have a PAB mode implemented."));
+				                  
+				            return CommandResult.success();
+						}
 						
 			            if(ArenaConfigUtils.getArenaData(arenaName, "Status").equals("Open")){
 							
