@@ -56,7 +56,8 @@ public class AddPABMode implements CommandExecutor{
 		}
 		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-				TextColors.WHITE,"First, set Point A by standing where you want contestants to spawn and enter ",TextColors.DARK_RED, "/dz PA"));
+				TextColors.WHITE,"First, set ",TextColors.DARK_RED,"Point A",TextColors.WHITE," by standing where you want contestants to spawn and enter ",
+				TextColors.DARK_RED, "/dz PA",TextColors.WHITE,"."));
 		
 		RightClickModeConfigUtils.addToList(player.getName(), "PA");
 		

@@ -126,7 +126,7 @@ public class TDMListeners {
 			            				
 			            				if(aBar.getPercent()==1||bBar.getPercent()==1){
 			            					
-			            					GUI.removeGUI(contestant, aBar, bBar, MT);
+			            					GUI.removeTDMGUI(contestant, aBar, bBar, MT);
 			            					
 			            					GameModeData gm = contestant.getGameModeData().set(Keys.GAME_MODE, GameModes.SPECTATOR);
 			            					contestant.offer(gm);

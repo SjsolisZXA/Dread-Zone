@@ -14,6 +14,7 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
+import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -241,15 +242,6 @@ public class ContestantConfigUtils {
 	
 	public static void removeContestant(String arenaName, Player player) {
 		
-		if(GUI.aTeamBars.get(arenaName)!=null&&GUI.bTeamBars.get(arenaName)!=null){
-			
-			Map<String,ServerBossBar> b1 = GUI.bTeamBars.get(arenaName);
-			Map<String,ServerBossBar> b0 = GUI.aTeamBars.get(arenaName);
-			
-			b0.get(player.getName()).removePlayer(player);
-			b1.get(player.getName()).removePlayer(player);
-		}
-		
 		player.getInventory().clear();
 		
 		//restore player location
@@ -280,7 +272,33 @@ public class ContestantConfigUtils {
 			e.printStackTrace();
 		}**/
 		
-		ContestantConfigUtils.removeContestantFromList(arenaName.toString(),player.getName());
+		removeContestantFromList(arenaName.toString(),player.getName());
+		
+		//remove GUI
+		if(ArenaConfigUtils.getMatchStatus(arenaName).equals(true)){
+		
+			//remove PAB Scoreboard
+			if(ArenaConfigUtils.getArenaStatus(arenaName)=="PAB"){
+				
+				GUI.removePABGUI(player);
+			}
+			
+			//remove TDM Scoreboard and Boss bar
+			if(ArenaConfigUtils.getArenaStatus(arenaName)=="TDM"){
+				
+				player.getScoreboard().removeObjective(player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get());
+				player.getScoreboard().removeObjective(player.getScoreboard().getObjective(DisplaySlots.BELOW_NAME).get());
+				
+				if(GUI.aTeamBars.get(arenaName)!=null&&GUI.bTeamBars.get(arenaName)!=null){
+					
+					Map<String,ServerBossBar> b1 = GUI.bTeamBars.get(arenaName);
+					Map<String,ServerBossBar> b0 = GUI.aTeamBars.get(arenaName);
+					
+					b0.get(player.getName()).removePlayer(player);
+					b1.get(player.getName()).removePlayer(player);
+				}
+			}
+		}
 		
 		//clean up NPCs if no one is left in the arena
 		if(ContestantConfigUtils.getArenaContestants(arenaName).isEmpty()){

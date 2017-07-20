@@ -41,8 +41,8 @@ public class PAB implements CommandExecutor{
 					RightClickMode.PBAN(arenaName);
 					
 					player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-							TextColors.WHITE,"Success! Now right click on a block to be Point B. Players that arrive to this "
-									+ "location will have had completed the Dread Zone Challange."));
+							TextColors.WHITE,"Success! Now right click on a block to be ",TextColors.DARK_RED,"Point B",
+							TextColors.WHITE,". Players that arrive to this location will have had completed the Dread Zone Challange."));
 					
 					RightClickModeConfigUtils.deleteUsernameInList(player.getName());
 					

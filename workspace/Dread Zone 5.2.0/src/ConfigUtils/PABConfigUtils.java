@@ -2,7 +2,10 @@ package ConfigUtils;
 
 import java.util.List;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockTypes;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
@@ -44,26 +47,31 @@ public class PABConfigUtils {
 		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "PAB","Point B","Finish Line","Y").setValue(blockLocation.getBlockY());
 		UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "PAB","Point B","Finish Line","Z").setValue(blockLocation.getBlockZ());
 		
-	    blockLocation.add(-1,0,3).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());//front glass
-	    blockLocation.add(0,0,3).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());
-	    blockLocation.add(1,0,3).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());
+		UnversalConfigs.saveConfig(ArenaConfig);
+		
+	    BlockState stainedGlassB = BlockState.builder().blockType(BlockTypes.STAINED_GLASS).build();
+	    stainedGlassB = stainedGlassB.with(Keys.DYE_COLOR, DyeColors.LIGHT_BLUE).get();
+		
+	    blockLocation.add(-1,0,3).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//front glass
+	    blockLocation.add(0,0,3).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
+	    blockLocation.add(1,0,3).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
 	    
-	    blockLocation.add(-1,0,-3).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());//back glass
-	    blockLocation.add(0,0,-3).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());
-	    blockLocation.add(1,0,-3).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());
+	    blockLocation.add(-1,0,-3).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//back glass
+	    blockLocation.add(0,0,-3).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
+	    blockLocation.add(1,0,-3).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
 	    
-	    blockLocation.add(-3,0,1).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());//left glass
-	    blockLocation.add(-3,0,0).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());
-	    blockLocation.add(-3,0,-1).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());
+	    blockLocation.add(-3,0,1).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//left glass
+	    blockLocation.add(-3,0,0).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
+	    blockLocation.add(-3,0,-1).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
 	    
-	    blockLocation.add(3,0,1).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());//right glass
-	    blockLocation.add(3,0,0).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());
-	    blockLocation.add(3,0,-1).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());
+	    blockLocation.add(3,0,1).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//right glass
+	    blockLocation.add(3,0,0).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
+	    blockLocation.add(3,0,-1).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());
 	    
-	    blockLocation.add(-2,0,2).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());//left top
-	    blockLocation.add(-2,0,-2).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());//left bottom
-	    blockLocation.add(2,0,2).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());//right top
-	    blockLocation.add(2,0,-2).setBlockType(BlockTypes.STAINED_GLASS,Cause.source(Main.getPluginContainer()).build());//left bottom
+	    blockLocation.add(-2,0,2).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//left top
+	    blockLocation.add(-2,0,-2).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//left bottom
+	    blockLocation.add(2,0,2).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//right top
+	    blockLocation.add(2,0,-2).setBlock(stainedGlassB,Cause.source(Main.getPluginContainer()).build());//left bottom
 	}
 
 	public static Location<World> getPABBLocation(String arenaName) {
@@ -111,7 +119,7 @@ public class PABConfigUtils {
 		
 		teletportContestantsToArena(arenaName);
 		
-		GUI.setupPABScoreboards(TDMConfigUtils.convertObjectContestantsToPlayers(arenaName));
+		GUI.setupPABScoreboards(TDMConfigUtils.convertObjectContestantsToPlayers(arenaName),arenaName);
 	}
 
 	private static void teletportContestantsToArena(String arenaName) {

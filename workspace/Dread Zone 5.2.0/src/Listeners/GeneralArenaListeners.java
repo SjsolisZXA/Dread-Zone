@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.monster.Monster;
@@ -31,8 +32,11 @@ import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ClassConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.LobbyConfigUtils;
+import ConfigUtils.PABConfigUtils;
 import ConfigUtils.RightClickModeConfigUtils;
 import ConfigUtils.TDMConfigUtils;
+import Utils.DZArenaUtils;
+import Utils.ScoreBoardUtils;
 import Utils.TDMTimer;
 
 public class GeneralArenaListeners {
@@ -393,6 +397,89 @@ public class GeneralArenaListeners {
     		}
     	}
     }
+    
+	//update's a player's scoreboard when they fall out of the map
+    @Listener
+    public void onEntityDeath(DamageEntityEvent event) {
+    	
+        if(event.willCauseDeath()){//only when an entity dies
+    	
+	        Optional<EntityDamageSource> optDamageSource = event.getCause().first(EntityDamageSource.class);
+	        
+	        if (!optDamageSource.isPresent()) {//checks for supernatural deaths
+	    	
+		    	Entity entity = event.getTargetEntity();
+		    	
+		    	Optional<Text> userN = entity.get(Keys.DISPLAY_NAME);
+		    	
+		    	if(userN.isPresent()){//checks for only players
+		    		
+		    		Player player = ((Player) entity);
+		            
+		            for(Object arena:ArenaConfigUtils.getArenas()){
+			            	
+		            	if(ContestantConfigUtils.isUserAnArenaContestant(arena.toString(), player.getName())){
+		            	
+			            	if(ArenaConfigUtils.getMatchStatus(arena.toString()).equals(true)){//filters the death to contestants
+				
+		                		ScoreBoardUtils.addDeathScore(player);
+		                		
+		                		Sponge.getServer().getBroadcastChannel().send(Text.of("A contestatnd died of supernatural causes."));
+		                		
+			                    DZArenaUtils.restoreContestant(player);
+			                    
+			                    if(ArenaConfigUtils.getArenaStatus(arena.toString()).equals("PAB")){
+			                    	
+			                    	player.setLocationAndRotation(PABConfigUtils.getPABALocation(arena.toString()), PABConfigUtils.getPABARotation(arena.toString()));
+			                    	
+			                    	Sponge.getServer().getBroadcastChannel().send(Text.of("Player was in PAB mode."));
+			                    }
+		            			
+			                    if(ArenaConfigUtils.getArenaStatus(arena.toString()).equals("TDM")){
+			                    	
+			                    	TDMConfigUtils.respawnContestant(arena.toString(), player);
+			                    }
+		            			
+		            			event.setCancelled(true);
+		            			
+		            			break;
+			            	}
+		            	}
+		            }
+		    	}
+	        }
+        }
+    }
+    
+    /**@Listener
+    public static void onPlayerChangeDoor(InteractBlockEvent.Secondary.MainHand event, @First Player player){//prevents any door from being opened in an arena or loby unles in EA mode
+
+        BlockSnapshot targetBlock = event.getTargetBlock();
+        
+    	Sponge.getServer().getBroadcastChannel().send(Text.of("Something was right clicked"));
+        	
+        Location<World> eventLocation = targetBlock.getLocation().get();
+            
+    	if(ArenaConfigUtils.getUserArenaNameFromLocation(eventLocation) != null){
+    		
+    		Sponge.getServer().getBroadcastChannel().send(Text.of("event happened in an arena"));
+    		
+    		if(targetBlock.getState().getType()==BlockTypes.DARK_OAK_DOOR){
+    			
+    			Sponge.getServer().getBroadcastChannel().send(Text.of("a dark oak door was right clicked"));
+    		
+	    		String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(eventLocation);
+	    		
+	        	if(RightClickModeConfigUtils.isUserInConfig(player.getName())&&
+	            		RightClickModeConfigUtils.getUserMode(player.getName()).equals("EA - "+arenaName)){
+
+	            	return;
+	    		}
+	        	Sponge.getServer().getBroadcastChannel().send(Text.of("User is not in config and is not in EA mode"));
+	        	event.setCancelled(true);
+    		}
+    	}
+    }*/
     
     
     //Abstract listeners

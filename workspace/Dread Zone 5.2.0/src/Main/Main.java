@@ -76,7 +76,7 @@ import Test.TestExecutor2;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 
-@Plugin(id = "dreadzone", name = "DreadZone", description = "This plugin adds minigames!", url = "http://salvadorzxa.com", version = "0.1.05")
+@Plugin(id = "dreadzone", name = "DreadZone", description = "This plugin adds minigames!", url = "http://salvadorzxa.com", version = "0.1.08")
 
 public class Main {
 	
@@ -147,28 +147,33 @@ public class Main {
 		//Commands
 	    CommandSpec reloadCmd = CommandSpec.builder()
 	    	      .description(Text.of("Reload Dread Zone configuration."))
+	    	      .permission(getPluginContainer().getId()+".reload")
 	    	      .executor(new ReloadExecutor())
 	    	      .build();	
 	    
 		CommandSpec addArenaSpawnPointCmd = CommandSpec.builder()
 				.description(Text.of("Set arena team spawnpoints."))
+				.permission(getPluginContainer().getId()+".aasp")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("spawn name")))))
 				.executor(new TDM())
 				.build();
 		
 		CommandSpec arenaListCmd = CommandSpec.builder()
 				.description(Text.of("Gets a list of all the Dread Zone arenas."))
+				.permission(getPluginContainer().getId()+".al")
 				.executor(new ViewArenas())
 				.build();
 		
 		CommandSpec classListCmd = CommandSpec.builder()
 				.description(Text.of("Gets a list of all the classes for a specified arena."))
+				.permission(getPluginContainer().getId()+".cl")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new ViewClasses())
 				.build();
 		
 		CommandSpec addClassItemCmd = CommandSpec.builder()
 				.description(Text.of("Add an item in hand to an arena class."))
+				.permission(getPluginContainer().getId()+".aci")
 				.arguments(GenericArguments.optional(GenericArguments.string(Text.of("class name"))),
 						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new AddClassItem())
@@ -176,6 +181,7 @@ public class Main {
 		
 		CommandSpec removeClassItemCmd = CommandSpec.builder()
 				.description(Text.of("Remove a class item based on the exact item stack in hand."))
+				.permission(getPluginContainer().getId()+".rci")
 				.arguments(GenericArguments.optional(GenericArguments.string(Text.of("class name"))),
 						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new DeleteClassItem())
@@ -183,41 +189,48 @@ public class Main {
 		
 		CommandSpec addClassNPCCmd = CommandSpec.builder()
 				.description(Text.of("Add a Dread Zone NPC Class spawnpoint."))
+				.permission(getPluginContainer().getId()+".acnpc")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("class name")))))
 				.executor(new AddClassNPC())
 				.build();	
 		
 		CommandSpec leaveArenaCmd = CommandSpec.builder()
 				.description(Text.of("Leave an arena."))
+				.permission(getPluginContainer().getId()+".leave")
 				.executor(new LeaveArena())
 				.build();
 		
 		CommandSpec addLightningRodCmd = CommandSpec.builder()
 				.description(Text.of("Add a lightning rod target."))
+				.permission(getPluginContainer().getId()+".alr")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("target name")))))
 				.executor(new AddLightningRod())
 				.build();
 		
 		CommandSpec addJumpPadCmd = CommandSpec.builder()
 				.description(Text.of("Add a jump pad."))
+				.permission(getPluginContainer().getId()+".ajp")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("pad name")))))
 				.executor(new AddJumpPad())
 				.build();
 		
 		CommandSpec removeLightningRodCmd = CommandSpec.builder()
 				.description(Text.of("Remove a lightning rod target."))
+				.permission(getPluginContainer().getId()+".rlr")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("target name")))))
 				.executor(new DeleteLightningRod())
 				.build();
 		
 		CommandSpec setDZLSPmd = CommandSpec.builder()
 				.description(Text.of("Set a Dread Zone's lobby spawn point."))
+				.permission(getPluginContainer().getId()+".slsp")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new SetLobbySpawn())
 				.build();
 		
 		CommandSpec moveLobbyCmd = CommandSpec.builder()
 				.description(Text.of("Re-create a specified Dread Zone arena lobby."))
+				.permission(getPluginContainer().getId()+".ml")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new MoveArenaLobby())
 				.build();
@@ -225,12 +238,14 @@ public class Main {
 		@SuppressWarnings("unused")
 		CommandSpec removeNodeCmd = CommandSpec.builder()
 				.description(Text.of("Remove a capture node."))
+				.permission(getPluginContainer().getId()+".rn")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("node name")))))
 				.executor(new DeleteNode())
 				.build();
 		
 		CommandSpec removeMobCreateCmd = CommandSpec.builder()
 				.description(Text.of("Remove a mob create."))
+				.permission(getPluginContainer().getId()+".rmc")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("group name")))),
 						GenericArguments.optional(GenericArguments.string(Text.of("target name"))))
 				.executor(new DeleteMobCrate())
@@ -240,6 +255,7 @@ public class Main {
 		
 		CommandSpec TDMMode = CommandSpec.builder()
 				.description(Text.of("Add TDM mode for an arena."))
+				.permission(getPluginContainer().getId()+".tdm")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))),
 						GenericArguments.optional(GenericArguments.integer(Text.of("number of players per team"))))
 				.executor(new AddTDMMode())
@@ -247,12 +263,14 @@ public class Main {
 		
 		CommandSpec PABMode = CommandSpec.builder()
 				.description(Text.of("Add PAB mode for an arena."))
+				.permission(getPluginContainer().getId()+".pab")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new AddPABMode())
 				.build();
 		
 		CommandSpec addArenaModeCmd = CommandSpec.builder()
 				.description(Text.of("Add an arena Mode."))
+				.permission(getPluginContainer().getId()+".aam")
 				.child(TDMMode, "TDM")
 				.child(PABMode, "PAB")
 				.build();
@@ -260,11 +278,13 @@ public class Main {
 		
 		CommandSpec PABCmd = CommandSpec.builder()
 				.description(Text.of("Set PAB point A for an arena."))
+				.permission(getPluginContainer().getId()+".pa")
 				.executor(new PAB())
 				.build();
 		
 		CommandSpec addMobCrateCmd = CommandSpec.builder()
 				.description(Text.of("Add a mob crate dropper."))
+				.permission(getPluginContainer().getId()+".amc")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("group name")))),
 						GenericArguments.optional(GenericArguments.string(Text.of("mobcrate name"))))
 				.executor(new AddMobCrate())
@@ -272,6 +292,7 @@ public class Main {
 		
 		CommandSpec addClassCmd = CommandSpec.builder()
 				.description(Text.of("Add an arena class."))
+				.permission(getPluginContainer().getId()+".ac")
 				.arguments(GenericArguments.optional(GenericArguments.string(Text.of("class name"))),
 						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new AddClass())
@@ -279,6 +300,7 @@ public class Main {
 		
 		CommandSpec removeClassCmd = CommandSpec.builder()
 				.description(Text.of("Remove a class from an arena."))
+				.permission(getPluginContainer().getId()+".rc")
 				.arguments(GenericArguments.optional(GenericArguments.string(Text.of("class name"))),
 						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new DeleteClass())
@@ -287,34 +309,41 @@ public class Main {
 		@SuppressWarnings("unused")
 		CommandSpec addNodeCmd = CommandSpec.builder()
 				.description(Text.of("Add a capture node."))
+				.permission(getPluginContainer().getId()+".an")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("node name")))))
 				.executor(new AddNode())
 				.build();
 		
 		CommandSpec createArenaCmd = CommandSpec.builder()
 				.description(Text.of("Create a Dread Zone arena."))
+				.permission(getPluginContainer().getId()+".ca")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new SetArena())
 				.build();
 		
 		CommandSpec arenaModes = CommandSpec.builder()
 				.description(Text.of("Get a list of all of the avaliable modes for a specified arena."))
+				.permission(getPluginContainer().getId()+".am")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new ViewModes())
 				.build();
 
 		CommandSpec joinCmd = CommandSpec.builder()
+				.description(Text.of("Join an arena."))
+				.permission(getPluginContainer().getId()+".join")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))),
 						GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("mode")))))
 				.executor(new JoinArena())
 				.build();	
 		CommandSpec editArena = CommandSpec.builder()
 				.description(Text.of("Edit an arena."))
+				.permission(getPluginContainer().getId()+".ea")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new EditArena())
 				.build();	
 		CommandSpec setCreditsLocation = CommandSpec.builder()
 				.description(Text.of("Set the credits location of an arena."))
+				.permission(getPluginContainer().getId()+".scl")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("arena name")))))
 				.executor(new SetCreditsLocation())
 				.build();
@@ -324,23 +353,27 @@ public class Main {
 		
 		CommandSpec resetMobCreatesCmd = CommandSpec.builder()
 				.description(Text.of("Reset all mob crates."))
+				.permission(getPluginContainer().getId()+".rmcs")
 				.executor(new ResetMobCreate())
 				.build();	
 		
 		@SuppressWarnings("unused")
 		CommandSpec resetNodesCmd = CommandSpec.builder()
 				.description(Text.of("Reset all capture nodes."))
+				.permission(getPluginContainer().getId()+".rnds")
 				.executor(new ResetNodes())
 				.build();	
 		
 	    CommandSpec readyCmd = CommandSpec.builder()
 	    	      .description(Text.of("Ready for combat!"))
+	    	      .permission(getPluginContainer().getId()+".ready")
 	    	      .executor(new Ready())
 	    	      .build();
 		    
 	    
 		CommandSpec dreadZoneCmd = CommandSpec.builder()
 				.description(Text.of("Dread Zone."))
+				.permission(getPluginContainer().getId()+".dz")
 				.child(readyCmd, "ready")//
 				.child(leaveArenaCmd, "leave")//
 				.child(reloadCmd, "reload")//
@@ -375,14 +408,17 @@ public class Main {
 		
 		CommandSpec testChildCmd2 = CommandSpec.builder()
 				.description(Text.of("Test child method 2."))
+				.permission(getPluginContainer().getId()+".child2")
 				.executor(new TestExecutor2())
 				.build();
 		CommandSpec testChildCmd1 = CommandSpec.builder()
 				.description(Text.of("Test child method 1."))
+				.permission(getPluginContainer().getId()+".child1")
 				.executor(new TestExecutor1())
 				.build();
 		CommandSpec testChildCmd0 = CommandSpec.builder()
 				.description(Text.of("Test child method 0."))
+				.permission(getPluginContainer().getId()+".child0")
 				.arguments(GenericArguments.optional(GenericArguments.onlyOne(GenericArguments.string(Text.of("optionalTestArguments")))))
 				.executor(new TestExecutor0())
 				.build();
@@ -390,6 +426,7 @@ public class Main {
 		
 		CommandSpec testCmd = CommandSpec.builder()
 				.description(Text.of("Test method."))
+				.permission(getPluginContainer().getId()+".test")
 				.child(testChildCmd0,"child0")
 				.child(testChildCmd1, "child1")
 				.child(testChildCmd2, "child2")

@@ -50,7 +50,7 @@ public class LeaveArena implements CommandExecutor {
 		}
 		
 		player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ",
-				TextColors.WHITE,"You're not in any Dread Zone arena! To join a Dread Zone arena, enter ",TextColors.DARK_RED,"/dz al"));
+				TextColors.WHITE,"You're not in any Dread Zone arena! To join a Dread Zone arena, enter ",TextColors.DARK_RED,"/dz al",TextColors.WHITE,"."));
 		
 		return CommandResult.success();
 	}

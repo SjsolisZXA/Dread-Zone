@@ -10,10 +10,6 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
-import org.spongepowered.api.scoreboard.Score;
-import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
-import org.spongepowered.api.scoreboard.objective.Objective;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -55,26 +51,7 @@ public class PABListeners {
                     		
                     		EntityType monster = opDamageTarget.getType();
                     		
-                    		Objective playerScoreboard = player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get();
-                    		
-                    		Score totalKillsScore = playerScoreboard.getScore(Text.of("Total Kills")).get();
-
-                            int totalScore =  totalKillsScore.getScore();
-
-                            totalKillsScore.setScore(totalScore + 1);
-                            
-                            if(playerScoreboard.getScore(Text.of(monster)).isPresent()){
-                            	
-                            	Score monsterKillScore = playerScoreboard.getScore(Text.of(monster)).get();
-
-	                            int monsterScore =  monsterKillScore.getScore();
-	
-	                            monsterKillScore.setScore(monsterScore + 1);
-	                            
-	                            return;
-                            }
-                            
-                            playerScoreboard.getOrCreateScore(Text.of(monster)).setScore(1);
+                    		ScoreBoardUtils.addMonsterKillScore(player, monster);
 
                             return;
                     	}
@@ -87,38 +64,43 @@ public class PABListeners {
     //update's a contestant's scoreboard when killed
     @Listener
     public void contestantReceiveDamage(DamageEntityEvent event){
-        	
-    	Entity damageTarget = event.getTargetEntity();
-        
-        Location<World> damageLocation = damageTarget.getLocation();
         
         if(event.willCauseDeath()){
-
-	        if(ArenaConfigUtils.getUserArenaNameFromLocation(damageLocation)!=null){
-	        	
-	        	String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(damageLocation);
-	        	
-	        	if(ArenaConfigUtils.getArenaStatus(arenaName).equals("PAB")){
-	        		
-	                if (damageTarget instanceof Player) {
-	                		
-	                	Player player = ((Player) damageTarget);
-	                	
-	                	if(ContestantConfigUtils.isUserAnArenaContestant(arenaName, player.getName())){
-	                		
-	                		ScoreBoardUtils.addDeathScore(player);
-		                    
-		                    DZArenaUtils.restoreContestant(player);
-	            			
-	            			player.setLocationAndRotation(PABConfigUtils.getPABALocation(arenaName), PABConfigUtils.getPABARotation(arenaName));
-	            			
-	            			event.setCancelled(true);
-	            			
-	            			return;
-	            		}
-	                	
-	                }
-	        	}
+        	
+	        Optional<EntityDamageSource> optDamageSource = event.getCause().first(EntityDamageSource.class);
+	        
+	        if (optDamageSource.isPresent()) {//checks for supernatural deaths
+        	
+	        	Entity damageTarget = event.getTargetEntity();
+	            
+	            Location<World> damageLocation = damageTarget.getLocation();
+	
+		        if(ArenaConfigUtils.getUserArenaNameFromLocation(damageLocation)!=null){
+		        	
+		        	String arenaName = ArenaConfigUtils.getUserArenaNameFromLocation(damageLocation);
+		        	
+		        	if(ArenaConfigUtils.getArenaStatus(arenaName).equals("PAB")){
+		        		
+		                if (damageTarget instanceof Player) {
+		                		
+		                	Player player = ((Player) damageTarget);
+		                	
+		                	if(ContestantConfigUtils.isUserAnArenaContestant(arenaName, player.getName())){
+		                		
+		                		ScoreBoardUtils.addDeathScore(player);
+			                    
+			                    DZArenaUtils.restoreContestant(player);
+		            			
+		            			player.setLocationAndRotation(PABConfigUtils.getPABALocation(arenaName), PABConfigUtils.getPABARotation(arenaName));
+		            			
+		            			event.setCancelled(true);
+		            			
+		            			return;
+		            		}
+		                	
+		                }
+		        	}
+		        }
 	        }
         }
     }

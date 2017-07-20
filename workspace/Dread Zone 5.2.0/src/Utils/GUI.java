@@ -211,9 +211,11 @@ public class GUI {
         player.setScoreboard(scoreboard);
     }
     
-	public static void setupPABScoreboards(List<Player> contestants) {
+	public static void setupPABScoreboards(List<Player> contestants, String arenaName) {
 
         Scoreboard scoreboard = Scoreboard.builder().build();
+        
+        ArenaConfigUtils.setMatchStatus(arenaName, true);
         
         for(Player player:contestants){
         
@@ -232,7 +234,7 @@ public class GUI {
         }
 	}
 	
-	public static void removeGUI(Player contestant, ServerBossBar aBar, ServerBossBar bBar, Title MT){
+	public static void removeTDMGUI(Player contestant, ServerBossBar aBar, ServerBossBar bBar, Title MT){
 		
 		aBar.removePlayer(contestant);
 		bBar.removePlayer(contestant);
@@ -241,5 +243,10 @@ public class GUI {
 		contestant.getScoreboard().removeObjective(contestant.getScoreboard().getObjective(DisplaySlots.BELOW_NAME).get());
 		
 		contestant.sendTitle(MT);
+	}
+	
+	public static void removePABGUI(Player contestant){
+		
+		contestant.getScoreboard().removeObjective(contestant.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get());
 	}
 }
