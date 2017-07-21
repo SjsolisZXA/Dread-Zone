@@ -244,6 +244,15 @@ public class ContestantConfigUtils {
 		
 		player.getInventory().clear();
 		
+		Optional<List<PotionEffect>> potionEffects = player.get(Keys.POTION_EFFECTS);
+		
+		if(potionEffects.isPresent()){
+			
+			List<PotionEffect> PE = potionEffects.get();
+			PE.clear();
+			
+			player.offer(Keys.POTION_EFFECTS, PE);
+		}
 		//restore player location
 		player.setLocationAndRotation(returnContestant(arenaName.toString(), player.getName().toString()), 
 				returnContestantTransform(arenaName.toString(), player.getName().toString()));
@@ -302,6 +311,13 @@ public class ContestantConfigUtils {
 		
 		//clean up NPCs if no one is left in the arena
 		if(ContestantConfigUtils.getArenaContestants(arenaName).isEmpty()){
+			
+			if(!MobCreateConfigUtils.getTargets().isEmpty()&&
+					ArenaConfigUtils.getArenaStatus(arenaName)=="PAB"){
+				
+				MobCreateConfigUtils.resetMobCreateBoolean();
+				Utils.EntityHandler.clearAllMobsInArena(player.getWorld().getName(),arenaName);
+			}
 			
 			ArenaConfigUtils.setArenaStatus(arenaName, "Open");
 			

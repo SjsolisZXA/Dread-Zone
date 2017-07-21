@@ -22,7 +22,7 @@ import com.google.common.reflect.TypeToken;
 import ConfigFiles.ArenaFileConfig;
 import ConfigFiles.Configurable;
 import ConfigFiles.UnversalConfigs;
-import Utils.EntitySpawner;
+import Utils.EntityHandler;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
@@ -329,7 +329,7 @@ public class ClassConfigUtils {
 		
 		for(Object aClass: classes){
 			
-			EntitySpawner.spawnNPC(getClassNPCLocation(arenaName, aClass.toString()), getClassNPCDirection(arenaName, aClass.toString()), EntityTypes.HUMAN, uuid, aClass.toString());
+			EntityHandler.spawnNPC(getClassNPCLocation(arenaName, aClass.toString()), getClassNPCDirection(arenaName, aClass.toString()), EntityTypes.HUMAN, uuid, aClass.toString());
 		}
 	}
 }

@@ -28,7 +28,7 @@ public class JumpPadListener {
         		
             	if(bs.getLocation().get().equals(JumpPadConfigUtils.getJumpPadLocation(jumpPad.toString()))){
             		
-            		player.setVelocity(player.getVelocity().mul(5d,0,5d).add(0,2.4,0));
+            		player.setVelocity(player.getVelocity().mul(9d,0,5d).add(0,2.4,0));
             		
             		return;
             	}

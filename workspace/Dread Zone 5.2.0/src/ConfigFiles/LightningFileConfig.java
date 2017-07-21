@@ -18,7 +18,7 @@ public class LightningFileConfig implements Configurable {
 		return config;
 	}
 
-	private Path configFile = Paths.get(Main.getDreadZone().getConfigDir().resolve("Data") + "/LightningTargets.conf");
+	private Path configFile = Paths.get(Main.getDreadZone().getConfigDir().resolve("data") + "/LightningTargets.conf");
 	private ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setPath(configFile).build();
 	private CommentedConfigurationNode configNode;
 

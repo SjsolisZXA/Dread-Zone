@@ -15,47 +15,25 @@ public class LoadConfig {
 	
 	public static void loadConfig(Path configDir) {
 			
-		if (!Files.exists(configDir)){
-			
-			if (Files.exists(configDir)){
-				
-				try {
-					Files.move(configDir, configDir);
-				}
-				catch (IOException e){
-					e.printStackTrace();
-				}
-			}
-			else{
-				
-				try{
-					
-					Files.createDirectories(configDir);
-				}
-				catch (IOException e){
-					
-					e.printStackTrace();
-				}
-			}
-		}
-		if (!Files.exists(configDir.resolve("data")))
-		{
-			try{
-				
-				Files.createDirectories(configDir.resolve("data"));
-			}
-			catch (IOException e){
-				
+		if (!Files.exists(configDir)){//creates the "dreadzone" folder
+			try {
+				Files.createDirectories(configDir);
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		LightningFileConfig.getConfig().setup();
-		MobCrateFileConfig.getConfig().setup();
-		NodeFileConfig.getConfig().setup();
-		ArenaFileConfig.getConfig().setup();
-		JumpPadFileConfig.getConfig().setup();
 		
-		if (!Files.exists(configDir.resolve("Databases")))
+		if (!Files.exists(configDir.resolve("data")))//creates the "data" subfolder
+		{
+			try{
+				Files.createDirectories(configDir.resolve("data"));
+			}
+			catch (IOException e){
+				e.printStackTrace();
+			}
+		}
+		
+		if (!Files.exists(configDir.resolve("Databases")))//creates the "database" subfolder
 		{
 			try{
 				
@@ -66,6 +44,12 @@ public class LoadConfig {
 				e.printStackTrace();
 			}
 		}
+		
+		LightningFileConfig.getConfig().setup();
+		MobCrateFileConfig.getConfig().setup();
+		NodeFileConfig.getConfig().setup();
+		ArenaFileConfig.getConfig().setup();
+		JumpPadFileConfig.getConfig().setup();
 		RightClickModeFileConfig.getConfig().setup();
 	}
 

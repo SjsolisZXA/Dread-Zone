@@ -83,12 +83,6 @@ public class Main {
 	public static Main Dreadzone;
 	
 	@Inject
-	Game game;
-	
-    @Inject
-    private PluginContainer PC;
-	
-	@Inject
 	private Logger logger;
 	
 	public Logger getLogger()
@@ -98,7 +92,13 @@ public class Main {
 	
 	@Inject
 	@ConfigDir(sharedRoot = false)
-	public Path configDir;
+	private Path configDir;
+
+	@Inject
+	Game game;
+	
+    @Inject
+    private PluginContainer PC;
 	
 	//Checks for existence of the configuration files
 	@Listener

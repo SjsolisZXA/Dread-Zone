@@ -95,6 +95,9 @@ public class RightClickMode {
 					
 					RightClickModeConfigUtils.deleteUsernameInList(player.getName());
 					
+					player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
+							TextColors.WHITE, "Jump pad ",TextColors.DARK_RED,PN,TextColors.WHITE," successfully added!"));
+					
 					return;
 				}
 				

@@ -18,7 +18,7 @@ public class NodeFileConfig implements Configurable {
 		return config;
 	}
 
-	private Path configFile = Paths.get(Main.getDreadZone().getConfigDir().resolve("Data") + "/NodeLocations.conf");
+	private Path configFile = Paths.get(Main.getDreadZone().getConfigDir().resolve("data") + "/NodeLocations.conf");
 	private ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setPath(configFile).build();
 	private CommentedConfigurationNode configNode;
 

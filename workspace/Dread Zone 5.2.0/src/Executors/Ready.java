@@ -82,6 +82,7 @@ public class Ready implements CommandExecutor {
                 	
                 	if(ContestantConfigUtils.getNumOfArenaContestants(arenaName)==ContestantConfigUtils.getNumOfReadyContestants(arenaName)){
                 		
+                		Utils.EntityHandler.clearAllMobsInArena(player.getWorld().getName(),arenaName);
                 		PABConfigUtils.beginPAB(arenaName);
                 		
                 		return CommandResult.success();

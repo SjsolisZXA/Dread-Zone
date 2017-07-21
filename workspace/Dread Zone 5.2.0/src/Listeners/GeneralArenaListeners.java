@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.monster.Monster;
@@ -424,7 +423,7 @@ public class GeneralArenaListeners {
 				
 		                		ScoreBoardUtils.addDeathScore(player);
 		                		
-		                		Sponge.getServer().getBroadcastChannel().send(Text.of("A contestatnd died of supernatural causes."));
+		                		//Sponge.getServer().getBroadcastChannel().send(Text.of("A contestatnd died of supernatural causes."));
 		                		
 			                    DZArenaUtils.restoreContestant(player);
 			                    
@@ -432,7 +431,7 @@ public class GeneralArenaListeners {
 			                    	
 			                    	player.setLocationAndRotation(PABConfigUtils.getPABALocation(arena.toString()), PABConfigUtils.getPABARotation(arena.toString()));
 			                    	
-			                    	Sponge.getServer().getBroadcastChannel().send(Text.of("Player was in PAB mode."));
+			                    	//Sponge.getServer().getBroadcastChannel().send(Text.of("Player was in PAB mode."));
 			                    }
 		            			
 			                    if(ArenaConfigUtils.getArenaStatus(arena.toString()).equals("TDM")){

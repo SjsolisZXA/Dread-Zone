@@ -1,7 +1,9 @@
 package Utils;
 
+import java.util.Optional;
 import java.util.UUID;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
@@ -13,7 +15,10 @@ import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public class EntitySpawner {
+import ConfigUtils.ArenaConfigUtils;
+import ConfigUtils.LobbyConfigUtils;
+
+public class EntityHandler {
 	
     public static void spawnEntity(Location<World> spawnLocation, EntityType x) {
     	
@@ -33,5 +38,22 @@ public class EntitySpawner {
 		entity.offer(Keys.SKIN_UNIQUE_ID, UUID);
 
 		location.getExtent().spawnEntity(entity, Cause.source(EntitySpawnCause.builder().entity(entity).type(SpawnTypes.PLUGIN).build()).build());
+	}
+	
+	public static void clearAllMobsInArena(String worldName, String arenaName){
+		
+		for(Entity entity : Sponge.getServer().getWorld(worldName).get().getEntities()){
+			
+			Optional<Text> DN = entity.get(Keys.DISPLAY_NAME);
+			
+			if(!DN.isPresent()){
+				
+				if(ArenaConfigUtils.isUserinArena(entity.getLocation(), arenaName)
+						||LobbyConfigUtils.isUserinLobby(entity.getLocation(), arenaName)){
+					
+					entity.remove();
+				}
+			}
+		}
 	}
 }

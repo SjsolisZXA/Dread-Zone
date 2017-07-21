@@ -19,7 +19,7 @@ public class JumpPadFileConfig implements Configurable{
 		return config;
 	}
 
-	private Path configFile = Paths.get(Main.getDreadZone().getConfigDir().resolve("Data") + "/JumpPads.conf");
+	private Path configFile = Paths.get(Main.getDreadZone().getConfigDir().resolve("data") + "/JumpPads.conf");
 	private ConfigurationLoader<CommentedConfigurationNode> configLoader = HoconConfigurationLoader.builder().setPath(configFile).build();
 	private CommentedConfigurationNode configNode;
 

@@ -10,7 +10,6 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import com.flowpowered.math.vector.Vector3i;
-
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.PABConfigUtils;
@@ -57,6 +56,8 @@ public class PBDetector {
 					
 					player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
 							TextColors.WHITE, "Challange Completed!"));
+					
+					ContestantConfigUtils.removeContestant(arenaName, player);
 					
 					return;
 				}

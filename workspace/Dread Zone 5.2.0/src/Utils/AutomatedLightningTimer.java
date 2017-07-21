@@ -19,7 +19,7 @@ public class AutomatedLightningTimer implements Consumer<Task> {
 		
 		String TTS = target.toString();
 		
-		Utils.EntitySpawner.spawnEntity(LightningExecutor.getTarget(TTS), EntityTypes.LIGHTNING);
+		Utils.EntityHandler.spawnEntity(LightningExecutor.getTarget(TTS), EntityTypes.LIGHTNING);
 		
 		Sponge.getScheduler().createTaskBuilder().execute(new AutomatedLightningTimer()).delay(ThreadLocalRandom.current().nextInt(15), TimeUnit.SECONDS).submit(Main.Dreadzone);
     }

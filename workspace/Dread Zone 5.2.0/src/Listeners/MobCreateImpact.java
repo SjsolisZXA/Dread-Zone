@@ -19,7 +19,8 @@ import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import com.flowpowered.math.vector.Vector3d;
-import Utils.EntitySpawner;
+
+import Utils.EntityHandler;
 
 public class MobCreateImpact {
 	
@@ -55,12 +56,12 @@ public class MobCreateImpact {
 					}
 				}
 
-				EntitySpawner.spawnEntity(LL, EntityTypes.SKELETON);
-				EntitySpawner.spawnEntity(LL, EntityTypes.BLAZE);
-				EntitySpawner.spawnEntity(LL, EntityTypes.ENDERMITE);
-				EntitySpawner.spawnEntity(LL, EntityTypes.PIG_ZOMBIE);
-				EntitySpawner.spawnEntity(LL, EntityTypes.SILVERFISH);
-				EntitySpawner.spawnEntity(LL, EntityTypes.SPIDER);
+				EntityHandler.spawnEntity(LL, EntityTypes.SKELETON);
+				EntityHandler.spawnEntity(LL, EntityTypes.BLAZE);
+				EntityHandler.spawnEntity(LL, EntityTypes.ENDERMITE);
+				EntityHandler.spawnEntity(LL, EntityTypes.PIG_ZOMBIE);
+				EntityHandler.spawnEntity(LL, EntityTypes.SILVERFISH);
+				EntityHandler.spawnEntity(LL, EntityTypes.SPIDER);
 				
 				event.setCancelled(true);
 				return;
