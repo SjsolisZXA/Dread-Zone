@@ -76,7 +76,12 @@ import Test.TestExecutor2;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 
-@Plugin(id = "dreadzone", name = "DreadZone", description = "This plugin adds minigames!", url = "http://salvadorzxa.com", version = "0.1.08")
+@Plugin(id = "dreadzone", 
+	name = "DreadZone", 
+	description = "This plugin adds minigames!", 
+	url = "http://salvadorzxa.com", 
+	version = "0.1.2",
+	authors = "SalvadorZXA")
 
 public class Main {
 	
