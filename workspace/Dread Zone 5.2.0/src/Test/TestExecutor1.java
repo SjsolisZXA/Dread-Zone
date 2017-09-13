@@ -6,7 +6,8 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
+
+import Utils.TempDataStorage;
 
 public class TestExecutor1 implements CommandExecutor {
 
@@ -15,8 +16,7 @@ public class TestExecutor1 implements CommandExecutor {
 		
 		Player player = (Player)src;
 		
-		player.sendMessage(Text.of(Main.Main.getPluginContainer().getId()+".dz"));
-		player.sendMessage(Text.of(player.hasPermission(Main.Main.getPluginContainer().getId()+".dz")));
+		TempDataStorage.saveInv(player);
 		
 		return CommandResult.success();
 	}

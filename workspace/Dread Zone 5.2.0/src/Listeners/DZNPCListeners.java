@@ -74,10 +74,11 @@ public class DZNPCListeners {
 						int a = 0;
 						int b = 0;
 						int c = 0;
+						int d = 0;
 						
 						for(ItemStack itemStack: items){
 
-							if(curr<9){				
+							if(curr<9){		
 								inventory.query(new SlotPos(a,0)).set(itemStack);
 								a++;
 							}
@@ -85,9 +86,13 @@ public class DZNPCListeners {
 								inventory.query(new SlotPos(b,1)).set(itemStack);
 								b++;
 							}
-							if(curr>17 && curr<36){
-								inventory.query(new SlotPos(c,1)).set(itemStack);
+							if(curr>17 && curr<27){
+								inventory.query(new SlotPos(c,2)).set(itemStack);
 								c++;
+							}
+							if(curr>26 && curr<36){
+								inventory.query(new SlotPos(d,3)).set(itemStack);
+								d++;
 							}
 							curr++;
 						}

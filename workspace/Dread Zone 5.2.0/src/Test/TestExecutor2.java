@@ -5,8 +5,9 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
+
+import Utils.TempDataStorage;
 
 public class TestExecutor2 implements CommandExecutor {
 
@@ -15,7 +16,7 @@ public class TestExecutor2 implements CommandExecutor {
 		
 		Player player = (Player)src;
 		
-    	player.playSound(SoundTypes.BLOCK_NOTE_SNARE, player.getLocation().getPosition(), 0.5);    	
+		TempDataStorage.restoreInv(player);
 		
 		return CommandResult.success();
 	}

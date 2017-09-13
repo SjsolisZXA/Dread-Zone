@@ -27,6 +27,7 @@ import ConfigFiles.ArenaFileConfig;
 import ConfigFiles.Configurable;
 import ConfigFiles.UnversalConfigs;
 import Utils.GUI;
+import Utils.TempDataStorage;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
@@ -145,9 +146,7 @@ public class ContestantConfigUtils {
         World world = Sponge.getServer().getWorld(targetPlayerWorldName).orElse(null);
         
         int x = targetNode.getNode("X").getInt();
-        
         int y = targetNode.getNode("Y").getInt();
-        
         int z = targetNode.getNode("Z").getInt();
         
         return new Location<World>(world, x, y, z);
@@ -244,22 +243,6 @@ public class ContestantConfigUtils {
 		
 		player.getInventory().clear();
 		
-		Optional<List<PotionEffect>> potionEffects = player.get(Keys.POTION_EFFECTS);
-		
-		if(potionEffects.isPresent()){
-			
-			List<PotionEffect> PE = potionEffects.get();
-			PE.clear();
-			
-			player.offer(Keys.POTION_EFFECTS, PE);
-		}
-		//restore player location
-		player.setLocationAndRotation(returnContestant(arenaName.toString(), player.getName().toString()), 
-				returnContestantTransform(arenaName.toString(), player.getName().toString()));
-		
-		//restore original food level
-		player.offer(Keys.FOOD_LEVEL, fetchOriginalFoodLevel(arenaName.toString(), player.getName()));
-		
 		//restore game mode
 		try {
 			 
@@ -268,45 +251,6 @@ public class ContestantConfigUtils {
 		} catch (ObjectMappingException e1) {
 			
 			e1.printStackTrace();
-		}
-		
-		
-		//restore potion effects
-		/**try {
-			
-			player.offer(Keys.POTION_EFFECTS,ContestantConfigUtils.fetchOriginalPotionEffects(arenaName.toString(), player.getName()));
-			
-		} catch (ObjectMappingException e) {
-			
-			e.printStackTrace();
-		}**/
-		
-		removeContestantFromList(arenaName.toString(),player.getName());
-		
-		//remove GUI
-		if(ArenaConfigUtils.getMatchStatus(arenaName).equals(true)){
-		
-			//remove PAB Scoreboard
-			if(ArenaConfigUtils.getArenaStatus(arenaName)=="PAB"){
-				
-				GUI.removePABGUI(player);
-			}
-			
-			//remove TDM Scoreboard and Boss bar
-			if(ArenaConfigUtils.getArenaStatus(arenaName)=="TDM"){
-				
-				player.getScoreboard().removeObjective(player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get());
-				player.getScoreboard().removeObjective(player.getScoreboard().getObjective(DisplaySlots.BELOW_NAME).get());
-				
-				if(GUI.aTeamBars.get(arenaName)!=null&&GUI.bTeamBars.get(arenaName)!=null){
-					
-					Map<String,ServerBossBar> b1 = GUI.bTeamBars.get(arenaName);
-					Map<String,ServerBossBar> b0 = GUI.aTeamBars.get(arenaName);
-					
-					b0.get(player.getName()).removePlayer(player);
-					b1.get(player.getName()).removePlayer(player);
-				}
-			}
 		}
 		
 		//clean up NPCs if no one is left in the arena
@@ -348,5 +292,62 @@ public class ContestantConfigUtils {
 				}
 			}
 		}
+		
+		//restore player location
+		player.setLocationAndRotation(returnContestant(arenaName.toString(), player.getName().toString()), 
+				returnContestantTransform(arenaName.toString(), player.getName()));
+		
+		Optional<List<PotionEffect>> potionEffects = player.get(Keys.POTION_EFFECTS);
+		
+		if(potionEffects.isPresent()){
+			
+			List<PotionEffect> PE = potionEffects.get();
+			PE.clear();
+			
+			player.offer(Keys.POTION_EFFECTS, PE);
+		}
+		
+		//restore original food level
+		player.offer(Keys.FOOD_LEVEL, fetchOriginalFoodLevel(arenaName.toString(), player.getName()));
+		
+		//restore potion effects
+		/**try {
+			
+			player.offer(Keys.POTION_EFFECTS,ContestantConfigUtils.fetchOriginalPotionEffects(arenaName.toString(), player.getName()));
+			
+		} catch (ObjectMappingException e) {
+			
+			e.printStackTrace();
+		}**/
+		
+		//remove GUI
+		if(ArenaConfigUtils.getMatchStatus(arenaName).equals(true)){
+		
+			//remove PAB Scoreboard
+			if(ArenaConfigUtils.getArenaStatus(arenaName)=="PAB"){
+				
+				GUI.removePABGUI(player);
+			}
+			
+			//remove TDM Scoreboard and Boss bar
+			if(ArenaConfigUtils.getArenaStatus(arenaName)=="TDM"){
+				
+				player.getScoreboard().removeObjective(player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get());
+				player.getScoreboard().removeObjective(player.getScoreboard().getObjective(DisplaySlots.BELOW_NAME).get());
+				
+				if(GUI.aTeamBars.get(arenaName)!=null&&GUI.bTeamBars.get(arenaName)!=null){
+					
+					Map<String,ServerBossBar> b1 = GUI.bTeamBars.get(arenaName);
+					Map<String,ServerBossBar> b0 = GUI.aTeamBars.get(arenaName);
+					
+					b0.get(player.getName()).removePlayer(player);
+					b1.get(player.getName()).removePlayer(player);
+				}
+			}
+		}
+		
+		removeContestantFromList(arenaName.toString(),player.getName());
+		
+		TempDataStorage.restoreInv(player);
 	}
 }

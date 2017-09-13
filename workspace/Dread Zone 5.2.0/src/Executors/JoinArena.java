@@ -19,11 +19,11 @@ import org.spongepowered.api.entity.living.player.gamemode.GameMode;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ClassConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.LobbyConfigUtils;
+import Utils.TempDataStorage;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 public class JoinArena implements CommandExecutor {
@@ -265,6 +265,9 @@ public class JoinArena implements CommandExecutor {
 			e.printStackTrace();
 		}
 		
+		//save contestant's inventory
+		TempDataStorage.saveInv(player);
+		
 		//clear the contestant's inventory
 		player.getInventory().clear();
 		
@@ -282,5 +285,6 @@ public class JoinArena implements CommandExecutor {
 		//set survival mode     			
 		GameModeData survivalGamemode = player.getGameModeData().set(Keys.GAME_MODE, GameModes.SURVIVAL);
 		player.offer(survivalGamemode);
+
 	}
 }
