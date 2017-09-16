@@ -157,9 +157,7 @@ public class ContestantConfigUtils {
         CommentedConfigurationNode targetNode = UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Spawnpoints", teamName, spawnName, "Transform");
         
         int tx = targetNode.getNode("X").getInt();
-        
         int ty = targetNode.getNode("Y").getInt();
-        
         int tz = targetNode.getNode("Z").getInt();
         
         return new Vector3d(tx, ty, tz);
@@ -253,6 +251,59 @@ public class ContestantConfigUtils {
 			e1.printStackTrace();
 		}
 		
+		//clear potion effects
+		Optional<List<PotionEffect>> potionEffects = player.get(Keys.POTION_EFFECTS);
+		if(potionEffects.isPresent()){
+			
+			List<PotionEffect> PE = potionEffects.get();
+			PE.clear();
+			player.offer(Keys.POTION_EFFECTS, PE);
+		}
+		
+		//restore original food level
+		player.offer(Keys.FOOD_LEVEL, fetchOriginalFoodLevel(arenaName.toString(), player.getName()));
+		
+		//restore potion effects
+		/**try {
+			
+			player.offer(Keys.POTION_EFFECTS,ContestantConfigUtils.fetchOriginalPotionEffects(arenaName.toString(), player.getName()));
+			
+		} catch (ObjectMappingException e) {
+			
+			e.printStackTrace();
+		}**/
+		
+		TempDataStorage.addContestantReturnPoint(player.getName(),returnContestant(arenaName.toString(), player.getName().toString()), 
+				returnContestantTransform(arenaName.toString(), player.getName()));
+		
+		removeContestantFromList(arenaName.toString(),player.getName());
+		
+		//remove GUI
+		if(ArenaConfigUtils.getMatchStatus(arenaName).equals(true)){
+		
+			//remove PAB Scoreboard
+			if(ArenaConfigUtils.getArenaStatus(arenaName)=="PAB"){
+				
+				GUI.removePABGUI(player);
+			}
+			
+			//remove TDM Scoreboard and Boss bar
+			if(ArenaConfigUtils.getArenaStatus(arenaName)=="TDM"){
+				
+				player.getScoreboard().removeObjective(player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get());
+				player.getScoreboard().removeObjective(player.getScoreboard().getObjective(DisplaySlots.BELOW_NAME).get());
+				
+				if(GUI.aTeamBars.get(arenaName)!=null&&GUI.bTeamBars.get(arenaName)!=null){
+					
+					Map<String,ServerBossBar> b1 = GUI.bTeamBars.get(arenaName);
+					Map<String,ServerBossBar> b0 = GUI.aTeamBars.get(arenaName);
+					
+					b0.get(player.getName()).removePlayer(player);
+					b1.get(player.getName()).removePlayer(player);
+				}
+			}
+		}
+		
 		//clean up NPCs if no one is left in the arena
 		if(ContestantConfigUtils.getArenaContestants(arenaName).isEmpty()){
 			
@@ -294,60 +345,9 @@ public class ContestantConfigUtils {
 		}
 		
 		//restore player location
-		player.setLocationAndRotation(returnContestant(arenaName.toString(), player.getName().toString()), 
-				returnContestantTransform(arenaName.toString(), player.getName()));
+		TempDataStorage.returnContestant(player);
 		
-		Optional<List<PotionEffect>> potionEffects = player.get(Keys.POTION_EFFECTS);
-		
-		if(potionEffects.isPresent()){
-			
-			List<PotionEffect> PE = potionEffects.get();
-			PE.clear();
-			
-			player.offer(Keys.POTION_EFFECTS, PE);
-		}
-		
-		//restore original food level
-		player.offer(Keys.FOOD_LEVEL, fetchOriginalFoodLevel(arenaName.toString(), player.getName()));
-		
-		//restore potion effects
-		/**try {
-			
-			player.offer(Keys.POTION_EFFECTS,ContestantConfigUtils.fetchOriginalPotionEffects(arenaName.toString(), player.getName()));
-			
-		} catch (ObjectMappingException e) {
-			
-			e.printStackTrace();
-		}**/
-		
-		//remove GUI
-		if(ArenaConfigUtils.getMatchStatus(arenaName).equals(true)){
-		
-			//remove PAB Scoreboard
-			if(ArenaConfigUtils.getArenaStatus(arenaName)=="PAB"){
-				
-				GUI.removePABGUI(player);
-			}
-			
-			//remove TDM Scoreboard and Boss bar
-			if(ArenaConfigUtils.getArenaStatus(arenaName)=="TDM"){
-				
-				player.getScoreboard().removeObjective(player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get());
-				player.getScoreboard().removeObjective(player.getScoreboard().getObjective(DisplaySlots.BELOW_NAME).get());
-				
-				if(GUI.aTeamBars.get(arenaName)!=null&&GUI.bTeamBars.get(arenaName)!=null){
-					
-					Map<String,ServerBossBar> b1 = GUI.bTeamBars.get(arenaName);
-					Map<String,ServerBossBar> b0 = GUI.aTeamBars.get(arenaName);
-					
-					b0.get(player.getName()).removePlayer(player);
-					b1.get(player.getName()).removePlayer(player);
-				}
-			}
-		}
-		
-		removeContestantFromList(arenaName.toString(),player.getName());
-		
+		//restore player inventory
 		TempDataStorage.restoreInv(player);
 	}
 }

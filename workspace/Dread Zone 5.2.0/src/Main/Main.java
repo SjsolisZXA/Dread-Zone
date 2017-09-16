@@ -80,7 +80,7 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 	name = "DreadZone", 
 	description = "This plugin adds minigames!", 
 	url = "http://salvadorzxa.com", 
-	version = "0.1.2",
+	version = "0.1.3",
 	authors = "SalvadorZXA")
 
 public class Main {
