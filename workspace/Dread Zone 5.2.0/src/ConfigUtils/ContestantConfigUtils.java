@@ -291,7 +291,7 @@ public class ContestantConfigUtils {
 			if(ArenaConfigUtils.getArenaStatus(arenaName)=="TDM"){
 				
 				player.getScoreboard().removeObjective(player.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get());
-				player.getScoreboard().removeObjective(player.getScoreboard().getObjective(DisplaySlots.BELOW_NAME).get());
+				//player.getScoreboard().removeObjective(player.getScoreboard().getObjective(DisplaySlots.BELOW_NAME).get());
 				
 				if(GUI.aTeamBars.get(arenaName)!=null&&GUI.bTeamBars.get(arenaName)!=null){
 					

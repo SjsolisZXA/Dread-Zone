@@ -1,9 +1,14 @@
 package Listeners;
 
+import java.math.BigDecimal;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.filter.cause.Root;
+import org.spongepowered.api.service.economy.EconomyService;
+import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
@@ -13,6 +18,7 @@ import com.flowpowered.math.vector.Vector3i;
 import ConfigUtils.ArenaConfigUtils;
 import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.PABConfigUtils;
+import Main.Main;
 
 public class PBDetector {
 	
@@ -54,8 +60,18 @@ public class PBDetector {
 				    location.equals(PB.add(2,0,2))||
 				    location.equals(PB.add(2,0,-2))){
 					
-					player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
-							TextColors.WHITE, "Challange Completed!"));
+					EconomyService economyService = Sponge.getServiceManager().provide(EconomyService.class).get();
+					UniqueAccount acc = economyService.getOrCreateAccount(player.getUniqueId()).get();
+					BigDecimal reward = BigDecimal.valueOf(1000);
+					acc.deposit(economyService.getDefaultCurrency(), reward, Cause.source(Main.getPluginContainer()).build());
+					
+					/**player.sendMessage(Text.of(TextColors.DARK_RED,"[",TextColors.DARK_GRAY, "Dread Zone",TextColors.DARK_RED,"] ", 
+							TextColors.WHITE, "Challange Completed! You've been rewarded with",TextColors.DARK_RED," $",reward,TextColors.WHITE,"."));*/
+					
+    				Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "] ",
+							TextColors.WHITE,"Contestant ",TextColors.DARK_RED,player.getName(),TextColors.WHITE," of Dread Zone arena ",TextColors.DARK_RED,
+							arenaName,TextColors.WHITE," has been rewarded with ",TextColors.DARK_RED,"$",reward,TextColors.WHITE," and has re-opened! "
+									+ "To join, enter: ",TextColors.DARK_RED,"/dz join ",arenaName," ARENA_MODE",TextColors.WHITE,"."));
 					
 					ContestantConfigUtils.removeContestant(arenaName, player);
 					

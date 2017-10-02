@@ -11,6 +11,8 @@ import org.spongepowered.api.boss.BossBarOverlays;
 import org.spongepowered.api.boss.ServerBossBar;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.tab.TabList;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.scoreboard.Scoreboard;
 import org.spongepowered.api.scoreboard.critieria.Criteria;
 import org.spongepowered.api.scoreboard.displayslot.DisplaySlots;
@@ -106,7 +108,7 @@ public class GUI {
     	
     	for(Player contestant: contestants){
     		
-    		Text teamName = contestant.getScoreboard().getObjective(DisplaySlots.BELOW_NAME).get().getDisplayName();
+    		Text teamName = contestant.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get().getDisplayName();
     		
     		if(teamAName.equals(teamName)){
     			
@@ -182,11 +184,13 @@ public class GUI {
         	
         	if(!teamName.equals(teamName1)){
         		
+        		player.setHelmet(ItemStack.of(ItemTypes.REDSTONE_BLOCK, 1));
                 Text OTLN1 = Text.join(new Text[] { teamName1, playerName });
                 contestantTabList.getEntry(OTCP.getUniqueId()).get().setDisplayName(OTLN1);
         	}
         	if(!teamName.equals(teamName2)){
         		
+        		player.setHelmet(ItemStack.of(ItemTypes.SLIME, 1));
         		Text OTLN2 = Text.join(new Text[] { teamName2, playerName });
         		contestantTabList.getEntry(OTCP.getUniqueId()).get().setDisplayName(OTLN2);
         	}
@@ -195,14 +199,16 @@ public class GUI {
     	//sets up a scoreboard
         Scoreboard scoreboard = Scoreboard.builder().build();
         
+        /**
         //sets up team name tag below username display name
         Objective teamTagNameObjective = Objective.builder().name(teamName.toPlain()).displayName(Text.of(teamName)).criterion(Criteria.DUMMY).build();
         
         scoreboard.addObjective(teamTagNameObjective);
         scoreboard.updateDisplaySlot(teamTagNameObjective, DisplaySlots.BELOW_NAME);
+        **/
         
         //sets up kills death scoreboard
-        Objective objective = Objective.builder().name("Stats").displayName(Text.of((String.valueOf(player.getName()) + " Stats"))).criterion(Criteria.DUMMY).build();
+        Objective objective = Objective.builder().name(player.getName()+" S").displayName(teamName).criterion(Criteria.DUMMY).build();
         
         scoreboard.addObjective(objective);
         scoreboard.updateDisplaySlot(objective, DisplaySlots.SIDEBAR);
@@ -213,13 +219,13 @@ public class GUI {
     
 	public static void setupPABScoreboards(List<Player> contestants, String arenaName) {
 
-        Scoreboard scoreboard = Scoreboard.builder().build();
-        
         ArenaConfigUtils.setMatchStatus(arenaName, true);
         
         for(Player player:contestants){
+        	
+        	Scoreboard scoreboard = Scoreboard.builder().build();
         
-	        Objective objective = Objective.builder().name("Stats").displayName(Text.of(TextColors.DARK_RED,
+	        Objective objective = Objective.builder().name(player.getName()+" S").displayName(Text.of(TextColors.DARK_RED,
 	        		TextStyles.UNDERLINE,(String.valueOf(player.getName()) + " Kills"))).criterion(Criteria.DUMMY).build();	        
 	        scoreboard.addObjective(objective);	        
 	        scoreboard.updateDisplaySlot(objective, DisplaySlots.SIDEBAR);	        
@@ -240,7 +246,7 @@ public class GUI {
 		bBar.removePlayer(contestant);
 		
 		contestant.getScoreboard().removeObjective(contestant.getScoreboard().getObjective(DisplaySlots.SIDEBAR).get());
-		contestant.getScoreboard().removeObjective(contestant.getScoreboard().getObjective(DisplaySlots.BELOW_NAME).get());
+		//contestant.getScoreboard().removeObjective(contestant.getScoreboard().getObjective(DisplaySlots.BELOW_NAME).get());
 		
 		contestant.sendTitle(MT);
 	}
