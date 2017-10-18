@@ -1,10 +1,8 @@
 package Utils;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.boss.BossBarColor;
 import org.spongepowered.api.boss.BossBarColors;
 import org.spongepowered.api.boss.BossBarOverlays;
@@ -26,7 +24,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import ConfigUtils.ArenaConfigUtils;
-import ConfigUtils.ContestantConfigUtils;
 import ConfigUtils.TDMConfigUtils;
 
 public class GUI {
@@ -38,7 +35,8 @@ public class GUI {
 	static Map<String,ServerBossBar> bTBInnerMap = Maps.newHashMap();
 	
     static Text text1 = Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "]");
-    static Text text2 = Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Team Deathmatch", TextColors.DARK_RED, "]");
+    static Text text2 = Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Team Deathmatch", TextColors.DARK_RED, "]");        
+    static Text text3 = Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Challange", TextColors.DARK_RED, "]");
 	
     public static void setUpAllTDMGUI(String arenaName, List<Player> teamContestants, List<Player> otherContestants, Text teamName, Text teamName1, Text teamName2) {
 
@@ -158,7 +156,7 @@ public class GUI {
         bTeamBars.put(arenaName,bTBInnerMap);
     	
         //sets up colored tab list team names
-        player.getTabList().setHeaderAndFooter(text1, text2);
+        /**player.getTabList().setHeaderAndFooter(text1, text2);
        
         Collection<Player> onlinePlayers = Sponge.getServer().getOnlinePlayers();
         TabList contestantTabList = player.getTabList();
@@ -176,23 +174,23 @@ public class GUI {
             Text playerName = Text.of(" "+teamContestant.getName());
             Text TLN = Text.join(new Text[] { teamName, playerName });
             contestantTabList.getEntry(teamContestant.getUniqueId()).get().setDisplayName(TLN);
-        }
+        }**/
         
-        for(Player OTCP: otherContestants){
+        for(@SuppressWarnings("unused") Player OTCP: otherContestants){
         	
-            Text playerName = Text.of(" "+OTCP.getName());
+            //Text playerName = Text.of(" "+OTCP.getName());
         	
         	if(!teamName.equals(teamName1)){
         		
         		player.setHelmet(ItemStack.of(ItemTypes.REDSTONE_BLOCK, 1));
-                Text OTLN1 = Text.join(new Text[] { teamName1, playerName });
-                contestantTabList.getEntry(OTCP.getUniqueId()).get().setDisplayName(OTLN1);
+                //Text OTLN1 = Text.join(new Text[] { teamName1, playerName });
+                //contestantTabList.getEntry(OTCP.getUniqueId()).get().setDisplayName(OTLN1);
         	}
         	if(!teamName.equals(teamName2)){
         		
         		player.setHelmet(ItemStack.of(ItemTypes.SLIME, 1));
-        		Text OTLN2 = Text.join(new Text[] { teamName2, playerName });
-        		contestantTabList.getEntry(OTCP.getUniqueId()).get().setDisplayName(OTLN2);
+        		//Text OTLN2 = Text.join(new Text[] { teamName2, playerName });
+        		//contestantTabList.getEntry(OTCP.getUniqueId()).get().setDisplayName(OTLN2);
         	}
         }
         
@@ -232,11 +230,8 @@ public class GUI {
 	        objective.getOrCreateScore(Text.of("Total Kills")).setScore(0);	        
 	        objective.getOrCreateScore(Text.of("Deaths")).setScore(0);	        
 	        player.setScoreboard(scoreboard);
-	        
-	        Text text1 = Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Dread Zone", TextColors.DARK_RED, "]");	        
-	        Text text2 = Text.of(TextColors.DARK_RED, "[", TextColors.DARK_GRAY, "Challange", TextColors.DARK_RED, "]");
-	        
-	        player.getTabList().setHeaderAndFooter(text1, text2);
+	         
+	        //player.getTabList().setHeaderAndFooter(text1, text3);
         }
 	}
 	

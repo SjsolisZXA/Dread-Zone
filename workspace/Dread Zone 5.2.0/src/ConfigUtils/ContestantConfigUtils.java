@@ -237,9 +237,30 @@ public class ContestantConfigUtils {
 		return UnversalConfigs.getConfig(ArenaConfig).getNode("Arena", arenaName, "Contestants", userName, "Potion Effects").getChildrenMap().keySet().size();
 	}
 	
+	/**public static void resetTabList(Player player){
+		
+		TabList tablist = player.getTabList();
+		
+		if(!tablist.getEntries().isEmpty()){
+			
+			tablist.getEntries().clear();
+		}
+		
+		for(Player p: Sponge.getServer().getOnlinePlayers()){
+			
+			TabListEntry entry = TabListEntry.builder()
+				    .gameMode(p.get(Keys.GAME_MODE).get())
+				    .profile(p.getProfile())
+				    .build();
+			tablist.addEntry(entry);
+		}
+	}**/
+	
 	public static void removeContestant(String arenaName, Player player) {
 		
 		player.getInventory().clear();
+		
+		//resetTabList(player);
 		
 		//restore game mode
 		try {
